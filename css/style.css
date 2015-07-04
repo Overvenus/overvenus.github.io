@@ -296,9 +296,10 @@ article .entry blockquote {
   border-bottom: 1px solid #ddd;
   font-style: italic;
   font-family: "Georgia", serif;
-  font-size: 1.2em;
+/* font-size 1.2em */
+  font-size: 1.1em;
   padding: 0 30px 15px;
-  text-align: center;
+/* text-align center */
 }
 article .entry blockquote footer {
   border-top: none;
@@ -796,4 +797,10 @@ pre .clojure .title {
 }
 pre .deletion {
   color: #dc322f;
+}
+.toc-article {
+  display: none;
+}
+.toc li {
+  list-style-type: none;
 }
