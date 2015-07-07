@@ -51,6 +51,43 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-07-04T14:26:00.000Z"><a href="/2015/07/04/goto_and_topological_sorting/">2015-07-04</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/04/goto_and_topological_sorting/">GOTO与拓扑排序</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="goto_in_C">goto in C</h2><p><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
+<h3 id="goto,_break,_continue">goto, break, continue</h3><p><code>goto</code>,<code>break</code>,<code>continue</code> 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的<code>{}</code>(scope)。<br><code>continue</code> 只能写在loop里，不然编译报：continue statement not within loop，<br><code>break</code>只能写在loop或者switch中，不然编译报：break statement not within loop or switch。<br><code>goto</code>则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/07/04/goto_and_topological_sorting/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-02T10:02:00.000Z"><a href="/2015/07/02/os_setup_and_virtual_memory_setup/">2015-07-02</a></time>
       
       
@@ -139,7 +176,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/C/" style="font-size: 10px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 10px;">C.S.笔记</a> <a href="/tags/MIT/" style="font-size: 10px;">MIT</a>
+    <a href="/tags/Algorithms/" style="font-size: 10px;">Algorithms</a> <a href="/tags/C/" style="font-size: 20px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 10px;">C.S.笔记</a> <a href="/tags/MIT/" style="font-size: 10px;">MIT</a>
   </div>
 </div>
 
@@ -152,6 +189,10 @@
   </div>
 </div>
 <script src="/js/toc.js" type="text/javascript"></script>
+
+  <div class="scrollup"></div>
+
+<script src="/js/scrollup.js" type="text/javascript"></script>
 </aside>
     <div class="clearfix"></div>
   </div>

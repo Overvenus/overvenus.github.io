@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>GOTO与拓扑排序 | 铅笔迹</title>
+  <meta name="author" content="Neil Shen">
+  
+  <meta name="description" content="goto in Cgoto在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。
+goto, break, continuegoto,break,continue 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的{}(scope)。continue 只能写在loop里，不然编译报：continue statement not within loop，break只能写在loop或者switch中，不然编译报：break statement not within loop or switch。goto则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="GOTO与拓扑排序"/>
+  <meta property="og:site_name" content="铅笔迹"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="铅笔迹" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjsnet.b0.upaiyun.com/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">铅笔迹</a></h1>
+  <h2><a href="/">Share Somthing Cool.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/me">Me</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-07-04T14:26:00.000Z"><a href="/2015/07/04/goto_and_topological_sorting/">2015-07-04</a></time>
+      
+      
+  
+    <h1 class="title">GOTO与拓扑排序</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <!-- Table of Contents -->
+        
+          <div id="toc" class="toc-article">
+          <h1>TOC</h1>
+          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#goto_in_C"><span class="toc-number">1.</span> <span class="toc-text">goto in C</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#goto,_break,_continue"><span class="toc-number">1.1.</span> <span class="toc-text">goto, break, continue</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拓扑排序"><span class="toc-number">2.</span> <span class="toc-text">拓扑排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存管理引发的思考"><span class="toc-number">3.</span> <span class="toc-text">内存管理引发的思考</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不用goto的page_insert"><span class="toc-number">3.1.</span> <span class="toc-text">不用goto的page_insert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用goto的page_insert"><span class="toc-number">3.2.</span> <span class="toc-text">使用goto的page_insert</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Another_fancy_example"><span class="toc-number">4.1.</span> <span class="toc-text">Another fancy example</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更多资料"><span class="toc-number">4.2.</span> <span class="toc-text">更多资料</span></a></li></ol></li></ol>
+          </div>
+        
+        <h2 id="goto_in_C">goto in C</h2><p><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
+<h3 id="goto,_break,_continue">goto, break, continue</h3><p><code>goto</code>,<code>break</code>,<code>continue</code> 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的<code>{}</code>(scope)。<br><code>continue</code> 只能写在loop里，不然编译报：continue statement not within loop，<br><code>break</code>只能写在loop或者switch中，不然编译报：break statement not within loop or switch。<br><code>goto</code>则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。<br><a id="more"></a></p>
+<blockquote>
+<p>I think goto’s are fine, and they are often more readable than large<br>amounts of indentation. That’s <em>especially</em> true if the code flow isn’t<br>actually naturally indented (in this case it is, so I don’t think using<br>goto is in any way <em>clearer</em> than not, but in general goto’s can be quite<br>good for readability).<br>—-Linus</p>
+</blockquote>
+<h2 id="拓扑排序">拓扑排序</h2><p>《算法导论》中拓扑排序的例子，粉色的是各物件的依赖图，青色的是拓扑排序图。<br><img src="http://ww4.sinaimg.cn/large/7f793092gw1ets46e3xppj20ok0kcq4d.jpg" alt=""><br>根据图，如果还没穿内裤，拿就必须要穿内裤那个节点开始走起；如果已经穿好内裤和裤子了，那从腰带开始走起便可。<br>可以看出，拓扑排序图中的各物件的依赖关系与箭头相反，不管从哪点进入，最终的还是会到同一个节点。</p>
+<h2 id="内存管理引发的思考">内存管理引发的思考</h2><p>在JOS的内存管理模块中，有一个<code>page_insert</code>的函数，它负责记录<code>page</code>的地址和权限，这个函数最终的结果只有一个，但输入有多种情况，为了处理这些情况，势必要写多个判断。<br>插入的<code>pagetable</code>中对应该<code>page</code>的条目是否有旧纪录？如果没有直接插入，设置权限，结束；如果有，是否同一个<code>page</code>，如果同一个，设置新权限，结束；如果不是同一个，删掉旧记录，插入该<code>page</code>地址，设置权限，结束。<br>大致的逻辑请看下图：<br><img src="http://ww3.sinaimg.cn/large/7f793092gw1etufs6cjxnj20av0m1gmq.jpg" alt=""></p>
+<p>从描述可知，只有条件跳转来处理这些情况会有许多重复的代码，而且不直观，难以理解。</p>
+<h3 id="不用goto的page_insert">不用<code>goto</code>的<code>page_insert</code></h3><p>无<code>goto</code>，但代码重复，判断层级过多，不易理解。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">page_insert</span><span class="params">(pde_t *pgdir, <span class="keyword">struct</span> PageInfo *pp, <span class="keyword">void</span> *va, <span class="keyword">int</span> perm)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">pte_t</span> *va_pte = pgdir_walk(pgdir, va, <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span> (! va_pte)</span><br><span class="line">		<span class="comment">// E_NO_MEM, if page table couldn't be allocated</span></span><br><span class="line">		<span class="keyword">return</span> -E_NO_MEM;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">physaddr_t</span> pp_pa = page2pa(pp);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ((*va_pte) &amp; PTE_P) &#123;</span><br><span class="line">		<span class="comment">// There is something in this pte.</span></span><br><span class="line">		<span class="keyword">if</span> (PTE_ADDR(*va_pte) == pp_pa) &#123;</span><br><span class="line">			<span class="comment">// Re-insert</span></span><br><span class="line">			*va_pte = pp_pa | perm | PTE_P;</span><br><span class="line">			<span class="keyword">if</span> (perm | PTE_U)</span><br><span class="line">				<span class="comment">// Changes to User Table</span></span><br><span class="line">				pgdir[PDX(va)] |= PTE_U;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// Different page</span></span><br><span class="line">		page_remove(pgdir, va);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Nothing in this PTE</span></span><br><span class="line">	*va_pte = pp_pa | perm | PTE_P;</span><br><span class="line">	<span class="keyword">if</span> (perm | PTE_U)</span><br><span class="line">		<span class="comment">// Changes to User Table</span></span><br><span class="line">		pgdir[PDX(va)] |= PTE_U;</span><br><span class="line"></span><br><span class="line">	pp-&gt;pp_ref += <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用goto的page_insert">使用<code>goto</code>的<code>page_insert</code></h3><p>有<code>goto</code>，但代码不重复，跳转层级少，直观。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">page_insert</span><span class="params">(pde_t *pgdir, <span class="keyword">struct</span> PageInfo *pp, <span class="keyword">void</span> *va, <span class="keyword">int</span> perm)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">pte_t</span> *va_pte = pgdir_walk(pgdir, va, <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span> (! va_pte)</span><br><span class="line">		<span class="comment">// E_NO_MEM, if page table couldn't be allocated</span></span><br><span class="line">		<span class="keyword">return</span> -E_NO_MEM;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">physaddr_t</span> pp_pa = page2pa(pp);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (! (*va_pte) &amp; PTE_P)</span><br><span class="line">		<span class="comment">// Nothing in this PTE</span></span><br><span class="line">		<span class="keyword">goto</span> nonpresent;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// There is something in this pte.</span></span><br><span class="line">	<span class="keyword">if</span> (PTE_ADDR(*va_pte) == pp_pa)</span><br><span class="line">		<span class="comment">// Re-insert</span></span><br><span class="line">		<span class="keyword">goto</span> present_same;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="comment">// Different page</span></span><br><span class="line">		<span class="keyword">goto</span> present_different;</span><br><span class="line"></span><br><span class="line">	present_different:</span><br><span class="line">		page_remove(pgdir, va);</span><br><span class="line"></span><br><span class="line">	nonpresent:</span><br><span class="line">		*va_pte = pp_pa;</span><br><span class="line">		pp-&gt;pp_ref += <span class="number">1</span>;</span><br><span class="line">		tlb_invalidate(pgdir, va);</span><br><span class="line"></span><br><span class="line">	present_same:</span><br><span class="line">		*va_pte = pp_pa | perm | PTE_P;</span><br><span class="line">		<span class="keyword">if</span> (perm &amp; PTE_U)</span><br><span class="line">			<span class="comment">// Commits to User Table</span></span><br><span class="line">			pgdir[PDX(va)] |= PTE_U;</span><br><span class="line">		<span class="keyword">if</span> (perm &amp; PTE_W)</span><br><span class="line">			pgdir[PDX(va)] |= PTE_W;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结">总结</h2><ul>
+<li><code>goto</code>最好与判断写在一起，方便从语意理解此语句。</li>
+<li>如果出口只有一个，进口有多个，可适当用<code>goto</code>，符合DRY。</li>
+</ul>
+<h3 id="Another_fancy_example">Another fancy example</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// error handler</span></span><br><span class="line">swith(i) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        foo();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        bar();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        n = dosth_1();</span><br><span class="line">        <span class="keyword">if</span> (n)</span><br><span class="line">            <span class="keyword">goto</span> bad;</span><br><span class="line">        n = dosth_2();</span><br><span class="line">        <span class="keyword">if</span> (n)</span><br><span class="line">            <span class="keyword">goto</span> bad:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">    bad:</span><br><span class="line">        report();</span><br><span class="line">        <span class="keyword">end_t</span>his();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="更多资料">更多资料</h3><blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto" target="_blank" rel="external">https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto</a><br><a href="https://en.wikipedia.org/wiki/Topological_sorting" target="_blank" rel="external">https://en.wikipedia.org/wiki/Topological_sorting</a><br><a href="https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131" target="_blank" rel="external">https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131</a><br>Knuth, Donald E. “Structured Programming with go to Statements.” ACM Computing Surveys (CSUR) 6, no. 4 (1974): 261-301.</p>
+</blockquote>
+<p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Algorithms/">Algorithms</a>, <a href="/tags/C/">C</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:overvenus.gitcafe.io">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Algorithms/" style="font-size: 10px;">Algorithms</a> <a href="/tags/C/" style="font-size: 20px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 10px;">C.S.笔记</a> <a href="/tags/MIT/" style="font-size: 10px;">MIT</a>
+  </div>
+</div>
+
+
+  <iframe width="100%" height="110" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=110&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=1&isWeibo=0&isFans=0&uid=2138648722&verifier=045e79b4&dpc=1"></iframe>
+
+  <div class="widget widget-toc" style="display: none">
+  <h3 class="title">文章目录</h3>
+  <div class="container" style="padding: 15px 20px;">
+  </div>
+</div>
+<script src="/js/toc.js" type="text/javascript"></script>
+
+  <div class="scrollup"></div>
+
+<script src="/js/scrollup.js" type="text/javascript"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Neil Shen
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'overvenus';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

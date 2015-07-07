@@ -294,6 +294,8 @@ article .entry .video-container {
 article .entry blockquote {
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
+  border-left: 5px solid #ddd;
+  background-color: #f8f8ff;
   font-style: italic;
   font-family: "Georgia", serif;
 /* font-size 1.2em */
@@ -803,4 +805,21 @@ pre .deletion {
 }
 .toc li {
   list-style-type: none;
+}
+.scrollup {
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background-image: url("/images/scrollup.png");
+  opacity: 0.3;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+  filter: alpha(opacity=30);
+  cursor: pointer;
+}
+.scrollup:hover {
+  opacity: 0.7;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+  filter: alpha(opacity=70);
 }
