@@ -51,6 +51,45 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-08-13T06:33:00.000Z"><a href="/2015/08/13/dispatch_and_handle_motionevent_in_android/">2015-08-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/08/13/dispatch_and_handle_motionevent_in_android/">Android触屏事件处理分发--以SwipeRefreshLayout为例</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="PullToRefresh_与_SwipeRefreshLayout">PullToRefresh 与 SwipeRefreshLayout</h2><p>这段时间我在 Easyinking 公司实习， 做安卓开发。之前的 App 中大量使用 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh">Android-PullToRefresh</a>。这个轮子很经典，在较久版本的安卓上面也很好使，不过作者已经放弃维护了，在我们的 App 上也发现了一个诡异的BUG：与WebView配合使用时，在网络环境差的情况下会出现一次下拉多次刷新的情况，症状就是整个网页在那上下抽搐。在官方支持库 support-v4:22 中自带了一个类似的 SwipeRefreshLayout，效果也是一级棒。由于两者的 API 设计差不多，使用的情景也几乎一样，所以可以无痛地从 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh">PullToRefresh</a> 转移过来。</p>
+<h2 id="敏感的_SwipeRefreshLayout">敏感的 SwipeRefreshLayout</h2><p>从 PullToRefresh 转移到 SwipeRefreshLayout 大概花了十来分钟，初步测试出来的效果也令人满意。但是，实际使用中总会有意想不到的问题。我们把一个WebView放在了 SwipeRefreshLayout 中， 该 WebView 呈现的网页中有一个图片轮播，可左右滑动，下面的问题是 SwipeRefreshLayout 过于敏感，它把稍有下拉倾向的左右滑动全部拦截掉，并把他们当作下拉的手势，典型的 False Positive ， 处理的思路也很简单，既然是误报，过滤之即可。</p>
+<h3 id="误报的手势"><strong>误报的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1xydoiwoj20u01hcwoe.jpg" alt=""><img src="http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev1ys28bm4j20u01hc12q.jpg" alt=""></p>
+<h3 id="理想中的手势"><strong>理想中的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1ytgovwpj20u01hcgve.jpg" alt=""></p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/08/13/dispatch_and_handle_motionevent_in_android/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-07-04T14:26:00.000Z"><a href="/2015/07/04/goto_and_topological_sorting/">2015-07-04</a></time>
       
       
@@ -176,7 +215,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Algorithms/" style="font-size: 10px;">Algorithms</a> <a href="/tags/C/" style="font-size: 20px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 10px;">C.S.笔记</a> <a href="/tags/MIT/" style="font-size: 10px;">MIT</a>
+    <a href="/tags/Algorithms/" style="font-size: 10px;">Algorithms</a> <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/C/" style="font-size: 20px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 10px;">C.S.笔记</a> <a href="/tags/MIT/" style="font-size: 10px;">MIT</a>
   </div>
 </div>
 

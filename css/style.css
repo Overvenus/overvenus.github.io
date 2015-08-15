@@ -812,7 +812,7 @@ pre .deletion {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  background-image: url("/images/scrollup.png");
+  background-image: url("/asset/image/scrollup.png");
   opacity: 0.3;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
   filter: alpha(opacity=30);
