@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Few words about 6.828 | 铅笔迹</title>
+  <meta name="author" content="Neil Shen">
+  
+  <meta name="description" content="Recently I’ve been working on JOS, which is part of 6.828: Operating System Engineering. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Few words about 6.828"/>
+  <meta property="og:site_name" content="铅笔迹"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="铅笔迹" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjsnet.b0.upaiyun.com/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">铅笔迹</a></h1>
+  <h2><a href="/">Share Somthing Cool.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/me">Me</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-08-30T14:14:00.000Z"><a href="/2015/08/30/few_words_about_6_828/">2015-08-30</a></time>
+      
+      
+  
+    <h1 class="title">Few words about 6.828</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <!-- Table of Contents -->
+        
+          <div id="toc" class="toc-article">
+          <h1>TOC</h1>
+          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-828简介"><span class="toc-number">1.</span> <span class="toc-text">6.828简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#知新"><span class="toc-number">2.</span> <span class="toc-text">知新</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#寻找资料的正确姿势"><span class="toc-number">2.1.</span> <span class="toc-text">寻找资料的正确姿势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C_的黑魔法"><span class="toc-number">2.2.</span> <span class="toc-text">C 的黑魔法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#给结构体初始化时给指定成员赋值："><span class="toc-number">2.2.1.</span> <span class="toc-text">给结构体初始化时给指定成员赋值：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#跨源文件调用匿名结构体变量："><span class="toc-number">2.2.2.</span> <span class="toc-text">跨源文件调用匿名结构体变量：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#关键字_volatile"><span class="toc-number">2.2.3.</span> <span class="toc-text">关键字 volatile</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#指针与数组"><span class="toc-number">2.2.4.</span> <span class="toc-text">指针与数组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#杂项"><span class="toc-number">2.3.</span> <span class="toc-text">杂项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些资源"><span class="toc-number">3.</span> <span class="toc-text">一些资源</span></a></li></ol>
+          </div>
+        
+        <p>Recently I’ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
+<a id="more"></a>
+<h2 id="6-828简介">6.828简介</h2><p>好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了说有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。</p>
+<h2 id="知新">知新</h2><h3 id="寻找资料的正确姿势">寻找资料的正确姿势</h3><p>课程实验中有许多地方并没有说得很仔细，只有大概的意图，实现的细节需要你自己去查阅资料。比如说汇编里面的 <code>call</code> <code>ret</code> 对 <code>ESP``EBP``EIP</code>三个寄存器的影响，它指出了这两个指令于函数调用上、传递参数有关，然后它让你写一个栈回溯函数。<br>Google <code>ret call</code> 的第一个结果：<a href="http://www.c-jump.com/CIS77/ASM/Procedures/P77_0010_call_ret.htm" target="_blank" rel="external">CALL and RET Instructions</a></p>
+<blockquote>
+<p>CALL pushes the return address onto the stack and transfers control to a procedure.<br>RET pops the return address off the stack and returns control to that location.</p>
+</blockquote>
+<p>嗯，很好，把 <code>call</code> 和 <code>ret</code> 所干的事说了一下，但是太模糊了，比如说 return address 指向哪里，怎样来 transfers control ， pops the return address 到哪里？这些都没有说清楚。对于初学者来说，这个结果只能做参考，并不能直接拿来用。<br>后来经过一番查找后找到了图文并茂的资料。<a href="http://unixwiz.net/techtips/win32-callconv-asm.html" target="_blank" rel="external">Intel x86 Function-call Conventions - Assembly View</a> 其中 Calling a __cdecl function 那一节讲得很清楚:<br><img src="http://ww1.sinaimg.cn/large/7f793092gw1evo1wpue9bg20770cm3yd.gif" alt=""></p>
+<blockquote>
+<p>16(%ebp)    - third function parameter<br>12(%ebp)    - second function parameter<br>8(%ebp)    - first function parameter</p>
+</blockquote>
+<p>一图胜千言，函数调用，参数传递，<code>ESP``EBP``EIP</code>都给说明白了。对比一下前面引用的资料，完全符合。现在我们可以理解，为什么栈要从高向低生长，C 语言中参数为什么从右向左压入栈，函数内的本地变量占用的内存为什么不需要手动管理，这一切都是紧密相关的。</p>
+<h3 id="C_的黑魔法">C 的黑魔法</h3><p>C 语言作为入门课在大一上学期时就学了，教材是谭浩强的，他的书在网上被喷的狗血淋头，我也觉得这不是本好教材，借了本 B&amp;D 的 《The C Programming Language》，囫囵吞枣地看了一遍，指针、结构体、联合体、枚举等概念倒背如流，期末的时候拿了高分，自以为 C 学得还不错。现在想来，那时还是太年轻，操作系统里漫天的指针，结构体、联合体互相的嵌套更是少不了，各种神奇的写法见都没见过。下面来几个简单的例子：</p>
+<h4 id="给结构体初始化时给指定成员赋值：">给结构体初始化时给指定成员赋值：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> foo &#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">unsigned</span> u;</span><br><span class="line">    <span class="keyword">char</span> *str;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bar</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *s = <span class="string">"Hello!"</span>;</span><br><span class="line">    <span class="keyword">struct</span> foo f = &#123;</span><br><span class="line">        .str = s;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="跨源文件调用匿名结构体变量：">跨源文件调用匿名结构体变量：</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义在 a.c 中</span></span><br><span class="line"><span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">unsigned</span> us[<span class="number">99</span>];</span><br><span class="line">&#125; foo;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 b.c 中</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">unsigned</span> us[<span class="number">99</span>];</span><br><span class="line">&#125; foo;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bar</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, foo.i);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="关键字_volatile">关键字 volatile</h4><blockquote>
+<p>the volatile keyword indicates that a value may change between different accesses, even if it does not appear to be modified. This keyword prevents an optimizing compiler from optimizing away subsequent reads or writes and thus incorrectly reusing a stale value or omitting writes.    — <a href="https://en.wikipedia.org/wiki/Volatile_(computer_programming" target="_blank" rel="external">Wikipedia</a>)</p>
+</blockquote>
+<p>引用指出 volatile 是为了防止编译“优化”对该变量的一系列读写操作。上面抛出一大段结论，还是挺令人疑惑的。什么叫 may change between different accesses， 什么叫 optimizing away subsequent reads or writes？这一切用“底层“的汇编来解释反而容易。<br><a href="/asset/code/v_int.c">带有 volatile</a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// volatile_int.c</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">int</span> foo;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 总计4次对 foo 的操作</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    foo = <span class="number">0xff</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, foo);</span><br><span class="line">    foo = <span class="number">0xff</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, foo);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译</span></span><br><span class="line">$ gcc -O1 volatile_int.c -o volatile_int</span><br><span class="line"><span class="comment"># 查看汇编</span></span><br><span class="line">$ objdump -S volatile_int &gt; v.asm</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">000000000040055d &#60;main&#62;:&#10;  40055d:&#9;48 83 ec 08          &#9;sub    $0x8,%rsp&#10;  400561:&#9;c7 05 d9 0a 20 00 ff &#9;movl   $0xff,0x200ad9(%rip)        # 601044 &#60;foo&#62;&#10;  400568:&#9;00 00 00 &#10;  40056b:&#9;8b 15 d3 0a 20 00    &#9;mov    0x200ad3(%rip),%edx        # 601044 &#60;foo&#62;&#10;  400571:&#9;be 34 06 40 00       &#9;mov    $0x400634,%esi&#10;  400576:&#9;bf 01 00 00 00       &#9;mov    $0x1,%edi&#10;  40057b:&#9;b8 00 00 00 00       &#9;mov    $0x0,%eax&#10;  400580:&#9;e8 db fe ff ff       &#9;callq  400460 &#60;__printf_chk@plt&#62;&#10;  400585:&#9;c7 05 b5 0a 20 00 ff &#9;movl   $0xff,0x200ab5(%rip)        # 601044 &#60;foo&#62;&#10;  40058c:&#9;00 00 00 &#10;  40058f:&#9;8b 15 af 0a 20 00    &#9;mov    0x200aaf(%rip),%edx        # 601044 &#60;foo&#62;&#10;  400595:&#9;be 34 06 40 00       &#9;mov    $0x400634,%esi&#10;  40059a:&#9;bf 01 00 00 00       &#9;mov    $0x1,%edi&#10;  40059f:&#9;b8 00 00 00 00       &#9;mov    $0x0,%eax&#10;  4005a4:&#9;e8 b7 fe ff ff       &#9;callq  400460 &#60;__printf_chk@plt&#62;&#10;  4005a9:&#9;48 83 c4 08          &#9;add    $0x8,%rsp&#10;  4005ad:&#9;c3                   &#9;retq   &#10;  4005ae:&#9;66 90                &#9;xchg   %ax,%ax</span><br></pre></td></tr></table></figure>
+<p><a href="/asset/code/nv_int.c">不带 volatile</a><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">000000000040055d &#60;main&#62;:&#10;  40055d:&#9;48 83 ec 08          &#9;sub    $0x8,%rsp&#10;  400561:&#9;c7 05 d9 0a 20 00 ff &#9;movl   $0xff,0x200ad9(%rip)        # 601044 &#60;foo&#62;&#10;  400568:&#9;00 00 00 &#10;  40056b:&#9;ba ff 00 00 00       &#9;mov    $0xff,%edx&#10;  400570:&#9;be 34 06 40 00       &#9;mov    $0x400634,%esi&#10;  400575:&#9;bf 01 00 00 00       &#9;mov    $0x1,%edi&#10;  40057a:&#9;b8 00 00 00 00       &#9;mov    $0x0,%eax&#10;  40057f:&#9;e8 dc fe ff ff       &#9;callq  400460 &#60;__printf_chk@plt&#62;&#10;  400584:&#9;c7 05 b6 0a 20 00 ff &#9;movl   $0xff,0x200ab6(%rip)        # 601044 &#60;foo&#62;&#10;  40058b:&#9;00 00 00 &#10;  40058e:&#9;ba ff 00 00 00       &#9;mov    $0xff,%edx&#10;  400593:&#9;be 34 06 40 00       &#9;mov    $0x400634,%esi&#10;  400598:&#9;bf 01 00 00 00       &#9;mov    $0x1,%edi&#10;  40059d:&#9;b8 00 00 00 00       &#9;mov    $0x0,%eax&#10;  4005a2:&#9;e8 b9 fe ff ff       &#9;callq  400460 &#60;__printf_chk@plt&#62;&#10;  4005a7:&#9;48 83 c4 08          &#9;add    $0x8,%rsp&#10;  4005ab:&#9;c3                   &#9;retq   &#10;  4005ac:&#9;0f 1f 40 00          &#9;nopl   0x0(%rax)</span><br></pre></td></tr></table></figure></p>
+<p>对比可见，带有 volatile 的对 foo 有四次操作，而不带的只有 2 次，从这个例子可以看出一些端倪， volatile 确保了 C 源码中每次对 foo 的操作都是直接对 foo 内存地址的操作。</p>
+<h4 id="指针与数组">指针与数组</h4><p>用伪码来简述一下两者的关系。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">char *pc = <span class="number">0</span>；</span><br><span class="line">int *<span class="constant">pi</span> = <span class="number">0</span>;</span><br><span class="line">int ai[<span class="number">5</span>] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"></span><br><span class="line">(pc += <span class="number">1</span>) == <span class="number">1</span> <span class="keyword">is</span> <span class="constant">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (sizeof(int) == <span class="number">4</span>)</span><br><span class="line">    <span class="keyword">then</span> <span class="constant">pi</span> + <span class="number">1</span> == <span class="number">4</span> <span class="keyword">is</span> <span class="constant">true</span>; ((int *)pc) + <span class="number">1</span> == <span class="number">5</span> <span class="keyword">is</span> <span class="constant">true</span>;</span><br><span class="line"></span><br><span class="line">*ai == <span class="number">0</span> <span class="keyword">is</span> <span class="constant">true</span></span><br><span class="line"></span><br><span class="line"><span class="constant">pi</span> = ai</span><br><span class="line">    <span class="keyword">then</span> *<span class="constant">pi</span> == <span class="number">0</span>, <span class="constant">pi</span>[<span class="number">1</span>] == <span class="number">1</span>, <span class="constant">pi</span>[<span class="number">4</span>] == <span class="number">4</span> are <span class="constant">true</span>;</span><br></pre></td></tr></table></figure>
+<p>自从学了6.828后，指针再也不是洪水猛兽，自以为余已达收发自如的境界。</p>
+<h3 id="杂项">杂项</h3><p>对各种计算机术语有了新的认识：process、thread、stub、trap、caller、callee、coroutine等等。<br>各种命令：man、git、make、gcc、objdump等等。特别是man，我还是第一次知道，man还能当编程手册，查看函数的用法。<br>理论与实践之间的差异，工程上的权衡于妥协。</p>
+<h2 id="一些资源">一些资源</h2><p><a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">官方网站</a><br><a href="https://www.youtube.com/playlist?list=PLfciLKR3SgqNJKKIKUliWoNBBH1VHL3AP" target="_blank" rel="external">课程视频</a><br><a href="https://bitbucket.org/overvenus/jos/" target="_blank" rel="external">我的 JOS (已完成lab1～5，lab6还在编写中)</a></p>
+<p>最后，再次感谢 MIT 的教师职员们，并以一张 JOS 靓照结尾。</p>
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1evohw0nih7j20k00bw75r.jpg" alt=""></p>
+<p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/C-S-笔记/">C.S.笔记</a>, <a href="/tags/MIT/">MIT</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:overvenus.gitcafe.io">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Algorithms/" style="font-size: 10px;">Algorithms</a> <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/C/" style="font-size: 20px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 20px;">C.S.笔记</a> <a href="/tags/Career/" style="font-size: 10px;">Career</a> <a href="/tags/MIT/" style="font-size: 20px;">MIT</a>
+  </div>
+</div>
+
+
+  <iframe width="100%" height="110" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=110&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=1&isWeibo=0&isFans=0&uid=2138648722&verifier=045e79b4&dpc=1"></iframe>
+
+  <div class="widget widget-toc" style="display: none">
+  <h3 class="title">文章目录</h3>
+  <div class="container" style="padding: 15px 20px;">
+  </div>
+</div>
+<script src="/js/toc.js" type="text/javascript"></script>
+
+  <div class="scrollup"></div>
+
+<script src="/js/scrollup.js" type="text/javascript"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Neil Shen
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'overvenus';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
