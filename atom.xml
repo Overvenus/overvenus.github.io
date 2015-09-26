@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share Somthing Cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://overvenus.gitcafe.io/"/>
-  <updated>2015-09-21T15:11:04.000Z</updated>
+  <updated>2015-09-26T03:17:44.000Z</updated>
   <id>http://overvenus.gitcafe.io/</id>
   
   <author>
@@ -13,6 +13,90 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[ReadingFragment Structured Computer Organization]]></title>
+    <link href="http://overvenus.gitcafe.io/2015/09/21/fragment_structured_Computer_Organization/"/>
+    <id>http://overvenus.gitcafe.io/2015/09/21/fragment_structured_Computer_Organization/</id>
+    <published>2015-09-21T11:44:00.000Z</published>
+    <updated>2015-09-26T03:17:44.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Parallelism_in_Computer_Organization">Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics — the speed of light and memory becomes the bottleneck of computer.</p>
+<h2 id="Parallelism_in_CPU">Parallelism in CPU</h2><ul>
+<li>Pipeline<ul>
+<li>Sinlge pipeline</li>
+<li>Mutli-pipeline</li>
+<li>Superscalar pipeline</li>
+</ul>
+</li>
+<li>Array Computers, single control unit and a array of processor.</li>
+<li>Multiprocessors, multiple CPUs shared with one common  main memory, and communicate through BUS.</li>
+</ul>
+<h2 id="Parallelism_in_Memory">Parallelism in Memory</h2><ul>
+<li>Modern CPUs has it’s own private memory, cache.</li>
+<li>Redundant Array of Inexpensive Disk(RAID), there are 5 level of RAID. I will be surprised if one system supports all 5 level RAID, especially level 2 and 3 ;-)<ul>
+<li>Level 0, strips data(typically, a sector) over disks in round robin fashion. No backups.</li>
+<li>Level 1, make an additional redundant backup of level 0.</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<h1 id="IJVM">IJVM</h1><p><strong>IJVM</strong> is short for <em>Integer instructions only Java Virtual Machine</em>.</p>
+<h2 id="IJVM_Memory_Model">IJVM Memory Model</h2><p>It looks like IJVM has a set of different stack operations compares with other machines. IJVM instructions can access memory only by indexing from some special registers. CPP, LV and SP point to word(4 bytes).</p>
+<ul>
+<li>The constant pool, addressing by CPP, it is loaded when the program is brought into memory and read-only afterward.</li>
+<li>The Local variable frame, addressing by LV.</li>
+<li>The operand stack, addressing by SP. Push and pop actions take place in this stack.</li>
+<li>The method area, consider as the “TEXT” area in UNIX’s memory, addressing by PC. The first 2 byte indicating the number of parameters for the method, the second 2 bytes indicating the size of the local variables, opcode begins at the 5th byte.</li>
+</ul>
+<h2 id="IJVM_method_invocation">IJVM method invocation</h2><p>Instead of using <code>CALL</code> instraction, JVM use <code>INVOKEVIRTUAL</code>. Below is a brief explanation of method invocation(highly recommad reading <a href="http://users.cis.fiu.edu/~prabakar/cda4101/Common/notes/lecture20.html" target="_blank" rel="external">CDA-4101 Lecture 20 Notes</a>)</p>
+<ol>
+<li>Push <code>PC</code>, <code>LV</code>, <code>OBJREF</code>(reference of the method’s object) and parameters into Local variable frame.</li>
+<li>Build a new Local variable frame, the size of the new frame are determined by the second 2 bytes reading from The method area, and stores the caller’s PC ans LV in the top of the new frame. Replace <code>OBJREF</code> with <code>Link ptr</code> which points to the caller’s PC. Now <code>LV</code> points to <code>Link ptr</code> and <code>SP</code> points to caller’s LV.</li>
+<li><code>PC</code> points to 5th byte in the method area.</li>
+<li>Mark the new local variables frame as the current frame by seting <code>LV</code> with the address of <code>OBJREF</code>.</li>
+</ol>
+<p>After the method is done, the return value will be stored in <code>OBJREF</code> (<code>Link ptr</code>).</p>
+<h2 id="Some_Qs_about_JVM">Some Qs about JVM</h2><ol>
+<li>Give the Java statement that produced the following IJVM code:<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ILOAD <span class="literal">j</span></span><br><span class="line">ILOAD <span class="keyword">n</span></span><br><span class="line">ISUB</span><br><span class="line">BIPUSH 7</span><br><span class="line">ISUB</span><br><span class="line">DUP</span><br><span class="line">IADD</span><br><span class="line">ISTORE <span class="literal">i</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>A: <code>i = (j - n - 7) x 2;</code></p>
+<ol>
+<li>The JVM <code>INVOKEVIRTUAL</code> instruction needs to know how many parameters it has. Why?</li>
+</ol>
+<p>A: Old <code>PC</code> and <code>LV</code> will be stored on address of the top of local variables which will be computed by adding the size of local variables and <strong>parameters</strong>.</p>
+<h1 id="Intel_Core_i7">Intel Core i7</h1><p>Core i7 is a CPU with CISC outside and RISC inside. In side the chip, there is a decoder which build a bridge between CISC instructions and RISC data path.</p>
+<h1 id="Ref-">Ref.</h1><blockquote>
+<p>Structured Computer Organization(6th Edition) by Andrew S. Tanenbaum<br><a href="http://users.cis.fiu.edu/~prabakar/cda4101/Common/notes/lecture20.html" target="_blank" rel="external">CDA-4101 Lecture 20 Notes</a></p>
+</blockquote>
+<p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Parallelism_in_Computer_Organization">Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics — the speed of light and memory becomes the bottleneck of computer.</p>
+<h2 id="Parallelism_in_CPU">Parallelism in CPU</h2><ul>
+<li>Pipeline<ul>
+<li>Sinlge pipeline</li>
+<li>Mutli-pipeline</li>
+<li>Superscalar pipeline</li>
+</ul>
+</li>
+<li>Array Computers, single control unit and a array of processor.</li>
+<li>Multiprocessors, multiple CPUs shared with one common  main memory, and communicate through BUS.</li>
+</ul>
+<h2 id="Parallelism_in_Memory">Parallelism in Memory</h2><ul>
+<li>Modern CPUs has it’s own private memory, cache.</li>
+<li>Redundant Array of Inexpensive Disk(RAID), there are 5 level of RAID. I will be surprised if one system supports all 5 level RAID, especially level 2 and 3 ;-)<ul>
+<li>Level 0, strips data(typically, a sector) over disks in round robin fashion. No backups.</li>
+<li>Level 1, make an additional redundant backup of level 0.</li>
+</ul>
+</li>
+</ul>]]>
+    
+    </summary>
+    
+      <category term="Reading" scheme="http://overvenus.gitcafe.io/tags/Reading/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[jupyter-core 4.0.6 的发布]]></title>
