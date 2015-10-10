@@ -51,6 +51,50 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-10-08T14:03:00.000Z"><a href="/2015/10/08/golang_note/">2015-10-08</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/08/golang_note/">Go Note -- memory</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <!--
+TODO:
+   - ...
+-->
+<h1 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h1><p>In short: new allocates memory, make initializes the slice, map, and channel types, and Local variable may be not <em>local</em> at all.</p>
+<blockquote>
+<p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
+<p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).  </p>
+<p>Local variable: unlike in C, it’s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., <code>return &amp;File{fd: fd, name: name}</code>)<br> — <a href="https://golang.org/doc/effective_go.html#allocation_new">Effective GO#allocation_new</a><br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/08/golang_note/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-09-21T11:44:00.000Z"><a href="/2015/09/21/fragment_structured_Computer_Organization/">2015-09-21</a></time>
       
       
@@ -387,7 +431,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Algorithms/" style="font-size: 10px;">Algorithms</a> <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/C/" style="font-size: 20px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 20px;">C.S.笔记</a> <a href="/tags/Career/" style="font-size: 10px;">Career</a> <a href="/tags/MIT/" style="font-size: 20px;">MIT</a> <a href="/tags/Reading/" style="font-size: 10px;">Reading</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/python/" style="font-size: 10px;">python</a>
+    <a href="/tags/Algorithms/" style="font-size: 10px;">Algorithms</a> <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/C/" style="font-size: 20px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 20px;">C.S.笔记</a> <a href="/tags/Career/" style="font-size: 10px;">Career</a> <a href="/tags/Go/" style="font-size: 10px;">Go</a> <a href="/tags/MIT/" style="font-size: 20px;">MIT</a> <a href="/tags/Reading/" style="font-size: 10px;">Reading</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/python/" style="font-size: 10px;">python</a>
   </div>
 </div>
 
