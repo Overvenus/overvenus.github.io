@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Go Note -- memory | Neil</title>
+  <title>Go Note | 铅笔迹</title>
   <meta name="author" content="Neil Shen">
   
   <meta name="description" content="&lt;!--
@@ -19,15 +19,15 @@ Local variable: unlike in C, it’s perfectly OK to return the address of a loca
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Go Note -- memory"/>
-  <meta property="og:site_name" content="Neil"/>
+  <meta property="og:title" content="Go Note"/>
+  <meta property="og:site_name" content="铅笔迹"/>
 
   
     <meta property="og:image" content="undefined"/>
   
 
   <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="铅笔迹" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//cdnjsnet.b0.upaiyun.com/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
   
@@ -37,7 +37,7 @@ Local variable: unlike in C, it’s perfectly OK to return the address of a loca
 
 <body>
   <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">Neil</a></h1>
+  <h1><a href="/">铅笔迹</a></h1>
   <h2><a href="/">Share Somthing Cool.</a></h2>
 </div>
 <nav id="main-nav" class="alignright">
@@ -64,7 +64,7 @@ Local variable: unlike in C, it’s perfectly OK to return the address of a loca
       
       
   
-    <h1 class="title">Go Note -- memory</h1>
+    <h1 class="title">Go Note</h1>
   
 
     </header>
@@ -74,31 +74,56 @@ Local variable: unlike in C, it’s perfectly OK to return the address of a loca
         
           <div id="toc" class="toc-article">
           <h1>TOC</h1>
-          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#new,_make_and_Local_variable"><span class="toc-number">1.</span> <span class="toc-text">new, make and Local variable</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Stack_or_Heap?"><span class="toc-number">2.</span> <span class="toc-text">Stack or Heap?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Happen_before_and_Channel"><span class="toc-number">3.</span> <span class="toc-text">Happen before and Channel</span></a></li></ol>
+          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#new,_make_and_Local_variable"><span class="toc-number">1.</span> <span class="toc-text">new, make and Local variable</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stack_or_Heap?"><span class="toc-number">2.</span> <span class="toc-text">Stack or Heap?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Happen_before_and_Channel"><span class="toc-number">3.</span> <span class="toc-text">Happen before and Channel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Concurrency"><span class="toc-number">4.</span> <span class="toc-text">Concurrency</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#main_exits"><span class="toc-number">4.1.</span> <span class="toc-text">main exits</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generator_in_Go"><span class="toc-number">4.2.</span> <span class="toc-text">Generator in Go</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tricky_Keyword,_select"><span class="toc-number">4.3.</span> <span class="toc-text">Tricky Keyword, select</span></a></li></ol></li></ol>
           </div>
         
         <!--
 TODO:
    - ...
 -->
-<h1 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h1><p>In short: new allocates memory, make initializes the slice, map, and channel types, and Local variable may be not <em>local</em> at all.</p>
+<h2 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory, make initializes the slice, map, and channel types, and Local variable may be not <em>local</em> at all.</p>
 <blockquote>
 <p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
 <p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).  </p>
 <p>Local variable: unlike in C, it’s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., <code>return &amp;File{fd: fd, name: name}</code>)<br> — <a href="https://golang.org/doc/effective_go.html#allocation_new" target="_blank" rel="external">Effective GO#allocation_new</a><br><a id="more"></a></p>
 </blockquote>
-<h1 id="Stack_or_Heap?">Stack or Heap?</h1><p><a href="https://golang.org/doc/faq#stack_or_heap" target="_blank" rel="external">Golang FAQ#stackheap</a><br><strong>How do I know whether a variable is allocated on the heap or the stack?</strong></p>
+<h2 id="Stack_or_Heap?">Stack or Heap?</h2><p><a href="https://golang.org/doc/faq#stack_or_heap" target="_blank" rel="external">Golang FAQ#stackheap</a><br><strong>How do I know whether a variable is allocated on the heap or the stack?</strong></p>
 <p>From a correctness standpoint, you don’t need to know. Each variable in Go exists as long as there are <em>references</em> to it. The storage location chosen by the implementation is irrelevant to the semantics of the language.</p>
 <p>The storage location does have an effect on writing efficient programs. When possible, the Go compilers will allocate variables that are local to a function in that function’s stack frame. However, if the compiler cannot prove that the variable is not referenced after the function returns, then the compiler must allocate the variable on the garbage-collected heap to avoid dangling pointer errors. Also, if a local variable is very large, it might make more sense to store it on the heap rather than the stack.</p>
 <p>In the current compilers, if a variable has its address taken, that variable is a candidate for allocation on the heap. However, a basic escape analysis recognizes some cases when such variables will not live past the return from the function and can reside on the stack.</p>
 <p>An excellence talk about stack and heap of Go. <a href="http://dave.cheney.net/2014/06/07/five-things-that-make-go-fast" target="_blank" rel="external">Five things that make Go fast</a></p>
-<h1 id="Happen_before_and_Channel">Happen before and Channel</h1><p><a href="https://golang.org/ref/mem#tmp_7" target="_blank" rel="external">Golang Memory Model#channel</a></p>
+<h2 id="Happen_before_and_Channel">Happen before and Channel</h2><p><a href="https://golang.org/ref/mem#tmp_7" target="_blank" rel="external">Golang Memory Model#channel</a></p>
 <blockquote>
 <p>A send on a channel happens before the corresponding receive from that channel completes.</p>
 </blockquote>
 <p>An interesting case where <em>Happen Before</em> will take place.</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> c = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line"><span class="keyword">var</span> a <span class="typename">string</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> f() &#123;</span><br><span class="line">    a = <span class="string">"hello, world"</span></span><br><span class="line">    &lt;-c</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">go</span> f()</span><br><span class="line">    c &lt;- <span class="number">0</span></span><br><span class="line">    <span class="built_in">print</span>(a)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>This snippet guarantes to print “hello, world”. The write to a happens before the receive on c, which happens before the corresponding send on c completes, which happens before the print.<br>If the channel were buffered (e.g., <code>c = make(chan int, 1)</code>) then the program would not be guaranteed to print “hello, world”. (It might print the empty string, crash, or do something else.)</p>
+<h2 id="Concurrency">Concurrency</h2><p><a href="https://talks.golang.org/2012/concurrency.slide" target="_blank" rel="external">Go Concurrency Patterns</a></p>
+<h3 id="main_exits"><code>main</code> exits</h3><blockquote>
+<p>When the main returns, the programm goes away.<br>       — <a href="https://youtu.be/f6kdp27TYZs?t=7m46s" target="_blank" rel="external">Rob Pike#main_exit</a></p>
+</blockquote>
+<p>It confused me for long time, now I get a concrete answer.</p>
+<h3 id="Generator_in_Go">Generator in Go</h3><blockquote>
+<p>Generator: function that returns a channel.<br>Channels are first-class values, just like strings or integers.</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"time"</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"math/rand"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="comment">// Python-like usage</span></span><br><span class="line">    <span class="keyword">for</span> s := <span class="keyword">range</span> boring(<span class="string">"generator"</span>) &#123;</span><br><span class="line">        fmt.Println(s)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Println(<span class="string">"func main exits"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ### Generator ###</span></span><br><span class="line"><span class="keyword">func</span> boring(msg <span class="typename">string</span>) &lt;-<span class="keyword">chan</span> <span class="typename">string</span> &#123; <span class="comment">// Returns receive-only channel of strings.</span></span><br><span class="line">    c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">string</span>)</span><br><span class="line">    <span class="keyword">go</span> <span class="keyword">func</span>() &#123; <span class="comment">// We launch the goroutine from inside the function.</span></span><br><span class="line">        <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">            c &lt;- fmt.Sprintf(<span class="string">"%s %d"</span>, msg, i)</span><br><span class="line">            time.Sleep(time.Duration(rand.Intn(<span class="number">1e3</span>)) * time.Millisecond)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">close</span>(c) <span class="comment">// close channel c, otherwise for-range will be blocked.</span></span><br><span class="line">    &#125;()</span><br><span class="line">    <span class="keyword">return</span> c <span class="comment">// Return the channel to the caller.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Unlike <strong>Generator</strong> in Python, the concept in Go is simple: <em>Generator: function that returns a channel</em>.</p>
+<ul>
+<li>Python Generator: generators data in time.</li>
+<li>Go Generator: return a channel, reveives data in time.</li>
+</ul>
+<h3 id="Tricky_Keyword,_select">Tricky Keyword, <code>select</code></h3><blockquote>
+<p>Select<br>The select statement provides another way to handle multiple channels.<br>It’s like a switch, but each case is a communication: </p>
+<ul>
+<li>All channels are evaluated. </li>
+<li>Selection blocks until one communication can proceed, which then does. </li>
+<li>If multiple can proceed, select chooses pseudo-randomly. </li>
+<li>A default clause, if present, executes immediately if no channel is ready.</li>
+</ul>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> v1 := &lt;-c1:</span><br><span class="line">        fmt.Printf(<span class="string">"received %v from c1\n"</span>, v1)</span><br><span class="line">    <span class="keyword">case</span> v2 := &lt;-c2:</span><br><span class="line">        fmt.Printf(<span class="string">"received %v from c2\n"</span>, v1)</span><br><span class="line">    <span class="keyword">case</span> c3 &lt;- <span class="number">23</span>:</span><br><span class="line">        fmt.Printf(<span class="string">"sent %v to c3\n"</span>, <span class="number">23</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        fmt.Printf(<span class="string">"no one was ready to communicate\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Select with <strong>default</strong> is a non-blocking statement, even if no other case can be processed. Without <strong>default</strong>, select block forever if no other case can be processed.</p>
 <p>END.</p>
 
       

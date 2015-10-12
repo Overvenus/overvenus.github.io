@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Neil</title>
+  <title>铅笔迹</title>
   <meta name="author" content="Neil Shen">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-  <meta property="og:site_name" content="Neil"/>
+  <meta property="og:site_name" content="铅笔迹"/>
 
   
     <meta property="og:image" content="undefined"/>
   
 
   <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="铅笔迹" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//cdnjsnet.b0.upaiyun.com/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
   
@@ -27,7 +27,7 @@
 
 <body>
   <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">Neil</a></h1>
+  <h1><a href="/">铅笔迹</a></h1>
   <h2><a href="/">Share Somthing Cool.</a></h2>
 </div>
 <nav id="main-nav" class="alignright">
@@ -55,7 +55,7 @@
       
       
   
-    <h1 class="title"><a href="/2015/10/08/golang_note/">Go Note -- memory</a></h1>
+    <h1 class="title"><a href="/2015/10/08/golang_note/">Go Note</a></h1>
   
 
     </header>
@@ -65,7 +65,7 @@
 TODO:
    - ...
 -->
-<h1 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h1><p>In short: new allocates memory, make initializes the slice, map, and channel types, and Local variable may be not <em>local</em> at all.</p>
+<h2 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory, make initializes the slice, map, and channel types, and Local variable may be not <em>local</em> at all.</p>
 <blockquote>
 <p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
 <p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).  </p>
