@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title><![CDATA[铅笔迹]]></title>
+  <title><![CDATA[Neil]]></title>
   <subtitle><![CDATA[Share Somthing Cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://overvenus.gitcafe.io/"/>
-  <updated>2015-10-13T04:55:37.000Z</updated>
+  <updated>2015-10-17T07:57:42.000Z</updated>
   <id>http://overvenus.gitcafe.io/</id>
   
   <author>
@@ -19,12 +19,12 @@
     <link href="http://overvenus.gitcafe.io/2015/10/08/golang_note/"/>
     <id>http://overvenus.gitcafe.io/2015/10/08/golang_note/</id>
     <published>2015-10-08T14:03:00.000Z</published>
-    <updated>2015-10-13T04:55:37.000Z</updated>
+    <updated>2015-10-17T07:57:42.000Z</updated>
     <content type="html"><![CDATA[<!--
 TODO:
    - ...
 -->
-<h2 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory, make initializes the slice, map, and channel types, and Local variable may be not <em>local</em> at all.</p>
+<h2 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory; make initializes the slice, map, and channel types; local variable may be not <em>local</em> at all.</p>
 <blockquote>
 <p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
 <p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).  </p>
@@ -75,7 +75,7 @@ TODO:
 TODO:
    - ...
 -->
-<h2 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory, make initializes the slice, map, and channel types, and Local variable may be not <em>local</em> at all.</p>
+<h2 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory; make initializes the slice, map, and channel types; local variable may be not <em>local</em> at all.</p>
 <blockquote>
 <p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
 <p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).  </p>
