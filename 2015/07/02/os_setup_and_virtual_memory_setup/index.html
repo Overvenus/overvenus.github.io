@@ -1,77 +1,253 @@
-<!DOCTYPE HTML>
-<html>
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
 <head>
-  <meta charset="utf-8">
-  
-  <title>内核的启动和建立虚拟内存 | Neil</title>
-  <meta name="author" content="Neil Shen">
-  
-  <meta name="description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
-MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。MMU在计算机启动初期是不工作的，只有寄存器cr0中的flag打开，它才会工作。
-本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。先祭出一张神图，这张图生动形象的说明了MMU的工作流程：">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-  <meta property="og:title" content="内核的启动和建立虚拟内存"/>
-  <meta property="og:site_name" content="Neil"/>
-
-  
-    <meta property="og:image" content="undefined"/>
   
 
-  <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <!--[if lt IE 9]><script src="//cdnjsnet.b0.upaiyun.com/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   
 
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="As I learn, I do. As I do, I learn." />
+
+
+
+  <meta name="keywords" content="C,C.S.笔记,MIT," />
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml" />
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
+
+
+<meta name="description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
+MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内核的启动和建立虚拟内存">
+<meta property="og:url" content="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/index.html">
+<meta property="og:site_name" content="Neil">
+<meta property="og:description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
+MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg">
+<meta property="og:updated_time" content="2015-10-26T09:33:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="内核的启动和建立虚拟内存">
+<meta name="twitter:description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
+MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> 内核的启动和建立虚拟内存 | Neil </title>
 </head>
 
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-<body>
-  <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">Neil</a></h1>
-  <h2><a href="/">Share Somthing Cool.</a></h2>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Neil</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Share something cool.</p>
 </div>
-<nav id="main-nav" class="alignright">
-  <ul>
-    
-      <li><a href="/">Home</a></li>
-    
-      <li><a href="/archives">Archives</a></li>
-    
-      <li><a href="/me">Me</a></li>
-    
-  </ul>
-  <div class="clearfix"></div>
-</nav>
-<div class="clearfix"></div></header>
-  <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-07-02T10:02:00.000Z"><a href="/2015/07/02/os_setup_and_virtual_memory_setup/">2015-07-02</a></time>
-      
-      
-  
-    <h1 class="title">内核的启动和建立虚拟内存</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
   
 
-    </header>
-    <div class="entry">
+  
+    <ul id="menu" class="menu ">
       
-        <!-- Table of Contents -->
         
-          <div id="toc" class="toc-article">
-          <h1>TOC</h1>
-          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MMU的工作机制"><span class="toc-number">2.</span> <span class="toc-text">MMU的工作机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BootLoader_到内核"><span class="toc-number">3.</span> <span class="toc-text">BootLoader 到内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内核初期的内存映射"><span class="toc-number">4.</span> <span class="toc-text">内核初期的内存映射</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#开启_MMU"><span class="toc-number">4.1.</span> <span class="toc-text">开启 MMU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#工作在虚拟地址"><span class="toc-number">4.2.</span> <span class="toc-text">工作在虚拟地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内核的结构"><span class="toc-number">4.3.</span> <span class="toc-text">内核的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内核建立虚拟内存"><span class="toc-number">4.4.</span> <span class="toc-text">内核建立虚拟内存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
-          </div>
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
         
-        <h2 id="引言">引言</h2><p>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf" target="_blank" rel="external">The UNIX Time-Sharing System</a>。</p>
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                内核的启动和建立虚拟内存
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-02T18:02:00+08:00" content="2015-07-02">
+              2015-07-02
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/07/02/os_setup_and_virtual_memory_setup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="引言">引言</h2><p>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf" target="_blank" rel="external">The UNIX Time-Sharing System</a>。</p>
 <h2 id="MMU的工作机制">MMU的工作机制</h2><p><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。<br><code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
 <p>本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。<br>先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：<br><a id="more"></a><br><img src="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg" alt=""><br>术语说明：</p>
 <blockquote>
@@ -140,103 +316,476 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 <p>完整的 pmap.c 文件在<a href="/asset/code/pmap.c">这可以获取</a>，里面有比较完整的注释。</p>
 <h2 id="总结">总结</h2><p>JOS 内核一启动就开启<code>MMU</code>，用的<code>page directory</code>是手写的预先编译在内核中的。之后再建立一个新的<code>page directory</code>，这个<code>page directory</code>是可以动态增加减少记录的，此时 JOS 内存的初始化算是完成了。</p>
 <p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
-
+</span>
       
     </div>
-    <footer>
-      
-        
-        
-  
-  <div class="tags">
-    <a href="/tags/C/">C</a>, <a href="/tags/C-S-笔记/">C.S.笔记</a>, <a href="/tags/MIT/">MIT</a>
-  </div>
 
-        
+    <footer class="post-footer">
       
-      <div class="clearfix"></div>
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag">#C</a>
+          
+            <a href="/tags/C-S-笔记/" rel="tag">#C.S.笔记</a>
+          
+            <a href="/tags/MIT/" rel="tag">#MIT</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/06/29/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/04/goto_and_topological_sorting/" rel="prev" title="GOTO与拓扑排序">
+                GOTO与拓扑排序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
     </footer>
-  </div>
-</article>
+  </article>
 
 
-<section id="comment">
-  <h1 class="title">留言</h1>
 
-  
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-  </div>
-  
-</section>
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/"
+     data-title="内核的启动和建立虚拟内存"
+     data-content=""
+     data-url="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
 
-</div></div>
-    <aside id="sidebar" class="alignright">
-  <div class="search">
-  <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="搜索">
-    <input type="hidden" name="q" value="site:neilsh.me">
-  </form>
-</div>
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
 
-  
-
-  
-<div class="widget tagcloud">
-  <h3 class="title">标签云</h3>
-  <div class="entry">
-    <a href="/tags/Algorithms/" style="font-size: 15px;">Algorithms</a> <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/C/" style="font-size: 15px;">C</a> <a href="/tags/C-S-笔记/" style="font-size: 20px;">C.S.笔记</a> <a href="/tags/Career/" style="font-size: 10px;">Career</a> <a href="/tags/Go/" style="font-size: 10px;">Go</a> <a href="/tags/MIT/" style="font-size: 15px;">MIT</a> <a href="/tags/Reading/" style="font-size: 10px;">Reading</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/python/" style="font-size: 10px;">python</a>
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
   </div>
 </div>
-
-
-  <iframe width="100%" height="110" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=110&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=1&isWeibo=0&isFans=0&uid=2138648722&verifier=045e79b4&dpc=1"></iframe>
-
-  <div class="widget widget-toc" style="display: none">
-  <h3 class="title">文章目录</h3>
-  <div class="container" style="padding: 15px 20px;">
+      
+    </div>
   </div>
-</div>
-<script src="/js/toc.js" type="text/javascript"></script>
 
-  <div class="scrollup"></div>
+ </div>
 
-<script src="/js/scrollup.js" type="text/javascript"></script>
-</aside>
-    <div class="clearfix"></div>
+        
+
+        
+          <div class="comments" id="comments">
+            
+              <div class="ds-thread" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/"
+                   data-title="内核的启动和建立虚拟内存" data-url="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/">
+              </div>
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
   </div>
-  <footer id="footer" class="inner"><div class="alignleft">
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Neil Shen</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">As I learn, I do. As I do, I learn.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Overvenus" target="_blank">
+                  <i class="fa fa-github fa-fw"></i> GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/idstn" target="_blank">
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MMU的工作机制"><span class="nav-number">2.</span> <span class="nav-text">MMU的工作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BootLoader_到内核"><span class="nav-number">3.</span> <span class="nav-text">BootLoader 到内核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内核初期的内存映射"><span class="nav-number">4.</span> <span class="nav-text">内核初期的内存映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开启_MMU"><span class="nav-number">4.1.</span> <span class="nav-text">开启 MMU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工作在虚拟地址"><span class="nav-number">4.2.</span> <span class="nav-text">工作在虚拟地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核的结构"><span class="nav-number">4.3.</span> <span class="nav-text">内核的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核建立虚拟内存"><span class="nav-number">4.4.</span> <span class="nav-text">内核建立虚拟内存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
   
-  &copy; 2015 Neil Shen
-  
+  &copy; 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Neil Shen</span>
 </div>
-<div class="clearfix"></div></footer>
-  <script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
 
 
-<script type="text/javascript">
-var disqus_shortname = 'overvenus';
+ </div>
+    </footer>
 
-(function(){
-  var dsq = document.createElement('script');
-  dsq.type = 'text/javascript';
-  dsq.async = true;
-  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-}());
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"neilsh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
+
+
+    
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
 </script>
 
 
 
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
-</script>
+  <script type="text/javascript">
+    $(document).ready(function () {
 
+      isMobile() && FastClick.attach(document.body);
+
+      // Define Motion Sequence.
+      motionIntegrator
+        .add(motionMiddleWares.logo)
+        .add(motionMiddleWares.menu)
+        .add(motionMiddleWares.backToTop)
+        .add(motionMiddleWares.postList)
+        .add(motionMiddleWares.sidebar);
+
+      // Bootstrap Motion.
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
 </body>
 </html>
