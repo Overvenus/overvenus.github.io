@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="Overvenus, Neil Shen, Blog, Programming, Software" />
+  <meta name="keywords" content="go," />
 
 
 
@@ -47,15 +47,22 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
 
 
-<meta name="description" content="It&apos;s now, or never.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Neil">
-<meta property="og:url" content="http://neilsh.me/index.html">
+<meta name="description" content="Where is the make implemention?package runtimeBy the way, new, map, slice, channel, goroutine and garbage collector1 are also implemented in this package.
+SlicesSource file: go/src/runtime/slice.go
+Da">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How does `make` work in go?">
+<meta property="og:url" content="http://neilsh.me/2015/11/09/make_map_slice_channel/index.html">
 <meta property="og:site_name" content="Neil">
-<meta property="og:description" content="It&apos;s now, or never.">
+<meta property="og:description" content="Where is the make implemention?package runtimeBy the way, new, map, slice, channel, goroutine and garbage collector1 are also implemented in this package.
+SlicesSource file: go/src/runtime/slice.go
+Da">
+<meta property="og:updated_time" content="2015-11-13T02:28:01.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Neil">
-<meta name="twitter:description" content="It&apos;s now, or never.">
+<meta name="twitter:title" content="How does `make` work in go?">
+<meta name="twitter:description" content="Where is the make implemention?package runtimeBy the way, new, map, slice, channel, goroutine and garbage collector1 are also implemented in this package.
+SlicesSource file: go/src/runtime/slice.go
+Da">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -67,7 +74,7 @@
 
 
 
-  <title> Neil </title>
+  <title> How does `make` work in go? | Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -98,9 +105,7 @@
 
 
 
-  <div class="container one-column 
-   page-home 
-">
+  <div class="container one-column page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -186,9 +191,9 @@
     <main id="main" class="main">
       <div class="main-inner">
         <div id="content" class="content"> 
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -204,9 +209,7 @@
             
             
               
-                <a class="post-title-link" href="/2015/11/09/make_map_slice_channel/" itemprop="url">
-                  How does `make` work in go?
-                </a>
+                How does `make` work in go?
               
             
           </h1>
@@ -246,10 +249,7 @@
       
 
       
-        
-          <span itemprop="articleBody">
-            
-              <h2 id="Where_is_the_make_implemention?">Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em><a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8" target="_blank" rel="external">1</a> are also implemented in this package.</p>
+        <span itemprop="articleBody"><h2 id="Where_is_the_make_implemention?">Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em><a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8" target="_blank" rel="external">1</a> are also implemented in this package.</p>
 <h2 id="Slices">Slices</h2><p>Source file: go/src/runtime/slice.go</p>
 <h3 id="Data_structure">Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>Underlying data structure of <strong>slice</strong> is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of <code>unsafe.Pointer</code></p>
@@ -280,411 +280,78 @@
 
 <h3 id="Output_in_my_Laptop">Output in my Laptop</h3><p>My laptop: Ubuntu 14.04 LTS, amd64</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go run make.go&#10;GOOS linux&#10;GOARCH amd64&#10;--- array &#38; slice ---&#10;si: type: [100]int&#10;si: sizeof: 800&#10;si: address 1st ele.: 0xc820062380&#10;---&#10;asi:    type: *[100]int&#10;asi:    sizeof: 8&#10;asi:    address: 0xc820062380&#10;asi:    address 1st ele.: 0xc820062380&#10;---&#10;si[:20]:    type: []int&#10;si[:20]:    sizeof: 24&#10;si[:20]:    address 1st ele.: 0xc820062380&#10;---&#10;si[:80]:    type: []int&#10;si[:80]:    sizeof: 24&#10;si[:80]:    address 1st ele.: 0xc820062380&#10;---&#10;assi:   type: *[]int&#10;assi:   sizeof: 8&#10;assi:   address: 0xc8200105e0&#10;--- map ---&#10;m:  type: map[int]int&#10;m:  sizeof: 8&#10;---&#10;am: type: *map[int]int&#10;am: sizeof: 8&#10;--- channel ---&#10;ci: type: chan int&#10;ci: sizeof: 8&#10;---&#10;aci:    type: *chan int&#10;aci:    sizeof: 8&#10;---&#10;ci: type: chan int&#10;ci: sizeof: 8&#10;---&#10;abci:   type: *chan int&#10;abci:   sizeof: 8</span><br></pre></td></tr></table></figure>
-
-            
-          </span>
-        
+</span>
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/10/23/protocol_and_fsm/" itemprop="url">
-                  Protocol and FSM
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-23T21:17:00+08:00" content="2015-10-23">
-              2015-10-23
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/go/" rel="tag">#go</a>
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/23/protocol_and_fsm/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/23/protocol_and_fsm/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
         </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
       
 
       
-        
-          <h2 id="Protocol">Protocol</h2><p>本文中 Protocol 特指通讯协议。<br>首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
-<blockquote>
-<p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  —<a href="https://en.wikipedia.org/wiki/Protocol">WIKI#Protocol</a></p>
-</blockquote>
-<p>简单的来说，协议是规范数据传输的一套规则。</p>
-<h2 id="Finite_State_Machines_(FSM)">Finite State Machines (FSM)</h2><p>下面是摘自 WIKI 的对有限状态机的说明：</p>
-<blockquote>
-<p>It is conceived as an abstract machine that can be in one of a finite number of states. The machine is in only one state at a time; the state it is in at any given time is called the current state. It can change from one state to another when initiated by a triggering event or condition; this is called a transition. A particular FSM is defined by a list of its states, and the triggering condition for each transition.    —<a href="https://en.wikipedia.org/wiki/Finite-state_machine">WIKI#FSM</a></p>
-</blockquote>
-<p>有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。<br>有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/10/23/protocol_and_fsm/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/23/protocol_and_fsm/" rel="next" title="Protocol and FSM">
+                <i class="fa fa-chevron-left"></i> Protocol and FSM
+              </a>
+            
           </div>
-        
-      
-    </div>
 
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                <a class="post-title-link" href="/2015/10/08/golang_note/" itemprop="url">
-                  Go Note
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-08T22:03:00+08:00" content="2015-10-08">
-              2015-10-08
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/08/golang_note/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/08/golang_note/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
       
 
       
-        
-          <!--
-TODO:
-   - ...
--->
-<h2 id="new,_make_and_Local_variable"><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory; make initializes the slice, map, and channel types; local variable may be not <em>local</em> at all.</p>
-<blockquote>
-<p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
-<p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).  </p>
-<p>Local variable: unlike in C, it’s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., <code>return &amp;File{fd: fd, name: name}</code>)<br> — <a href="https://golang.org/doc/effective_go.html#allocation_new">Effective GO#allocation_new</a><br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/10/08/golang_note/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
+
+    <div class="post-spread">
       
+        <div class="ds-share flat" data-thread-key="2015/11/09/make_map_slice_channel/"
+     data-title="How does `make` work in go?"
+     data-content=""
+     data-url="http://neilsh.me/2015/11/09/make_map_slice_channel/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
 
-  
-  
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/09/21/fragment_structured_Computer_Organization/" itemprop="url">
-                  ReadingFragment Structured Computer Organization
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-21T19:44:00+08:00" content="2015-09-21">
-              2015-09-21
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/09/21/fragment_structured_Computer_Organization/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/21/fragment_structured_Computer_Organization/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="Parallelism_in_Computer_Organization">Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics — the speed of light and memory becomes the bottleneck of computer.</p>
-<h2 id="Parallelism_in_CPU">Parallelism in CPU</h2><ul>
-<li>Pipeline<ul>
-<li>Sinlge pipeline</li>
-<li>Mutli-pipeline</li>
-<li>Superscalar pipeline</li>
-</ul>
-</li>
-<li>Array Computers, single control unit and a array of processor.</li>
-<li>Multiprocessors, multiple CPUs shared with one common  main memory, and communicate through BUS.</li>
-</ul>
-<h2 id="Parallelism_in_Memory">Parallelism in Memory</h2><ul>
-<li>Modern CPUs has it’s own private memory, cache.</li>
-<li>Redundant Array of Inexpensive Disk(RAID), there are 5 level of RAID. I will be surprised if one system supports all 5 level RAID, especially level 2 and 3 ;-)<ul>
-<li>Level 0, strips data(typically, a sector) over disks in round robin fashion. No backups.</li>
-<li>Level 1, make an additional redundant backup of level 0.</li>
-</ul>
-</li>
-</ul>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/09/21/fragment_structured_Computer_Organization/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
       
     </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/09/18/jupyter_core_406/" itemprop="url">
-                  jupyter-core 4.0.6 的发布
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-18T20:39:00+08:00" content="2015-09-18">
-              2015-09-18
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/09/18/jupyter_core_406/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/18/jupyter_core_406/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="Jupyter_与_IPython">Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
-<h1 id="BUG？">BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
-<blockquote>
-<p><a href="https://ipython.org/">Jupyter and the future of IPython - IPython</a></p>
-</blockquote>
-<p>一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/09/18/jupyter_core_406/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
-
+  </div>
 
  </div>
 
         
 
+        
+          <div class="comments" id="comments">
+            
+              <div class="ds-thread" data-thread-key="2015/11/09/make_map_slice_channel/"
+                   data-title="How does `make` work in go?" data-url="http://neilsh.me/2015/11/09/make_map_slice_channel/">
+              </div>
+            
+          </div>
         
       </div>
 
@@ -705,8 +372,17 @@ TODO:
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
           <p class="site-author-name" itemprop="name">Neil Shen</p>
@@ -773,6 +449,17 @@ TODO:
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Where_is_the_make_implemention?"><span class="nav-number">1.</span> <span class="nav-text">Where is the make implemention?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Slices"><span class="nav-number">2.</span> <span class="nav-text">Slices</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data_structure"><span class="nav-number">2.1.</span> <span class="nav-text">Data structure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Make_slices"><span class="nav-number">2.2.</span> <span class="nav-text">Make slices</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maps"><span class="nav-number">3.</span> <span class="nav-text">Maps</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data_structure-1"><span class="nav-number">3.1.</span> <span class="nav-text">Data structure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Make_maps"><span class="nav-number">3.2.</span> <span class="nav-text">Make maps</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel"><span class="nav-number">4.</span> <span class="nav-text">Channel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data_structure-2"><span class="nav-number">4.1.</span> <span class="nav-text">Data structure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Make_chan"><span class="nav-number">4.2.</span> <span class="nav-text">Make chan</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Make_gist"><span class="nav-number">5.</span> <span class="nav-text">Make gist</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Output_in_my_Laptop"><span class="nav-number">5.1.</span> <span class="nav-text">Output in my Laptop</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
       
 
     </div>
@@ -860,6 +547,167 @@ TODO:
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
 
   <script type="text/javascript">
     $(document).ready(function () {

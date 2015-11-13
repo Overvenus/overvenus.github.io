@@ -23,7 +23,7 @@
 
 
   
-    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   
 
 
@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="As I learn, I do. As I do, I learn." />
+    <meta name="description" content="It's now, or never." />
 
 
 
@@ -56,7 +56,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 <meta property="og:description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
 MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg">
-<meta property="og:updated_time" content="2015-10-30T05:33:26.000Z">
+<meta property="og:updated_time" content="2015-11-07T04:04:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内核的启动和建立虚拟内存">
 <meta name="twitter:description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
@@ -75,7 +75,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
   <title> 内核的启动和建立虚拟内存 | Neil </title>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   <!--[if lte IE 8]>
   <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
@@ -89,15 +89,16 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
   
 
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-69367210-1', 'auto');
-  ga('send', 'pageview');
-</script>
 
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -139,7 +140,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
             
               <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
-            Home
+            首页
           </a>
         </li>
       
@@ -149,7 +150,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
             
               <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
-            About
+            关于
           </a>
         </li>
       
@@ -159,7 +160,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
             
               <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
-            Archives
+            归档
           </a>
         </li>
       
@@ -169,7 +170,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
             
               <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
-            Tags
+            标签
           </a>
         </li>
       
@@ -214,7 +215,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 
         <div class="post-meta">
           <span class="post-time">
-            Posted on
+            发表于
             <time itemprop="dateCreated" datetime="2015-07-02T18:02:00+08:00" content="2015-07-02">
               2015-07-02
             </time>
@@ -225,11 +226,11 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
           
             
               <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2015/07/02/os_setup_and_virtual_memory_setup/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/02/os_setup_and_virtual_memory_setup/" itemprop="commentsCount"></span>
-              </a>
-            </span>
+                &nbsp; | &nbsp;
+                <a href="/2015/07/02/os_setup_and_virtual_memory_setup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/" itemprop="commentsCount"></span>
+                </a>
+              </span>
             
           
 
@@ -361,6 +362,25 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 
     <div class="post-spread">
       
+        <div class="ds-share flat" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/"
+     data-title="内核的启动和建立虚拟内存"
+     data-content=""
+     data-url="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
     </div>
   </div>
 
@@ -371,8 +391,8 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
         
           <div class="comments" id="comments">
             
-              <div id="disqus_thread">
-                <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+              <div class="ds-thread" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/"
+                   data-title="内核的启动和建立虚拟内存" data-url="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/">
               </div>
             
           </div>
@@ -398,10 +418,10 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table Of Contents
+            文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
+            站点概览
           </li>
         </ul>
       
@@ -411,12 +431,12 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
           <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
           <p class="site-author-name" itemprop="name">Neil Shen</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">As I learn, I do. As I do, I learn.</p>
+        <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">10</span>
-              <span class="site-state-item-name">posts</span>
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
@@ -424,8 +444,8 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">10</span>
-              <span class="site-state-item-name">tags</span>
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">标签</span>
               </a>
           </div>
 
@@ -505,11 +525,11 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 </div>
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
-  Theme -
+  主题 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Mist
   </a>
@@ -528,32 +548,28 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
   
   
     
+
+  
     
-
   
 
-    <script type="text/javascript">
-      var disqus_shortname = 'neilsh';
-      var disqus_identifier = '2015/07/02/os_setup_and_virtual_memory_setup/';
-      var disqus_title = '内核的启动和建立虚拟内存';
-      var disqus_url = 'http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/';
-
-      function run_disqus_script(disqus_script){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
-
-      run_disqus_script('count.js');
-      
-        run_disqus_script('embed.js');
-      
-    </script>
-  
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"neilsh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
 
 
+    
   
   
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
