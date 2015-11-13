@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2015-11-13T02:51:04.000Z</updated>
+  <updated>2015-11-13T03:00:20.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://neilsh.me/2015/11/09/make_slice_map_channel/"/>
     <id>http://neilsh.me/2015/11/09/make_slice_map_channel/</id>
     <published>2015-11-09T07:16:55.000Z</published>
-    <updated>2015-11-13T02:51:04.000Z</updated>
+    <updated>2015-11-13T03:00:20.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Where_is_the_make_implemention?">Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[<a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8" target="_blank" rel="external">1</a>] are also implemented in this package.</p>
 <h2 id="Slices">Slices</h2><p>Source file: go/src/runtime/slice.go</p>
 <h3 id="Data_structure">Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -28,6 +28,7 @@
 <p>// Pointer represents a pointer to an arbitrary type.  There are four special operations<br>// available for type Pointer that are not available for other types.<br>//  1) A pointer value of any type can be converted to a Pointer.<br>//  2) A Pointer can be converted to a pointer value of any type.  &lt;— here!<br>//  3) A uintptr can be converted to a Pointer.<br>//  4) A Pointer can be converted to a uintptr.<br>// Pointer therefore allows a program to defeat the type system and read and write<br>// arbitrary memory. It should be used with extreme care.</p>
 </blockquote>
 <p>In my opinion, <strong>Pointer</strong> in Go and <strong>*void</strong> in C are very like. <em>Pointer</em> anesthetizes the type system and read and write arbitrary memory in Go. <em>*void</em> can be converted to any type without warning in C.</p>
+<a id="more"></a>
 <h3 id="Make_slices">Make slices</h3><p>Make slices is trival.</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// <span class="doctag"><span class="keyword">TODO</span></span>: take uintptrs instead of int64s?</span></span><br><span class="line"><span class="keyword">func</span> makeslice(t *slicetype, len64, cap64 <span class="typename">int64</span>) slice &#123;</span><br><span class="line">    <span class="comment">// <span class="doctag"><span class="keyword">NOTE</span></span>: The len &gt; MaxMem/elemsize check here is not strictly necessary,</span></span><br><span class="line">    <span class="comment">// but it produces a 'len out of range' error instead of a 'cap out of range' error</span></span><br><span class="line">    <span class="comment">// when someone does make([]T, bignumber). 'cap out of range' is true too,</span></span><br><span class="line">    <span class="comment">// but since the cap is only being supplied implicitly, saying len is clearer.</span></span><br><span class="line">    <span class="comment">// See issue 4085.</span></span><br><span class="line">    <span class="built_in">len</span> := <span class="typename">int</span>(len64)</span><br><span class="line">    <span class="keyword">if</span> len64 &lt; <span class="number">0</span> || <span class="typename">int64</span>(<span class="built_in">len</span>) != len64 || t.elem.size &gt; <span class="number">0</span> &amp;&amp; <span class="typename">uintptr</span>(<span class="built_in">len</span>) &gt; _MaxMem/<span class="typename">uintptr</span>(t.elem.size) &#123;</span><br><span class="line">        <span class="built_in">panic</span>(errorString(<span class="string">"makeslice: len out of range"</span>))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cap</span> := <span class="typename">int</span>(cap64)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">cap</span> &lt; <span class="built_in">len</span> || <span class="typename">int64</span>(<span class="built_in">cap</span>) != cap64 || t.elem.size &gt; <span class="number">0</span> &amp;&amp; <span class="typename">uintptr</span>(<span class="built_in">cap</span>) &gt; _MaxMem/<span class="typename">uintptr</span>(t.elem.size) &#123;</span><br><span class="line">        <span class="built_in">panic</span>(errorString(<span class="string">"makeslice: cap out of range"</span>))</span><br><span class="line">    &#125;</span><br><span class="line">    p := newarray(t.elem, <span class="typename">uintptr</span>(<span class="built_in">cap</span>))</span><br><span class="line">    <span class="keyword">return</span> slice&#123;p, <span class="built_in">len</span>, <span class="built_in">cap</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>So, a slice is always 24 bytes(amd64, ubuntu 14.04 LTS), no matter how many elements it has or how much capacity it is. The actual data that a slice represents locate in other place, not in the slice itself. More details about slice can be found in [<a href="https://gist.github.com/Overvenus/f6cf225ec33cc98d6b8c" target="_blank" rel="external">3</a>] and [<a href="https://blog.golang.org/go-slices-usage-and-internals" target="_blank" rel="external">4</a>].</p>
@@ -57,7 +58,15 @@
 <p>End.</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="Where_is_the_make_implemention?">Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>]]>
+    <![CDATA[<h2 id="Where_is_the_make_implemention?">Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[<a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8">1</a>] are also implemented in this package.</p>
+<h2 id="Slices">Slices</h2><p>Source file: go/src/runtime/slice.go</p>
+<h3 id="Data_structure">Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Underlying data structure of <strong>slice</strong> is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of <code>unsafe.Pointer</code></p>
+<blockquote>
+<p>// Pointer represents a pointer to an arbitrary type.  There are four special operations<br>// available for type Pointer that are not available for other types.<br>//  1) A pointer value of any type can be converted to a Pointer.<br>//  2) A Pointer can be converted to a pointer value of any type.  &lt;— here!<br>//  3) A uintptr can be converted to a Pointer.<br>//  4) A Pointer can be converted to a uintptr.<br>// Pointer therefore allows a program to defeat the type system and read and write<br>// arbitrary memory. It should be used with extreme care.</p>
+</blockquote>
+<p>In my opinion, <strong>Pointer</strong> in Go and <strong>*void</strong> in C are very like. <em>Pointer</em> anesthetizes the type system and read and write arbitrary memory in Go. <em>*void</em> can be converted to any type without warning in C.</p>]]>
+    
     </summary>
     
       <category term="go" scheme="http://neilsh.me/tags/go/"/>
@@ -444,7 +453,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/30/few_words_about_6_828/"/>
     <id>http://neilsh.me/2015/08/30/few_words_about_6_828/</id>
     <published>2015-08-30T14:14:00.000Z</published>
-    <updated>2015-11-13T02:51:04.000Z</updated>
+    <updated>2015-11-13T02:59:14.000Z</updated>
     <content type="html"><![CDATA[<p>Recently I’ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
 <a id="more"></a>
 <h2 id="6-828简介">6.828简介</h2><p>好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。</p>
