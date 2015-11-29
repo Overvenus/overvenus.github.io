@@ -247,9 +247,20 @@
 
       
         
-          <span itemprop="description">Basic Paxos. Paxos is one of the most important algorithms in distributed system.</span>
+          <h2 id="Paxos">Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf">1</a>]<br>Here are some notes about Basic Paxos.</p>
+<h2 id="Three_roles_in_Paxos">Three roles in Paxos</h2><ol>
+<li>Proposers</li>
+<li>Acceptor</li>
+<li>Learners</li>
+</ol>
+<p>General view:  <strong><em>Proposers</em></strong> send proposals to <strong><em>Acceptors</em></strong>, <strong><em>Acceptors</em></strong> accept a proposal and forward to <strong><em>Learners</em></strong>, <strong><em>Learners</em></strong> decided the proposal.<br>In real world, a single server acts <strong>two or more</strong> roles.</p>
+<h2 id="Requirements">Requirements</h2><ol>
+<li>An acceptor must accept the first proposal that it receives.<br>1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.</li>
+<li>If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.<br>2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.<br>2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.<br>2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.</li>
+</ol>
+<p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.<br>
           <div class="post-more-link text-center">
-            <a class="btn" href="/2015/11/25/paxos_digest/">
+            <a class="btn" href="/2015/11/25/paxos_digest/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

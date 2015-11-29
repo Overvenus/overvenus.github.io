@@ -47,16 +47,34 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
 
 
-<meta name="description" content="Basic Paxos. Paxos is one of the most important algorithms in distributed system.">
+<meta name="description" content="PaxosPaxos is one of the most important algorithms in distributed system.[1]Here are some notes about Basic Paxos.
+Three roles in Paxos
+Proposers
+Acceptor
+Learners
+
+General view:  Proposers send propo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="paxos-digest">
 <meta property="og:url" content="http://neilsh.me/2015/11/25/paxos_digest/index.html">
 <meta property="og:site_name" content="Neil">
-<meta property="og:description" content="Basic Paxos. Paxos is one of the most important algorithms in distributed system.">
-<meta property="og:updated_time" content="2015-11-29T11:14:40.000Z">
+<meta property="og:description" content="PaxosPaxos is one of the most important algorithms in distributed system.[1]Here are some notes about Basic Paxos.
+Three roles in Paxos
+Proposers
+Acceptor
+Learners
+
+General view:  Proposers send propo">
+<meta property="og:updated_time" content="2015-11-29T11:26:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="paxos-digest">
-<meta name="twitter:description" content="Basic Paxos. Paxos is one of the most important algorithms in distributed system.">
+<meta name="twitter:description" content="PaxosPaxos is one of the most important algorithms in distributed system.[1]Here are some notes about Basic Paxos.
+Three roles in Paxos
+Proposers
+Acceptor
+Learners
+
+General view:  Proposers send propo">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -266,7 +284,7 @@
 <li>Phase 2: broadcasr <em>Accept</em> RPC</li>
 </ol>
 <p>Majority is the key to achieve consensus and correctness.</p>
-<h2 id="Implemention">Implemention</h2><p>Each server plays all roles (proposer, acceptor, and learner) in each instance of the algorithm. In normal operation, a single server is elected to be the <strong>leader</strong>, which acts as the distinguished proposer (the <strong>only one</strong> that tries to issue proposals) in all instances of the consensus algorithm.</p>
+<h2 id="Implementation">Implementation</h2><p>Each server plays all roles (proposer, acceptor, and learner) in each instance of the algorithm. In normal operation, a single server is elected to be the <strong>leader</strong>, which acts as the distinguished proposer (the <strong>only one</strong> that tries to issue proposals) in all instances of the consensus algorithm.</p>
 <h2 id="Pseudo_code">Pseudo code</h2><p>Handout of 6.824, Spring 2015 [<a href="http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html" target="_blank" rel="external">2</a>]</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">--- Paxos Proposer ---</span><br><span class="line"></span><br><span class="line">proposer(v):</span><br><span class="line">  <span class="keyword">while</span> not decided:</span><br><span class="line">    choose <span class="keyword">n</span>, unique and higher than any <span class="keyword">n</span> seen <span class="keyword">so</span> far</span><br><span class="line">    send prepare(<span class="keyword">n</span>) to all servers including self</span><br><span class="line">    <span class="keyword">if</span> prepare_ok(<span class="keyword">n</span>, na, va) from majority:       --- na and nv is proposal number and value (<span class="keyword">if</span> any) that acceptor has accepted.</span><br><span class="line">      v' = va with highest na; choose own v otherwise   </span><br><span class="line">      send accept(<span class="keyword">n</span>, v') to all</span><br><span class="line">      <span class="keyword">if</span> accept_ok(<span class="keyword">n</span>) from majority:              --- Paxos Learner ---</span><br><span class="line">        send decided(v') to all</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--- Paxos Acceptor ---</span><br><span class="line"></span><br><span class="line">acceptor state <span class="keyword">on</span> each node (persistent):</span><br><span class="line"> np     --- highest prepare seen</span><br><span class="line"> na, va --- highest accept seen</span><br><span class="line"></span><br><span class="line">acceptor's prepare(<span class="keyword">n</span>) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt; np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   reply prepare_ok(<span class="keyword">n</span>, na, va)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply prepare_reject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">acceptor's accept(<span class="keyword">n</span>, v) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt;= np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   na = <span class="keyword">n</span></span><br><span class="line">   va = v</span><br><span class="line">   reply accept_ok(<span class="keyword">n</span>)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply accept_reject</span><br></pre></td></tr></table></figure>
 <h2 id="Examples">Examples</h2><p>Servers and proposal vaule: S1(X)<br>Prepare: P,1<br>Accept: A,1,X</p>
@@ -459,7 +477,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos"><span class="nav-number">1.</span> <span class="nav-text">Paxos</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Three_roles_in_Paxos"><span class="nav-number">2.</span> <span class="nav-text">Three roles in Paxos</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Requirements"><span class="nav-number">3.</span> <span class="nav-text">Requirements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPCs_and_Phases"><span class="nav-number">4.</span> <span class="nav-text">RPCs and Phases</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implemention"><span class="nav-number">5.</span> <span class="nav-text">Implemention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pseudo_code"><span class="nav-number">6.</span> <span class="nav-text">Pseudo code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Examples"><span class="nav-number">7.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_1"><span class="nav-number">7.1.</span> <span class="nav-text">E.g. 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_2"><span class="nav-number">7.2.</span> <span class="nav-text">E.g. 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_3"><span class="nav-number">7.3.</span> <span class="nav-text">E.g. 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_4"><span class="nav-number">7.4.</span> <span class="nav-text">E.g. 4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Links"><span class="nav-number">8.</span> <span class="nav-text">Links</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos"><span class="nav-number">1.</span> <span class="nav-text">Paxos</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Three_roles_in_Paxos"><span class="nav-number">2.</span> <span class="nav-text">Three roles in Paxos</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Requirements"><span class="nav-number">3.</span> <span class="nav-text">Requirements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPCs_and_Phases"><span class="nav-number">4.</span> <span class="nav-text">RPCs and Phases</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation"><span class="nav-number">5.</span> <span class="nav-text">Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pseudo_code"><span class="nav-number">6.</span> <span class="nav-text">Pseudo code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Examples"><span class="nav-number">7.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_1"><span class="nav-number">7.1.</span> <span class="nav-text">E.g. 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_2"><span class="nav-number">7.2.</span> <span class="nav-text">E.g. 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_3"><span class="nav-number">7.3.</span> <span class="nav-text">E.g. 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_4"><span class="nav-number">7.4.</span> <span class="nav-text">E.g. 4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Links"><span class="nav-number">8.</span> <span class="nav-text">Links</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

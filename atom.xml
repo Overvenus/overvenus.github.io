@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2015-11-29T11:14:40.000Z</updated>
+  <updated>2015-11-29T11:26:46.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://neilsh.me/2015/11/25/paxos_digest/"/>
     <id>http://neilsh.me/2015/11/25/paxos_digest/</id>
     <published>2015-11-25T11:25:23.000Z</published>
-    <updated>2015-11-29T11:14:40.000Z</updated>
+    <updated>2015-11-29T11:26:46.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Paxos">Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">1</a>]<br>Here are some notes about Basic Paxos.</p>
 <h2 id="Three_roles_in_Paxos">Three roles in Paxos</h2><ol>
 <li>Proposers</li>
@@ -43,7 +43,7 @@
 <li>Phase 2: broadcasr <em>Accept</em> RPC</li>
 </ol>
 <p>Majority is the key to achieve consensus and correctness.</p>
-<h2 id="Implemention">Implemention</h2><p>Each server plays all roles (proposer, acceptor, and learner) in each instance of the algorithm. In normal operation, a single server is elected to be the <strong>leader</strong>, which acts as the distinguished proposer (the <strong>only one</strong> that tries to issue proposals) in all instances of the consensus algorithm.</p>
+<h2 id="Implementation">Implementation</h2><p>Each server plays all roles (proposer, acceptor, and learner) in each instance of the algorithm. In normal operation, a single server is elected to be the <strong>leader</strong>, which acts as the distinguished proposer (the <strong>only one</strong> that tries to issue proposals) in all instances of the consensus algorithm.</p>
 <h2 id="Pseudo_code">Pseudo code</h2><p>Handout of 6.824, Spring 2015 [<a href="http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html" target="_blank" rel="external">2</a>]</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">--- Paxos Proposer ---</span><br><span class="line"></span><br><span class="line">proposer(v):</span><br><span class="line">  <span class="keyword">while</span> not decided:</span><br><span class="line">    choose <span class="keyword">n</span>, unique and higher than any <span class="keyword">n</span> seen <span class="keyword">so</span> far</span><br><span class="line">    send prepare(<span class="keyword">n</span>) to all servers including self</span><br><span class="line">    <span class="keyword">if</span> prepare_ok(<span class="keyword">n</span>, na, va) from majority:       --- na and nv is proposal number and value (<span class="keyword">if</span> any) that acceptor has accepted.</span><br><span class="line">      v' = va with highest na; choose own v otherwise   </span><br><span class="line">      send accept(<span class="keyword">n</span>, v') to all</span><br><span class="line">      <span class="keyword">if</span> accept_ok(<span class="keyword">n</span>) from majority:              --- Paxos Learner ---</span><br><span class="line">        send decided(v') to all</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--- Paxos Acceptor ---</span><br><span class="line"></span><br><span class="line">acceptor state <span class="keyword">on</span> each node (persistent):</span><br><span class="line"> np     --- highest prepare seen</span><br><span class="line"> na, va --- highest accept seen</span><br><span class="line"></span><br><span class="line">acceptor's prepare(<span class="keyword">n</span>) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt; np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   reply prepare_ok(<span class="keyword">n</span>, na, va)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply prepare_reject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">acceptor's accept(<span class="keyword">n</span>, v) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt;= np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   na = <span class="keyword">n</span></span><br><span class="line">   va = v</span><br><span class="line">   reply accept_ok(<span class="keyword">n</span>)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply accept_reject</span><br></pre></td></tr></table></figure>
 <h2 id="Examples">Examples</h2><p>Servers and proposal vaule: S1(X)<br>Prepare: P,1<br>Accept: A,1,X</p>
@@ -61,7 +61,18 @@
 <p>end.</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[Basic Paxos. Paxos is one of the most important algorithms in distributed system.]]>
+    <![CDATA[<h2 id="Paxos">Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf">1</a>]<br>Here are some notes about Basic Paxos.</p>
+<h2 id="Three_roles_in_Paxos">Three roles in Paxos</h2><ol>
+<li>Proposers</li>
+<li>Acceptor</li>
+<li>Learners</li>
+</ol>
+<p>General view:  <strong><em>Proposers</em></strong> send proposals to <strong><em>Acceptors</em></strong>, <strong><em>Acceptors</em></strong> accept a proposal and forward to <strong><em>Learners</em></strong>, <strong><em>Learners</em></strong> decided the proposal.<br>In real world, a single server acts <strong>two or more</strong> roles.</p>
+<h2 id="Requirements">Requirements</h2><ol>
+<li>An acceptor must accept the first proposal that it receives.<br>1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.</li>
+<li>If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.<br>2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.<br>2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.<br>2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.</li>
+</ol>
+<p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.<br>]]>
     
     </summary>
     
@@ -76,7 +87,7 @@
     <link href="http://neilsh.me/2015/11/09/make_slice_map_channel/"/>
     <id>http://neilsh.me/2015/11/09/make_slice_map_channel/</id>
     <published>2015-11-09T07:16:55.000Z</published>
-    <updated>2015-11-29T11:14:40.000Z</updated>
+    <updated>2015-11-29T11:26:03.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Where_is_the_make_implemention?">Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[<a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8" target="_blank" rel="external">1</a>] are also implemented in this package.</p>
 <h2 id="Slices">Slices</h2><p>Source file: go/src/runtime/slice.go</p>
 <h3 id="Data_structure">Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
