@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="git,python," />
+  <meta name="keywords" content="Algorithms,Distributed System," />
 
 
 
@@ -47,16 +47,16 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
 
 
-<meta name="description" content="Jupyter 与 IPythonJupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应">
+<meta name="description" content="Basic Paxos. Paxos is one of the most important algorithms in distributed system.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jupyter-core 4.0.6 的发布">
-<meta property="og:url" content="http://neilsh.me/2015/09/18/jupyter_core_406/index.html">
+<meta property="og:title" content="paxos-digest">
+<meta property="og:url" content="http://neilsh.me/2015/11/25/paxos_digest/index.html">
 <meta property="og:site_name" content="Neil">
-<meta property="og:description" content="Jupyter 与 IPythonJupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应">
-<meta property="og:updated_time" content="2015-11-11T12:33:40.000Z">
+<meta property="og:description" content="Basic Paxos. Paxos is one of the most important algorithms in distributed system.">
+<meta property="og:updated_time" content="2015-11-29T11:14:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="jupyter-core 4.0.6 的发布">
-<meta name="twitter:description" content="Jupyter 与 IPythonJupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应">
+<meta name="twitter:title" content="paxos-digest">
+<meta name="twitter:description" content="Basic Paxos. Paxos is one of the most important algorithms in distributed system.">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -68,7 +68,7 @@
 
 
 
-  <title> jupyter-core 4.0.6 的发布 | Neil </title>
+  <title> paxos-digest | Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -203,7 +203,7 @@
             
             
               
-                jupyter-core 4.0.6 的发布
+                paxos-digest
               
             
           </h1>
@@ -212,8 +212,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-09-18T20:39:00+08:00" content="2015-09-18">
-              2015-09-18
+            <time itemprop="dateCreated" datetime="2015-11-25T19:25:23+08:00" content="2015-11-25">
+              2015-11-25
             </time>
           </span>
 
@@ -223,8 +223,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/09/18/jupyter_core_406/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/18/jupyter_core_406/" itemprop="commentsCount"></span>
+                <a href="/2015/11/25/paxos_digest/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/25/paxos_digest/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -243,28 +243,45 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="Jupyter_与_IPython">Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
-<h1 id="BUG？">BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
-<blockquote>
-<p><a href="https://ipython.org/" target="_blank" rel="external">Jupyter and the future of IPython - IPython</a></p>
-</blockquote>
-<p>一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)<br><a id="more"></a><br>按照教程，<code>pip install jupyter</code>，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。<br>果不其然，安装完之后，一运行 <code>jupter notebook</code> 就报错了。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$ jupyter notebook</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"/usr/local/bin/jupyter-notebook"</span>, line <span class="number">11</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    sys.exit(main())</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py"</span>, line <span class="number">267</span>, <span class="keyword">in</span> launch_instance</span><br><span class="line">    <span class="keyword">return</span> super(JupyterApp, cls).launch_instance(argv=argv, **kwargs)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py"</span>, line <span class="number">591</span>, <span class="keyword">in</span> launch_instance</span><br><span class="line">    app.initialize(argv) File <span class="string">"&lt;string&gt;"</span>, line <span class="number">2</span>, <span class="keyword">in</span> initialize</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py"</span>, line <span class="number">75</span>, <span class="keyword">in</span> catch_config_error</span><br><span class="line">    <span class="keyword">return</span> method(app, *args, **kwargs)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/notebook/notebookapp.py"</span>, line <span class="number">1001</span>, <span class="keyword">in</span> initialize</span><br><span class="line">    super(NotebookApp, self).initialize(argv) File <span class="string">"&lt;string&gt;"</span>, line <span class="number">2</span>, <span class="keyword">in</span> initialize</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py"</span>, line <span class="number">75</span>, <span class="keyword">in</span> catch_config_error</span><br><span class="line">    <span class="keyword">return</span> method(app, *args, **kwargs)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py"</span>, line <span class="number">243</span>, <span class="keyword">in</span> initialize</span><br><span class="line">    self.migrate_config()</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py"</span>, line <span class="number">169</span>, <span class="keyword">in</span> migrate_config</span><br><span class="line">    migrate() </span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py"</span>, line <span class="number">232</span>, <span class="keyword">in</span> migrate</span><br><span class="line">    <span class="keyword">if</span> migrate_static_custom(custom_src, custom_dst): </span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py"</span>, line <span class="number">160</span>, <span class="keyword">in</span> migrate_static_custom</span><br><span class="line">    <span class="keyword">if</span> custom_css_empty:</span><br><span class="line">UnboundLocalError: local variable <span class="string">'custom_css_empty'</span> referenced before assignment</span><br></pre></td></tr></table></figure></p>
-<p>一看有 css，直觉告诉我，可能是 Jinjia2 之类关于网页处理的模块出错了，于是卸载再重装，还是有此错误。pip 试了几遍不行，apt-get 试了几遍也不行。谷歌来谷歌去都找不到答案，项目的 issus 也翻了一遍，同样没结果，前前后后花了一个多小时，挺沮丧的。</p>
-<h1 id="BUG_fix">BUG fix</h1><p>连重装大法都不行，这该不会是 BUG 吧？细细看了一边 traceback，再配合源码一看，立刻就知道哪里可能出错了。<br>原来 Jupyter 在第一次运行时会检测之前是否用过 IPython，如果用过，那就把旧的配置转换成新的。把旧版 IPython 配置文件夹删了之后，再运行<code>jupyter notebook</code>，一切正常。顺手修了这个 BUG。</p>
-<h1 id="Create_a_Pull_Request">Create a Pull Request</h1><p>既然修了 BUG，那肯定要向项目开发者反馈啊，要为开源世界做贡献！ Github 主页也能好看点。 (΄◞ิ౪◟ิ‵)<br>过程也很简单：</p>
-<ol>
-<li>创建该 BUG 的 issus（可选，建议创建）</li>
-<li>fork <a href="https://github.com/jupyter/jupyter_core" target="_blank" rel="external">jupyter-core</a></li>
-<li>clone 自己的项目到本地</li>
-<li>修补 BUG</li>
-<li>git push origin</li>
-<li>点击项目右侧的 pull request ，创建 pull request</li>
+        <span itemprop="articleBody"><h2 id="Paxos">Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">1</a>]<br>Here are some notes about Basic Paxos.</p>
+<h2 id="Three_roles_in_Paxos">Three roles in Paxos</h2><ol>
+<li>Proposers</li>
+<li>Acceptor</li>
+<li>Learners</li>
 </ol>
-<p>这成了我的第一个 Pull Request。现在 jupyter-core 最新的版本是 4.0.6， 感觉这就是为我发布的。我也成了 jupyter 核心模块的贡献者，呵呵。</p>
-<h1 id="Ref-">Ref.</h1><blockquote>
-<p><a href="https://ipython.org/" target="_blank" rel="external">https://ipython.org/</a><br><a href="https://jupyter.org/index.html" target="_blank" rel="external">https://jupyter.org/index.html</a><br><a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">https://jupyter.readthedocs.org/en/latest/install.html</a><br><a href="https://yangsu.github.io/pull-request-tutorial/" target="_blank" rel="external">Pull Request Tutorial - A Visual Guide to Pull Requests</a></p>
+<p>General view:  <strong><em>Proposers</em></strong> send proposals to <strong><em>Acceptors</em></strong>, <strong><em>Acceptors</em></strong> accept a proposal and forward to <strong><em>Learners</em></strong>, <strong><em>Learners</em></strong> decided the proposal.<br>In real world, a single server acts <strong>two or more</strong> roles.</p>
+<h2 id="Requirements">Requirements</h2><ol>
+<li>An acceptor must accept the first proposal that it receives.<br>1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.</li>
+<li>If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.<br>2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.<br>2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.<br>2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.</li>
+</ol>
+<p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.<br><a id="more"></a></p>
+<h2 id="RPCs_and_Phases">RPCs and Phases</h2><p>Proposers send two kinds of RPC to <strong>majority</strong> Acceptors.</p>
+<ol>
+<li><em>Prepare</em>, send with a uniqe proposal number n.</li>
+<li><em>Accept</em>, send with a uniqe proposal number n and proposal value v.</li>
+</ol>
+<p>There are two phases in Paxos.</p>
+<ol>
+<li>Phase 1: broadcast <em>Prepare</em> RPC</li>
+<li>Phase 2: broadcasr <em>Accept</em> RPC</li>
+</ol>
+<p>Majority is the key to achieve consensus and correctness.</p>
+<h2 id="Implemention">Implemention</h2><p>Each server plays all roles (proposer, acceptor, and learner) in each instance of the algorithm. In normal operation, a single server is elected to be the <strong>leader</strong>, which acts as the distinguished proposer (the <strong>only one</strong> that tries to issue proposals) in all instances of the consensus algorithm.</p>
+<h2 id="Pseudo_code">Pseudo code</h2><p>Handout of 6.824, Spring 2015 [<a href="http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html" target="_blank" rel="external">2</a>]</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">--- Paxos Proposer ---</span><br><span class="line"></span><br><span class="line">proposer(v):</span><br><span class="line">  <span class="keyword">while</span> not decided:</span><br><span class="line">    choose <span class="keyword">n</span>, unique and higher than any <span class="keyword">n</span> seen <span class="keyword">so</span> far</span><br><span class="line">    send prepare(<span class="keyword">n</span>) to all servers including self</span><br><span class="line">    <span class="keyword">if</span> prepare_ok(<span class="keyword">n</span>, na, va) from majority:       --- na and nv is proposal number and value (<span class="keyword">if</span> any) that acceptor has accepted.</span><br><span class="line">      v' = va with highest na; choose own v otherwise   </span><br><span class="line">      send accept(<span class="keyword">n</span>, v') to all</span><br><span class="line">      <span class="keyword">if</span> accept_ok(<span class="keyword">n</span>) from majority:              --- Paxos Learner ---</span><br><span class="line">        send decided(v') to all</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--- Paxos Acceptor ---</span><br><span class="line"></span><br><span class="line">acceptor state <span class="keyword">on</span> each node (persistent):</span><br><span class="line"> np     --- highest prepare seen</span><br><span class="line"> na, va --- highest accept seen</span><br><span class="line"></span><br><span class="line">acceptor's prepare(<span class="keyword">n</span>) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt; np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   reply prepare_ok(<span class="keyword">n</span>, na, va)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply prepare_reject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">acceptor's accept(<span class="keyword">n</span>, v) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt;= np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   na = <span class="keyword">n</span></span><br><span class="line">   va = v</span><br><span class="line">   reply accept_ok(<span class="keyword">n</span>)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply accept_reject</span><br></pre></td></tr></table></figure>
+<h2 id="Examples">Examples</h2><p>Servers and proposal vaule: S1(X)<br>Prepare: P,1<br>Accept: A,1,X</p>
+<h3 id="E-g-_1">E.g. 1</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span></span><br><span class="line">S<span class="number">3</span>       <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">                    ^ chosen</span><br></pre></td></tr></table></figure>
+<p>X is chosen.</p>
+<h3 id="E-g-_2">E.g. 2</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span>       <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span>    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">3</span>(<span class="keyword">Y</span>)                    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">X</span></span><br><span class="line">                    ^ chosen</span><br></pre></td></tr></table></figure>
+<p>X is chosen.<br>S2 response <code>P,3</code> with <code>1,X</code>, S3 send proposal value X instead of Y.</p>
+<h3 id="E-g-_3">E.g. 3</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span>       <span class="keyword">P</span>,<span class="number">1</span>             <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">Y</span>    A,<span class="number">1</span>,<span class="keyword">X</span>(rej)</span><br><span class="line">S<span class="number">3</span>(<span class="keyword">Y</span>)                    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">Y</span></span><br><span class="line">                                    ^ chosen</span><br></pre></td></tr></table></figure>
+<p>Y is chosen.<br><code>A,1,X</code> is rejected, because 3 &gt; 1.</p>
+<h3 id="E-g-_4">E.g. 4</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">S1</span><span class="params">(X)</span></span>    P,<span class="number">1</span>    A,<span class="number">1</span>,X                                  A,<span class="number">3</span>,<span class="function"><span class="title">Y</span><span class="params">(rej)</span></span></span><br><span class="line">S2       P,<span class="number">1</span>             P,<span class="number">3</span>             A,<span class="number">1</span>,<span class="function"><span class="title">X</span><span class="params">(rej)</span></span>    A,<span class="number">3</span>,Y</span><br><span class="line"><span class="function"><span class="title">S3</span><span class="params">(Y)</span></span>                    P,<span class="number">3</span>    A,<span class="number">3</span>,Y    A,<span class="number">1</span>,<span class="function"><span class="title">X</span><span class="params">(rej)</span></span>    </span><br><span class="line">                                                           ^ chosen</span><br></pre></td></tr></table></figure>
+<p>Y is chosen.<br>Later, Learner will find out Y is the chosen value, and then send decided(Y) to all servers.</p>
+<h2 id="Links">Links</h2><blockquote>
+<p>[1]. <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">Lamport, Leslie. “Paxos made simple.” ACM Sigact News 32, no. 4 (2001): 18-25.</a><br>[2]. <a href="http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html" target="_blank" rel="external">Handout, LEC5, 6.824</a><br>[3]. <a href="https://www.youtube.com/watch?v=JEpsBg0AO6o" target="_blank" rel="external">Paxos lecture (Raft user study)</a></p>
 </blockquote>
-<p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
+<p>end.</p>
 </span>
       
     </div>
@@ -273,9 +290,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/git/" rel="tag">#git</a>
+            <a href="/tags/Algorithms/" rel="tag">#Algorithms</a>
           
-            <a href="/tags/python/" rel="tag">#python</a>
+            <a href="/tags/Distributed-System/" rel="tag">#Distributed System</a>
           
         </div>
       
@@ -284,17 +301,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/08/30/few_words_about_6_828/" rel="next" title="Few words about 6.828">
-                <i class="fa fa-chevron-left"></i> Few words about 6.828
+              <a href="/2015/11/09/make_slice_map_channel/" rel="next" title="make slice map channel">
+                <i class="fa fa-chevron-left"></i> make slice map channel
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/09/21/fragment_structured_Computer_Organization/" rel="prev" title="ReadingFragment Structured Computer Organization">
-                ReadingFragment Structured Computer Organization <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -309,10 +322,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/09/18/jupyter_core_406/"
-     data-title="jupyter-core 4.0.6 的发布"
+        <div class="ds-share flat" data-thread-key="2015/11/25/paxos_digest/"
+     data-title="paxos-digest"
      data-content=""
-     data-url="http://neilsh.me/2015/09/18/jupyter_core_406/">
+     data-url="http://neilsh.me/2015/11/25/paxos_digest/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -338,8 +351,8 @@
         
           <div class="comments" id="comments">
             
-              <div class="ds-thread" data-thread-key="2015/09/18/jupyter_core_406/"
-                   data-title="jupyter-core 4.0.6 的发布" data-url="http://neilsh.me/2015/09/18/jupyter_core_406/">
+              <div class="ds-thread" data-thread-key="2015/11/25/paxos_digest/"
+                   data-title="paxos-digest" data-url="http://neilsh.me/2015/11/25/paxos_digest/">
               </div>
             
           </div>
@@ -446,7 +459,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Jupyter_与_IPython"><span class="nav-number">1.</span> <span class="nav-text">Jupyter 与 IPython</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG？"><span class="nav-number">2.</span> <span class="nav-text">BUG？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG_fix"><span class="nav-number">3.</span> <span class="nav-text">BUG fix</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Create_a_Pull_Request"><span class="nav-number">4.</span> <span class="nav-text">Create a Pull Request</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ref-"><span class="nav-number">5.</span> <span class="nav-text">Ref.</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos"><span class="nav-number">1.</span> <span class="nav-text">Paxos</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Three_roles_in_Paxos"><span class="nav-number">2.</span> <span class="nav-text">Three roles in Paxos</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Requirements"><span class="nav-number">3.</span> <span class="nav-text">Requirements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPCs_and_Phases"><span class="nav-number">4.</span> <span class="nav-text">RPCs and Phases</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implemention"><span class="nav-number">5.</span> <span class="nav-text">Implemention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pseudo_code"><span class="nav-number">6.</span> <span class="nav-text">Pseudo code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Examples"><span class="nav-number">7.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_1"><span class="nav-number">7.1.</span> <span class="nav-text">E.g. 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_2"><span class="nav-number">7.2.</span> <span class="nav-text">E.g. 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_3"><span class="nav-number">7.3.</span> <span class="nav-text">E.g. 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-g-_4"><span class="nav-number">7.4.</span> <span class="nav-text">E.g. 4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Links"><span class="nav-number">8.</span> <span class="nav-text">Links</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
