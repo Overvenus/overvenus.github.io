@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2015-12-05T12:45:09.000Z</updated>
+  <updated>2015-12-05T12:47:44.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://neilsh.me/2015/11/29/erya-no-pause/"/>
     <id>http://neilsh.me/2015/11/29/erya-no-pause/</id>
     <published>2015-11-29T14:04:04.000Z</published>
-    <updated>2015-12-05T12:45:09.000Z</updated>
+    <updated>2015-12-05T12:47:44.000Z</updated>
     <content type="html"><![CDATA[<h2 id="恶心的暂停">恶心的暂停</h2><p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
 <h2 id="过程">过程</h2><p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：<br><a id="more"></a><br><img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt=""><br>这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#eryaPlayer'</span>).pauseMovie();</span><br></pre></td></tr></table></figure></p>
 <p>视频就暂停了。</p>
