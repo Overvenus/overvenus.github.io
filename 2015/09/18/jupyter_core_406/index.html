@@ -242,15 +242,15 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="Jupyter_与_IPython">Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
-<h1 id="BUG？">BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
+        <span itemprop="articleBody"><h1 id="Jupyter__u4E0E_IPython"><a href="#Jupyter__u4E0E_IPython" class="headerlink" title="Jupyter 与 IPython"></a>Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
+<h1 id="BUG_uFF1F"><a href="#BUG_uFF1F" class="headerlink" title="BUG？"></a>BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
 <blockquote>
 <p><a href="https://ipython.org/" target="_blank" rel="external">Jupyter and the future of IPython - IPython</a></p>
 </blockquote>
 <p>一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)<br><a id="more"></a><br>按照教程，<code>pip install jupyter</code>，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。<br>果不其然，安装完之后，一运行 <code>jupter notebook</code> 就报错了。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$ jupyter notebook</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"/usr/local/bin/jupyter-notebook"</span>, line <span class="number">11</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    sys.exit(main())</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py"</span>, line <span class="number">267</span>, <span class="keyword">in</span> launch_instance</span><br><span class="line">    <span class="keyword">return</span> super(JupyterApp, cls).launch_instance(argv=argv, **kwargs)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py"</span>, line <span class="number">591</span>, <span class="keyword">in</span> launch_instance</span><br><span class="line">    app.initialize(argv) File <span class="string">"&lt;string&gt;"</span>, line <span class="number">2</span>, <span class="keyword">in</span> initialize</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py"</span>, line <span class="number">75</span>, <span class="keyword">in</span> catch_config_error</span><br><span class="line">    <span class="keyword">return</span> method(app, *args, **kwargs)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/notebook/notebookapp.py"</span>, line <span class="number">1001</span>, <span class="keyword">in</span> initialize</span><br><span class="line">    super(NotebookApp, self).initialize(argv) File <span class="string">"&lt;string&gt;"</span>, line <span class="number">2</span>, <span class="keyword">in</span> initialize</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py"</span>, line <span class="number">75</span>, <span class="keyword">in</span> catch_config_error</span><br><span class="line">    <span class="keyword">return</span> method(app, *args, **kwargs)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py"</span>, line <span class="number">243</span>, <span class="keyword">in</span> initialize</span><br><span class="line">    self.migrate_config()</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py"</span>, line <span class="number">169</span>, <span class="keyword">in</span> migrate_config</span><br><span class="line">    migrate() </span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py"</span>, line <span class="number">232</span>, <span class="keyword">in</span> migrate</span><br><span class="line">    <span class="keyword">if</span> migrate_static_custom(custom_src, custom_dst): </span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py"</span>, line <span class="number">160</span>, <span class="keyword">in</span> migrate_static_custom</span><br><span class="line">    <span class="keyword">if</span> custom_css_empty:</span><br><span class="line">UnboundLocalError: local variable <span class="string">'custom_css_empty'</span> referenced before assignment</span><br></pre></td></tr></table></figure></p>
 <p>一看有 css，直觉告诉我，可能是 Jinjia2 之类关于网页处理的模块出错了，于是卸载再重装，还是有此错误。pip 试了几遍不行，apt-get 试了几遍也不行。谷歌来谷歌去都找不到答案，项目的 issus 也翻了一遍，同样没结果，前前后后花了一个多小时，挺沮丧的。</p>
-<h1 id="BUG_fix">BUG fix</h1><p>连重装大法都不行，这该不会是 BUG 吧？细细看了一边 traceback，再配合源码一看，立刻就知道哪里可能出错了。<br>原来 Jupyter 在第一次运行时会检测之前是否用过 IPython，如果用过，那就把旧的配置转换成新的。把旧版 IPython 配置文件夹删了之后，再运行<code>jupyter notebook</code>，一切正常。顺手修了这个 BUG。</p>
-<h1 id="Create_a_Pull_Request">Create a Pull Request</h1><p>既然修了 BUG，那肯定要向项目开发者反馈啊，要为开源世界做贡献！ Github 主页也能好看点。 (΄◞ิ౪◟ิ‵)<br>过程也很简单：</p>
+<h1 id="BUG_fix"><a href="#BUG_fix" class="headerlink" title="BUG fix"></a>BUG fix</h1><p>连重装大法都不行，这该不会是 BUG 吧？细细看了一边 traceback，再配合源码一看，立刻就知道哪里可能出错了。<br>原来 Jupyter 在第一次运行时会检测之前是否用过 IPython，如果用过，那就把旧的配置转换成新的。把旧版 IPython 配置文件夹删了之后，再运行<code>jupyter notebook</code>，一切正常。顺手修了这个 BUG。</p>
+<h1 id="Create_a_Pull_Request"><a href="#Create_a_Pull_Request" class="headerlink" title="Create a Pull Request"></a>Create a Pull Request</h1><p>既然修了 BUG，那肯定要向项目开发者反馈啊，要为开源世界做贡献！ Github 主页也能好看点。 (΄◞ิ౪◟ิ‵)<br>过程也很简单：</p>
 <ol>
 <li>创建该 BUG 的 issus（可选，建议创建）</li>
 <li>fork <a href="https://github.com/jupyter/jupyter_core" target="_blank" rel="external">jupyter-core</a></li>
@@ -260,7 +260,7 @@
 <li>点击项目右侧的 pull request ，创建 pull request</li>
 </ol>
 <p>这成了我的第一个 Pull Request。现在 jupyter-core 最新的版本是 4.0.6， 感觉这就是为我发布的。我也成了 jupyter 核心模块的贡献者，呵呵。</p>
-<h1 id="Ref-">Ref.</h1><blockquote>
+<h1 id="Ref"><a href="#Ref" class="headerlink" title="Ref."></a>Ref.</h1><blockquote>
 <p><a href="https://ipython.org/" target="_blank" rel="external">https://ipython.org/</a><br><a href="https://jupyter.org/index.html" target="_blank" rel="external">https://jupyter.org/index.html</a><br><a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">https://jupyter.readthedocs.org/en/latest/install.html</a><br><a href="https://yangsu.github.io/pull-request-tutorial/" target="_blank" rel="external">Pull Request Tutorial - A Visual Guide to Pull Requests</a></p>
 </blockquote>
 <p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
@@ -362,7 +362,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -371,7 +371,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -426,7 +426,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Jupyter_与_IPython"><span class="nav-number">1.</span> <span class="nav-text">Jupyter 与 IPython</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG？"><span class="nav-number">2.</span> <span class="nav-text">BUG？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG_fix"><span class="nav-number">3.</span> <span class="nav-text">BUG fix</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Create_a_Pull_Request"><span class="nav-number">4.</span> <span class="nav-text">Create a Pull Request</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ref-"><span class="nav-number">5.</span> <span class="nav-text">Ref.</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Jupyter__u4E0E_IPython"><span class="nav-number">1.</span> <span class="nav-text">Jupyter 与 IPython</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG_uFF1F"><span class="nav-number">2.</span> <span class="nav-text">BUG？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG_fix"><span class="nav-number">3.</span> <span class="nav-text">BUG fix</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Create_a_Pull_Request"><span class="nav-number">4.</span> <span class="nav-text">Create a Pull Request</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ref"><span class="nav-number">5.</span> <span class="nav-text">Ref.</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -704,6 +704,29 @@
 
   
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
   

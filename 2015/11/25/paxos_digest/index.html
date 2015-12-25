@@ -65,7 +65,7 @@ Acceptor
 Learners
 
 General view:  Proposers send propo">
-<meta property="og:updated_time" content="2015-11-29T11:29:08.000Z">
+<meta property="og:updated_time" content="2015-12-25T02:00:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="paxos-digest">
 <meta name="twitter:description" content="PaxosPaxos is one of the most important algorithms in distributed system.[1]Here are some notes about Basic Paxos.
@@ -260,19 +260,19 @@ General view:  Proposers send propo">
       
 
       
-        <span itemprop="articleBody"><h2 id="Paxos">Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">1</a>]<br>Here are some notes about Basic Paxos.</p>
-<h2 id="Three_roles_in_Paxos">Three roles in Paxos</h2><ol>
+        <span itemprop="articleBody"><h2 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">1</a>]<br>Here are some notes about Basic Paxos.</p>
+<h2 id="Three_roles_in_Paxos"><a href="#Three_roles_in_Paxos" class="headerlink" title="Three roles in Paxos"></a>Three roles in Paxos</h2><ol>
 <li>Proposers</li>
 <li>Acceptor</li>
 <li>Learners</li>
 </ol>
 <p>General view:  <strong><em>Proposers</em></strong> send proposals to <strong><em>Acceptors</em></strong>, <strong><em>Acceptors</em></strong> accept a proposal and forward to <strong><em>Learners</em></strong>, <strong><em>Learners</em></strong> decided the proposal.<br>In real world, a single server acts <strong>two or more</strong> roles.</p>
-<h2 id="Requirements">Requirements</h2><ol>
+<h2 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h2><ol>
 <li>An acceptor must accept the first proposal that it receives.<br>1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.</li>
 <li>If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.<br>2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.<br>2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.<br>2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.</li>
 </ol>
 <p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.<br><a id="more"></a></p>
-<h2 id="RPCs_and_Phases">RPCs and Phases</h2><p>Proposers send two kinds of RPC to <strong>majority</strong> Acceptors.</p>
+<h2 id="RPCs_and_Phases"><a href="#RPCs_and_Phases" class="headerlink" title="RPCs and Phases"></a>RPCs and Phases</h2><p>Proposers send two kinds of RPC to <strong>majority</strong> Acceptors.</p>
 <ol>
 <li><em>Prepare</em>, send with a uniqe proposal number n.</li>
 <li><em>Accept</em>, send with a uniqe proposal number n and proposal value v.</li>
@@ -283,19 +283,19 @@ General view:  Proposers send propo">
 <li>Phase 2: broadcasr <em>Accept</em> RPC</li>
 </ol>
 <p>Majority is the key to achieve consensus and correctness.</p>
-<h2 id="Implementation">Implementation</h2><p>Each server plays all roles (proposer, acceptor, and learner) in each instance of the algorithm. In normal operation, a single server is elected to be the <strong>leader</strong>, which acts as the distinguished proposer (the <strong>only one</strong> that tries to issue proposals) in all instances of the consensus algorithm.</p>
-<h2 id="Pseudo_code">Pseudo code</h2><p>Handout of 6.824, Spring 2015 [<a href="http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html" target="_blank" rel="external">2</a>]</p>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><p>Each server plays all roles (proposer, acceptor, and learner) in each instance of the algorithm. In normal operation, a single server is elected to be the <strong>leader</strong>, which acts as the distinguished proposer (the <strong>only one</strong> that tries to issue proposals) in all instances of the consensus algorithm.</p>
+<h2 id="Pseudo_code"><a href="#Pseudo_code" class="headerlink" title="Pseudo code"></a>Pseudo code</h2><p>Handout of 6.824, Spring 2015 [<a href="http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html" target="_blank" rel="external">2</a>]</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">--- Paxos Proposer ---</span><br><span class="line"></span><br><span class="line">proposer(v):</span><br><span class="line">  <span class="keyword">while</span> not decided:</span><br><span class="line">    choose <span class="keyword">n</span>, unique and higher than any <span class="keyword">n</span> seen <span class="keyword">so</span> far</span><br><span class="line">    send prepare(<span class="keyword">n</span>) to all servers including self</span><br><span class="line">    <span class="keyword">if</span> prepare_ok(<span class="keyword">n</span>, na, va) from majority:       --- na and nv is proposal number and value (<span class="keyword">if</span> any) that acceptor has accepted.</span><br><span class="line">      v' = va with highest na; choose own v otherwise   </span><br><span class="line">      send accept(<span class="keyword">n</span>, v') to all</span><br><span class="line">      <span class="keyword">if</span> accept_ok(<span class="keyword">n</span>) from majority:              --- Paxos Learner ---</span><br><span class="line">        send decided(v') to all</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--- Paxos Acceptor ---</span><br><span class="line"></span><br><span class="line">acceptor state <span class="keyword">on</span> each node (persistent):</span><br><span class="line"> np     --- highest prepare seen</span><br><span class="line"> na, va --- highest accept seen</span><br><span class="line"></span><br><span class="line">acceptor's prepare(<span class="keyword">n</span>) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt; np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   reply prepare_ok(<span class="keyword">n</span>, na, va)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply prepare_reject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">acceptor's accept(<span class="keyword">n</span>, v) handler:</span><br><span class="line"> <span class="keyword">if</span> <span class="keyword">n</span> &gt;= np</span><br><span class="line">   np = <span class="keyword">n</span></span><br><span class="line">   na = <span class="keyword">n</span></span><br><span class="line">   va = v</span><br><span class="line">   reply accept_ok(<span class="keyword">n</span>)</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">   reply accept_reject</span><br></pre></td></tr></table></figure>
-<h2 id="Examples">Examples</h2><p>Servers and proposal vaule: S1(X)<br>Prepare: P,1<br>Accept: A,1,X</p>
-<h3 id="E-g-_1">E.g. 1</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span></span><br><span class="line">S<span class="number">3</span>       <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">                    ^ chosen</span><br></pre></td></tr></table></figure>
+<h2 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h2><p>Servers and proposal vaule: S1(X)<br>Prepare: P,1<br>Accept: A,1,X</p>
+<h3 id="E-g-_1"><a href="#E-g-_1" class="headerlink" title="E.g. 1"></a>E.g. 1</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span></span><br><span class="line">S<span class="number">3</span>       <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">                    ^ chosen</span><br></pre></td></tr></table></figure>
 <p>X is chosen.</p>
-<h3 id="E-g-_2">E.g. 2</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span>       <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span>    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">3</span>(<span class="keyword">Y</span>)                    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">X</span></span><br><span class="line">                    ^ chosen</span><br></pre></td></tr></table></figure>
+<h3 id="E-g-_2"><a href="#E-g-_2" class="headerlink" title="E.g. 2"></a>E.g. 2</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span>       <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span>    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">3</span>(<span class="keyword">Y</span>)                    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">X</span></span><br><span class="line">                    ^ chosen</span><br></pre></td></tr></table></figure>
 <p>X is chosen.<br>S2 response <code>P,3</code> with <code>1,X</code>, S3 send proposal value X instead of Y.</p>
-<h3 id="E-g-_3">E.g. 3</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span>       <span class="keyword">P</span>,<span class="number">1</span>             <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">Y</span>    A,<span class="number">1</span>,<span class="keyword">X</span>(rej)</span><br><span class="line">S<span class="number">3</span>(<span class="keyword">Y</span>)                    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">Y</span></span><br><span class="line">                                    ^ chosen</span><br></pre></td></tr></table></figure>
+<h3 id="E-g-_3"><a href="#E-g-_3" class="headerlink" title="E.g. 3"></a>E.g. 3</h3><figure class="highlight tp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S<span class="number">1</span>(<span class="keyword">X</span>)    <span class="keyword">P</span>,<span class="number">1</span>    A,<span class="number">1</span>,<span class="keyword">X</span></span><br><span class="line">S<span class="number">2</span>       <span class="keyword">P</span>,<span class="number">1</span>             <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">Y</span>    A,<span class="number">1</span>,<span class="keyword">X</span>(rej)</span><br><span class="line">S<span class="number">3</span>(<span class="keyword">Y</span>)                    <span class="keyword">P</span>,<span class="number">3</span>    A,<span class="number">3</span>,<span class="keyword">Y</span></span><br><span class="line">                                    ^ chosen</span><br></pre></td></tr></table></figure>
 <p>Y is chosen.<br><code>A,1,X</code> is rejected, because 3 &gt; 1.</p>
-<h3 id="E-g-_4">E.g. 4</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">S1</span><span class="params">(X)</span></span>    P,<span class="number">1</span>    A,<span class="number">1</span>,X                                  A,<span class="number">3</span>,<span class="function"><span class="title">Y</span><span class="params">(rej)</span></span></span><br><span class="line">S2       P,<span class="number">1</span>             P,<span class="number">3</span>             A,<span class="number">1</span>,<span class="function"><span class="title">X</span><span class="params">(rej)</span></span>    A,<span class="number">3</span>,Y</span><br><span class="line"><span class="function"><span class="title">S3</span><span class="params">(Y)</span></span>                    P,<span class="number">3</span>    A,<span class="number">3</span>,Y    A,<span class="number">1</span>,<span class="function"><span class="title">X</span><span class="params">(rej)</span></span>    </span><br><span class="line">                                                           ^ chosen</span><br></pre></td></tr></table></figure>
+<h3 id="E-g-_4"><a href="#E-g-_4" class="headerlink" title="E.g. 4"></a>E.g. 4</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">S1</span><span class="params">(X)</span></span>    P,<span class="number">1</span>    A,<span class="number">1</span>,X                                  A,<span class="number">3</span>,<span class="function"><span class="title">Y</span><span class="params">(rej)</span></span></span><br><span class="line">S2       P,<span class="number">1</span>             P,<span class="number">3</span>             A,<span class="number">1</span>,<span class="function"><span class="title">X</span><span class="params">(rej)</span></span>    A,<span class="number">3</span>,Y</span><br><span class="line"><span class="function"><span class="title">S3</span><span class="params">(Y)</span></span>                    P,<span class="number">3</span>    A,<span class="number">3</span>,Y    A,<span class="number">1</span>,<span class="function"><span class="title">X</span><span class="params">(rej)</span></span>    </span><br><span class="line">                                                           ^ chosen</span><br></pre></td></tr></table></figure>
 <p>Y is chosen.<br>Later, Learner will find out Y is the chosen value, and then send decided(Y) to all servers.</p>
-<h2 id="Links">Links</h2><blockquote>
+<h2 id="Links"><a href="#Links" class="headerlink" title="Links"></a>Links</h2><blockquote>
 <p>[1]. <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">Lamport, Leslie. “Paxos made simple.” ACM Sigact News 32, no. 4 (2001): 18-25.</a><br>[2]. <a href="http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html" target="_blank" rel="external">Handout, LEC5, 6.824</a><br>[3]. <a href="https://www.youtube.com/watch?v=JEpsBg0AO6o" target="_blank" rel="external">Paxos lecture (Raft user study)</a></p>
 </blockquote>
 <p>end.</p>
@@ -397,7 +397,7 @@ General view:  Proposers send propo">
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -406,7 +406,7 @@ General view:  Proposers send propo">
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -739,6 +739,29 @@ General view:  Proposers send propo">
 
   
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
   

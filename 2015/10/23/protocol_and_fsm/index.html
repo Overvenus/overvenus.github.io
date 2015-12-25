@@ -250,18 +250,18 @@ Communications protocol, a defined set of rules and regulations that determine h
       
 
       
-        <span itemprop="articleBody"><h2 id="Protocol">Protocol</h2><p>本文中 Protocol 特指通讯协议。<br>首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
+        <span itemprop="articleBody"><h2 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h2><p>本文中 Protocol 特指通讯协议。<br>首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
 <blockquote>
-<p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  —<a href="https://en.wikipedia.org/wiki/Protocol" target="_blank" rel="external">WIKI#Protocol</a></p>
+<p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  –<a href="https://en.wikipedia.org/wiki/Protocol" target="_blank" rel="external">WIKI#Protocol</a></p>
 </blockquote>
 <p>简单的来说，协议是规范数据传输的一套规则。</p>
-<h2 id="Finite_State_Machines_(FSM)">Finite State Machines (FSM)</h2><p>下面是摘自 WIKI 的对有限状态机的说明：</p>
+<h2 id="Finite_State_Machines__28FSM_29"><a href="#Finite_State_Machines__28FSM_29" class="headerlink" title="Finite State Machines (FSM)"></a>Finite State Machines (FSM)</h2><p>下面是摘自 WIKI 的对有限状态机的说明：</p>
 <blockquote>
-<p>It is conceived as an abstract machine that can be in one of a finite number of states. The machine is in only one state at a time; the state it is in at any given time is called the current state. It can change from one state to another when initiated by a triggering event or condition; this is called a transition. A particular FSM is defined by a list of its states, and the triggering condition for each transition.    —<a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="_blank" rel="external">WIKI#FSM</a></p>
+<p>It is conceived as an abstract machine that can be in one of a finite number of states. The machine is in only one state at a time; the state it is in at any given time is called the current state. It can change from one state to another when initiated by a triggering event or condition; this is called a transition. A particular FSM is defined by a list of its states, and the triggering condition for each transition.    –<a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="_blank" rel="external">WIKI#FSM</a></p>
 </blockquote>
 <p>有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。<br>有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。<br><a id="more"></a></p>
-<h2 id="Protocol_and_FSM">Protocol and FSM</h2><p>把 Protocol 和 FSM 写在一起自然是因为它们有着紧密的联系。不准确的来说， Protocol 就是 FSM 的行为，遵循 Protocol 的实体（们）构成了这个 FSM 的抽象机器。</p>
-<h2 id="Implement_a_Protocol">Implement a Protocol</h2><p>实现协议不简单，特别是复杂的，持续状态的协议，TCP 算其中一个😂。<br>列一下实现协议的困难点：</p>
+<h2 id="Protocol_and_FSM"><a href="#Protocol_and_FSM" class="headerlink" title="Protocol and FSM"></a>Protocol and FSM</h2><p>把 Protocol 和 FSM 写在一起自然是因为它们有着紧密的联系。不准确的来说， Protocol 就是 FSM 的行为，遵循 Protocol 的实体（们）构成了这个 FSM 的抽象机器。</p>
+<h2 id="Implement_a_Protocol"><a href="#Implement_a_Protocol" class="headerlink" title="Implement a Protocol"></a>Implement a Protocol</h2><p>实现协议不简单，特别是复杂的，持续状态的协议，TCP 算其中一个😂。<br>列一下实现协议的困难点：</p>
 <ol>
 <li>状态可能有多种。</li>
 <li>条件可能有多种。</li>
@@ -277,7 +277,7 @@ Communications protocol, a defined set of rules and regulations that determine h
 <li>有 Test case 那自然是极好的。</li>
 </ol>
 <p>这四点，箭箭射中我膝盖。唉，人啊，为什么痛过之后才知道悔改！（严肃脸）</p>
-<h2 id="Viewservice">Viewservice</h2><p>6.824 的 lab2 Part A 让我们实现一个具体的协议。计算机有随时宕机的可能，一旦发生它提供的服务就不可得了。该协议引入主机（Primary）和从机（Backup）机制并及时检查两者的存活状态，使系统服务具有高可用性，下面称这个协议为 <strong>Viewservice</strong>。<br>Viewservice 在某些条件下会产生一个 <strong>View</strong>。View 是一个数据结构，包含主机和从机的地址。<br>下面说一下这个协议要关键的几个点：</p>
+<h2 id="Viewservice"><a href="#Viewservice" class="headerlink" title="Viewservice"></a>Viewservice</h2><p>6.824 的 lab2 Part A 让我们实现一个具体的协议。计算机有随时宕机的可能，一旦发生它提供的服务就不可得了。该协议引入主机（Primary）和从机（Backup）机制并及时检查两者的存活状态，使系统服务具有高可用性，下面称这个协议为 <strong>Viewservice</strong>。<br>Viewservice 在某些条件下会产生一个 <strong>View</strong>。View 是一个数据结构，包含主机和从机的地址。<br>下面说一下这个协议要关键的几个点：</p>
 <ol>
 <li>持续状态协议，当前状态会影响到下一状态。</li>
 <li>每次更新 View， Primary 不能为空。</li>
@@ -286,7 +286,7 @@ Communications protocol, a defined set of rules and regulations that determine h
 <li>当前 View 中的 Primary 和 Backup 同时出错时，服务结束。</li>
 </ol>
 <p>上面几点并没有完整地描述 Viewservice，但已足够用来阐述 Protocol 和 FSM 之前的关系，想看完整的协议请访问<a href="http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html" target="_blank" rel="external">lab2#Part A</a>.</p>
-<h2 id="Viewservice_FSM">Viewservice FSM</h2><p>不难发现 View 就是状态，条件就是 Primary，Backup，Idle三者的存活状态。<br>注意，为了便于理解，这里的 FSM 只是完整的 Viewservice 中的<strong>关键部分（错误处理）</strong>，我去掉了一些无关痛痒的内容，并且我对 Idle 多了一个限制：每个时刻要没有 Idle，要么只有一个，不会有多个存在。但就算这个限制不存在也不会影响最后的正确性。这样做的好处是 Idle 只有两种状态，简化了条件的同时还便于表示（0 or 1） ;-)</p>
+<h2 id="Viewservice_FSM"><a href="#Viewservice_FSM" class="headerlink" title="Viewservice FSM"></a>Viewservice FSM</h2><p>不难发现 View 就是状态，条件就是 Primary，Backup，Idle三者的存活状态。<br>注意，为了便于理解，这里的 FSM 只是完整的 Viewservice 中的<strong>关键部分（错误处理）</strong>，我去掉了一些无关痛痒的内容，并且我对 Idle 多了一个限制：每个时刻要没有 Idle，要么只有一个，不会有多个存在。但就算这个限制不存在也不会影响最后的正确性。这样做的好处是 Idle 只有两种状态，简化了条件的同时还便于表示（0 or 1） ;-)</p>
 <p>由此设三位二进制数：XXX， 分别代表 Primary，Backup和Idle。1为存活，0为出错。</p>
 <table>
 <thead>
@@ -385,9 +385,9 @@ Communications protocol, a defined set of rules and regulations that determine h
 <p>根据上面的表可以画出状态转移图，更直观地说明这个 FSM</p>
 <p><img src="http://ww1.sinaimg.cn/large/7f793092gw1exdcpwse63j21kw15madn.jpg" alt=""></p>
 <p>清楚了这个 FSM，各种情况了然于心，设计数据结构，编写代码，实现协议 so easy。</p>
-<h2 id="后话">后话</h2><p>Part A部分我花了不少时间，主要还是当初没有理清协议，有多个 Test 通不过，代码结构推到了一遍又一遍。在机缘巧合下（debug下）发现协议和数电中的状态转移图有紧密的联系。然后尝试用状态转移图来表示协议，没想到还真可以。根据状态转移图改善了一下代码，通过各种 Test 快得飞起！这么好的方法不可能没有人比我先想到，查了 google 才知道有个概念叫<em>有限状态机</em>，有门课叫 <em>Protocol Engineering</em>，我的视野还太小。最后发一张 TCP 的状态转移图，感受下 TCP 的复杂性。</p>
+<h2 id="u540E_u8BDD"><a href="#u540E_u8BDD" class="headerlink" title="后话"></a>后话</h2><p>Part A部分我花了不少时间，主要还是当初没有理清协议，有多个 Test 通不过，代码结构推到了一遍又一遍。在机缘巧合下（debug下）发现协议和数电中的状态转移图有紧密的联系。然后尝试用状态转移图来表示协议，没想到还真可以。根据状态转移图改善了一下代码，通过各种 Test 快得飞起！这么好的方法不可能没有人比我先想到，查了 google 才知道有个概念叫<em>有限状态机</em>，有门课叫 <em>Protocol Engineering</em>，我的视野还太小。最后发一张 TCP 的状态转移图，感受下 TCP 的复杂性。</p>
 <p><img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Tcp_state_diagram_fixed_new.svg" alt=""></p>
-<h2 id="Ref-">Ref.</h2><blockquote>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref."></a>Ref.</h2><blockquote>
 <p><a href="http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html" target="_blank" rel="external">lab2#Part A</a></p>
 <p><a href="https://en.wikipedia.org/wiki/Protocol" target="_blank" rel="external">WIKI#Protocol</a></p>
 <p><a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="_blank" rel="external">WIKI#FSM</a></p>
@@ -494,7 +494,7 @@ Communications protocol, a defined set of rules and regulations that determine h
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -503,7 +503,7 @@ Communications protocol, a defined set of rules and regulations that determine h
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -558,7 +558,7 @@ Communications protocol, a defined set of rules and regulations that determine h
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Protocol"><span class="nav-number">1.</span> <span class="nav-text">Protocol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Finite_State_Machines_(FSM)"><span class="nav-number">2.</span> <span class="nav-text">Finite State Machines (FSM)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Protocol_and_FSM"><span class="nav-number">3.</span> <span class="nav-text">Protocol and FSM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implement_a_Protocol"><span class="nav-number">4.</span> <span class="nav-text">Implement a Protocol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Viewservice"><span class="nav-number">5.</span> <span class="nav-text">Viewservice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Viewservice_FSM"><span class="nav-number">6.</span> <span class="nav-text">Viewservice FSM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后话"><span class="nav-number">7.</span> <span class="nav-text">后话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref-"><span class="nav-number">8.</span> <span class="nav-text">Ref.</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Protocol"><span class="nav-number">1.</span> <span class="nav-text">Protocol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Finite_State_Machines__28FSM_29"><span class="nav-number">2.</span> <span class="nav-text">Finite State Machines (FSM)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Protocol_and_FSM"><span class="nav-number">3.</span> <span class="nav-text">Protocol and FSM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implement_a_Protocol"><span class="nav-number">4.</span> <span class="nav-text">Implement a Protocol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Viewservice"><span class="nav-number">5.</span> <span class="nav-text">Viewservice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Viewservice_FSM"><span class="nav-number">6.</span> <span class="nav-text">Viewservice FSM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u540E_u8BDD"><span class="nav-number">7.</span> <span class="nav-text">后话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">8.</span> <span class="nav-text">Ref.</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -836,6 +836,29 @@ Communications protocol, a defined set of rules and regulations that determine h
 
   
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
   

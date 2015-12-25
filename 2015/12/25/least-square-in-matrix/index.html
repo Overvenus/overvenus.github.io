@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="Hacking,JavaScript," />
+  <meta name="keywords" content="Matlab," />
 
 
 
@@ -47,21 +47,16 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
 
 
-<meta name="description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
+<meta name="description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
 <meta property="og:type" content="article">
-<meta property="og:title" content="解除尔雅公开课暂停">
-<meta property="og:url" content="http://neilsh.me/2015/11/29/erya-no-pause/index.html">
+<meta property="og:title" content="最小二乘法的矩阵形式">
+<meta property="og:url" content="http://neilsh.me/2015/12/25/least-square-in-matrix/index.html">
 <meta property="og:site_name" content="Neil">
-<meta property="og:description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
-<meta property="og:image" content="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg">
-<meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg">
-<meta property="og:updated_time" content="2015-12-25T02:00:59.000Z">
+<meta property="og:description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
+<meta property="og:updated_time" content="2015-12-25T13:58:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="解除尔雅公开课暂停">
-<meta name="twitter:description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
+<meta name="twitter:title" content="最小二乘法的矩阵形式">
+<meta name="twitter:description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -73,7 +68,7 @@
 
 
 
-  <title> 解除尔雅公开课暂停 | Neil </title>
+  <title> 最小二乘法的矩阵形式 | Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -207,7 +202,7 @@
             
             
               
-                解除尔雅公开课暂停
+                最小二乘法的矩阵形式
               
             
           </h1>
@@ -216,8 +211,8 @@
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-11-29T22:04:04+08:00" content="2015-11-29">
-              2015-11-29
+            <time itemprop="dateCreated" datetime="2015-12-25T10:10:28+08:00" content="2015-12-25">
+              2015-12-25
             </time>
           </span>
 
@@ -227,8 +222,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2015/11/29/erya-no-pause/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/29/erya-no-pause/" itemprop="commentsCount"></span>
+              <a href="/2015/12/25/least-square-in-matrix/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/25/least-square-in-matrix/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -247,27 +242,50 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="u6076_u5FC3_u7684_u6682_u505C"><a href="#u6076_u5FC3_u7684_u6682_u505C" class="headerlink" title="恶心的暂停"></a>恶心的暂停</h2><p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
-<h2 id="u8FC7_u7A0B"><a href="#u8FC7_u7A0B" class="headerlink" title="过程"></a>过程</h2><p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：<br><a id="more"></a><br><img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt=""><br>这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#eryaPlayer'</span>).pauseMovie();</span><br></pre></td></tr></table></figure></p>
-<p>视频就暂停了。</p>
-<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg" alt=""></p>
-<p>再输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onblur = <span class="literal">null</span></span><br></pre></td></tr></table></figure></p>
-<p>上面命令执行完之后，暂停的限制就解除了。 LOL</p>
-<h2 id="u811A_u672C"><a href="#u811A_u672C" class="headerlink" title="脚本"></a>脚本</h2><p>我并没有学过 js，只能照葫芦画瓢，根据官方文档来写[<a href="http://wiki.greasespot.net/Greasemonkey_Manual" target="_blank" rel="external">2</a>]。如果哪里出错或写的不好，欢迎提出来。</p>
-<p>Firefox + Greasemonkey[<a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" target="_blank" rel="external">3</a>]，把脚本拖入浏览器即使用。</p>
-<script src="https://gist.github.com/Overvenus/c41a34f7e039b9207210.js"></script>
-
-
-<h2 id="u5DF2_u77E5_u95EE_u9898"><a href="#u5DF2_u77E5_u95EE_u9898" class="headerlink" title="已知问题"></a>已知问题</h2><ol>
-<li>无法去除随机暂停及验证码暂停。</li>
-<li>Chrome 无法使用。</li>
-</ol>
-<h2 id="u94FE_u63A5"><a href="#u94FE_u63A5" class="headerlink" title="链接"></a>链接</h2><blockquote>
-<p>[1]: <a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">Event listeners popup, @media sidebar, Cubic bezier editor + more – Firefox Developer Tools Episode 33</a></p>
-<p>[2]: <a href="http://wiki.greasespot.net/Greasemonkey_Manual" target="_blank" rel="external">Greasemonkey Manual - GreaseSpot Wiki</a></p>
-<p>[3]: <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" target="_blank" rel="external">Greasemonkey :: Add-ons for Firefox</a></p>
+        <span itemprop="articleBody"><h2 id="u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><a href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5" class="headerlink" title="拟合曲线与最小二乘法"></a>拟合曲线与最小二乘法</h2><p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
+<p>最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :</p>
+<p>$$<br>\begin{align}<br>\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\<br>y &amp;= \hat{y} + \delta<br>\end{align}<br>$$</p>
+<p>$\delta$ 是残差，这是回归方程与真实值存在出入的原因[1]。</p>
+<p>根据 m 个数据点 $(x_i, y_i),i=1,2,3⋯,m$ 可以定义一个代表偏离程度的函数:</p>
+<p>$$<br>S(\beta_0, \beta_1, \dots, \beta_n) = \sum_{j = 1}^m [y_i - f(x; \beta_0, \beta_1, \dots,\beta_n)]^2 = \sum \delta<br>$$</p>
+<p>当 $S(\beta_0, \beta_1, \dots,\beta_n)$ 取得最小值时，此时的 $\beta_0, \beta_1, \dots,\beta_n$ 即为回归方程的回归系数，也是最小二乘解。</p>
+<a id="more"></a>
+<h2 id="u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u5F62_u5F0F"><a href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u5F62_u5F0F" class="headerlink" title="最小二乘矩阵形式"></a>最小二乘矩阵形式</h2><p>多组测量数据 $(x_i,y_i),i=1,2,3⋯,m$ 可以构成两个行列式[2]：</p>
+<p>$$ X=\begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_m \end{bmatrix}, Y=\begin{bmatrix} y_1 \\ y_2 \\ y_3 \\ \vdots \\ y_m \end{bmatrix} $$</p>
+<p>将多组数据代入到回归方程 $f$ 后，可得：</p>
+<p>$$<br>Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \dots + \beta_n X^n + \Delta<br>$$</p>
+<p>$$<br>\Delta = \begin{bmatrix}<br>\delta_1 \\ \delta_2 \\ \delta_3 \\ \vdots \\ \delta_m<br>\end{bmatrix} , \beta=\begin{bmatrix}<br>\beta_0 \\ \beta_1 \\ \vdots \\ \beta_n<br>\end{bmatrix}<br>$$</p>
+<p>再将 X 的转化为范德蒙德行列式：</p>
+<p>$$<br>V=\begin{bmatrix}<br>1 &amp; x_1 &amp; x_1^2 &amp; \dots &amp; x_1^{n} \\<br>1 &amp; x_2 &amp; x_2^2 &amp; \dots &amp; x_2^{n} \\<br>1 &amp; x_3 &amp; x_3^2 &amp; \dots &amp; x_3^{n} \\<br>\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp;\vdots \\<br>1 &amp; x_m &amp; x_m^2 &amp; \dots &amp; x_m^{n}<br>\end{bmatrix}<br>$$</p>
+<p>综上，可得：<br>$$<br>V\beta \approx Y \Rightarrow \Delta = \hat{Y} - Y = V\beta - Y<br>$$</p>
+<p>$\hat{Y}$ 为 $\hat{y_i}$构成的列向量。</p>
+<p>因为 $\Delta$ 的范数: $\Vert \Delta \Vert = \left( \sum_{i = 1}^m \delta_i^2 \right)^\frac{1}2$，所以求最小二乘解即可转化为如何使 $\Delta$ 的范数最小。</p>
+<p>$$<br>\Vert \Delta \Vert^2  = \sum{\delta_i^2}<br>                      = \begin{bmatrix}<br>                         \delta_1 \delta_2 \dots \delta_n<br>                        \end{bmatrix} \begin{bmatrix}\delta_1 \\<br>                                                     \delta_2 \\<br>                                                     \vdots \\<br>                                                     \delta_n<br>                                      \end{bmatrix}<br>                      = \delta^T \delta<br>$$</p>
+<p>$$<br>\Vert \Delta \Vert^2 = \Vert Y - V\beta \Vert^2 = \left( Y - V\beta \right)^T\left( Y - V\beta \right)<br>$$</p>
+<h2 id="u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u7B97_u6CD5"><a href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u7B97_u6CD5" class="headerlink" title="最小二乘矩阵算法"></a>最小二乘矩阵算法</h2><blockquote>
+<p>Let the scalar $\alpha$ be defined by<br>$$\alpha = Y^T X$$<br>where Y is n × 1, X is n × 1, and both Y and X are functions of the vector z. Then<br>$$\frac{d(\alpha)}{d(z)} = X^T\frac{d(Y)}{d(z)}+Y^T\frac{d(X)}{d(z)}$$</p>
 </blockquote>
-<p>End.</p>
+<p>根据上面定理，可得：<br>$$<br>\frac{d\Delta}{d\beta} = \frac{d}{d\beta}\left(\left( Y - V\beta \right)^T\left( Y - V\beta \right)\right) = -2V^T\left(Y-V\beta\right)<br>$$</p>
+<p>为使 $\Delta$ 最小，可使 $\frac{d\Delta}{d\beta} = 0 \Rightarrow -2V^T\left(Y-V\beta\right) = 0$。</p>
+<p>目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。<br>&lt;!– 这三个算法应用在计算机中时，有几点需要注意：</p>
+<ol>
+<li>计算机中，浮点数的精度有限，当数过小时，就成0.</li>
+<li>–&gt;</li>
+</ol>
+<!--
+TOOD: 
+ 0. 是否可逆，奇异矩阵
+ 1. 计算机精度问题
+ 2. 算法稳定问题
+-->
+<h3 id="Normal_equations"><a href="#Normal_equations" class="headerlink" title="Normal equations"></a>Normal equations</h3><p>$$<br>\begin{align}<br>-2V^T\left(Y-V\beta\right) &amp;= 0\\<br>V^T V\beta &amp;= V^TY \\<br>\beta &amp;= \left(V^T V\right)^{-1}V^T Y<br>\end{align}<br>$$<br>这个算法的时间复杂度最小，计算 $\beta$ 速度最快。但是在计算机中，浮点数的精度有限，当某些矩阵中的数过小时，就算该矩阵是满秩的非奇异的，但在计算机中，该矩阵就是奇异矩阵。<br>这个问题在 Normal equations 尤为严重[2]。比如下面矩阵 D：<br>$$<br>\begin{align}<br>D &amp;= \begin{bmatrix}<br>1 &amp; 1 \\<br>0 &amp; \delta \\<br>\delta &amp; 0 \\<br>\end{bmatrix}, |\delta| = 1 \times \text{Minimum precision} \\<br>D^T D &amp;= \begin{bmatrix}<br>1+\delta^2 &amp; 1 \\<br>1 &amp; 1+\delta^2<br>\end{bmatrix}<br>\end{align}<br>$$<br>这个算法出现了 $\delta^2$，容易出现奇异矩阵，所以不稳定。</p>
+<h3 id="QR-Factorization"><a href="#QR-Factorization" class="headerlink" title="QR-Factorization"></a>QR-Factorization</h3><p>QR-Factorization 要比 Normal equations 稳定。<br>这个算法先把 $V$ 进行 QR 分解[<a href="https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems" target="_blank" rel="external">3</a>]: $QR = V$<br>$$<br>\begin{align}<br>V^T V \beta &amp;= V^T Y \\<br>(QR)^T Q R \beta &amp;= (Q R)^T Y \\<br>R^T Q^T Q R \beta &amp;= R^T Q^T Y \\<br>R^T R \beta &amp;= R^T Q^T Y \\<br>R\beta &amp;= Q^T Y \\<br>\beta &amp;= R^{-1} Q^T Y<br>\end{align}<br>$$<br>由于 R 是一个上三角矩阵，所以求解很方便。这个也是 Matlab 中<code>polyfit</code>合的算法[2]。</p>
+<h2 id="u53C2_u8003_u6587_u732E"><a href="#u53C2_u8003_u6587_u732E" class="headerlink" title="参考文献"></a>参考文献</h2><blockquote>
+<p>[1] Chatterjee, Samprit, Ali S. Hadi, and Bertram Price. 2000. Regression analysis by example. New York: Wiley.</p>
+<p>[2] Moler, Cleve B. Numerical Computing with MATLAB: Revised Reprint. Siam, 2008.</p>
+<p>[3] Wikipedia contributors, “QR decomposition,” Wikipedia, The Free Encyclopedia, <a href="https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems" target="_blank" rel="external">https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems</a> (accessed November 23, 2015).</p>
+</blockquote>
+<!-- Links -->
 </span>
       
     </div>
@@ -276,9 +294,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Hacking/" rel="tag">#Hacking</a>
-          
-            <a href="/tags/JavaScript/" rel="tag">#JavaScript</a>
+            <a href="/tags/Matlab/" rel="tag">#Matlab</a>
           
         </div>
       
@@ -287,17 +303,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/25/paxos_digest/" rel="next" title="paxos-digest">
-                <i class="fa fa-chevron-left"></i> paxos-digest
+              <a href="/2015/11/29/erya-no-pause/" rel="next" title="解除尔雅公开课暂停">
+                <i class="fa fa-chevron-left"></i> 解除尔雅公开课暂停
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/12/25/least-square-in-matrix/" rel="prev" title="最小二乘法的矩阵形式">
-                最小二乘法的矩阵形式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -430,7 +442,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u6076_u5FC3_u7684_u6682_u505C"><span class="nav-number">1.</span> <span class="nav-text">恶心的暂停</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FC7_u7A0B"><span class="nav-number">2.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u811A_u672C"><span class="nav-number">3.</span> <span class="nav-text">脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5DF2_u77E5_u95EE_u9898"><span class="nav-number">4.</span> <span class="nav-text">已知问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u94FE_u63A5"><span class="nav-number">5.</span> <span class="nav-text">链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><span class="nav-number">1.</span> <span class="nav-text">拟合曲线与最小二乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u5F62_u5F0F"><span class="nav-number">2.</span> <span class="nav-text">最小二乘矩阵形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u7B97_u6CD5"><span class="nav-number">3.</span> <span class="nav-text">最小二乘矩阵算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Normal_equations"><span class="nav-number">3.1.</span> <span class="nav-text">Normal equations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QR-Factorization"><span class="nav-number">3.2.</span> <span class="nav-text">QR-Factorization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u6587_u732E"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -485,9 +497,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'neilsh';
-      var disqus_identifier = '2015/11/29/erya-no-pause/';
-      var disqus_title = '解除尔雅公开课暂停';
-      var disqus_url = 'http://neilsh.me/2015/11/29/erya-no-pause/';
+      var disqus_identifier = '2015/12/25/least-square-in-matrix/';
+      var disqus_title = '最小二乘法的矩阵形式';
+      var disqus_url = 'http://neilsh.me/2015/12/25/least-square-in-matrix/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

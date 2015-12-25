@@ -47,20 +47,20 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
 
 
-<meta name="description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
-MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物">
+<meta name="description" content="##引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
+##MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址">
 <meta property="og:type" content="article">
 <meta property="og:title" content="内核的启动和建立虚拟内存">
 <meta property="og:url" content="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/index.html">
 <meta property="og:site_name" content="Neil">
-<meta property="og:description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
-MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物">
+<meta property="og:description" content="##引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
+##MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg">
 <meta property="og:updated_time" content="2015-11-07T04:04:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内核的启动和建立虚拟内存">
-<meta name="twitter:description" content="引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
-MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物">
+<meta name="twitter:description" content="##引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
+##MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -246,8 +246,8 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
       
 
       
-        <span itemprop="articleBody"><h2 id="引言">引言</h2><p>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf" target="_blank" rel="external">The UNIX Time-Sharing System</a>。</p>
-<h2 id="MMU的工作机制">MMU的工作机制</h2><p><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。<br><code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
+        <span itemprop="articleBody"><p>##引言<br>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf" target="_blank" rel="external">The UNIX Time-Sharing System</a>。</p>
+<p>##MMU的工作机制<br><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。<br><code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
 <p>本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。<br>先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：<br><a id="more"></a><br><img src="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg" alt=""><br>术语说明：</p>
 <blockquote>
 <p><code>page</code>: <code>MMU</code> 在逻辑上把内存分割为一个一个4KB大小的块。<br><code>page table</code>: 一个 <code>page</code>，大小4KB，内容是<em>1024个</em>指向不同 <code>page</code> 的地址及其权限。<br><code>page directory</code>：一个 <code>page</code>，大小4KB，内容是<em>1024个</em>指向不同 <code>page table</code> 的地址及其权限。<br><code>cr3</code>: x86 CPU 中的一个寄存器，存有一个32位的地址，指向一个 <code>page directory</code>。</p>
@@ -261,14 +261,15 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 <blockquote>
 <p>1 x 1024 x 1024 x (4 x 1024) = 4GB<br>one <code>cr3</code> points to one <code>page directory</code><br>one <code>page directory</code> has 1024 <code>page tables</code><br>one <code>page table</code> has 1024 <code>pages</code><br>one <code>page</code> has 4KB memory</p>
 </blockquote>
-<h2 id="BootLoader_到内核">BootLoader 到内核</h2><p>BIOS 把硬盘第一个扇区的数据(BootLoader)加载到内存物理地址<code>0x7c00</code>后，便把<code>eip = 7c00</code>，CPU 开始执行内存<code>7c00</code>处(BootLoader)的代码，此时 CPU 还未开启 <code>PAGING</code>，并处于16位模式。BootLoager要做的就是关闭中断，开启保护模式，进入32位工作状态，并且把硬盘中的内核加载代内存<code>0x10000</code>处，然后把硬件的使用权移交给内核。</p>
-<h2 id="内核初期的内存映射">内核初期的内存映射</h2><h3 id="开启_MMU">开启 MMU</h3><p>内核接管硬件后，所有的地址都是物理地址，<code>eip</code>寄存器指向物理地址的内核指令。之后，内核第一时间开启了<code>MMU</code>。下面是 JOS 内核启动的头几条汇编代码，在<code>entry.S</code>文件中。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line"><span class="preprocessor"># The Multiboot header</span></span><br><span class="line">.align <span class="number">4</span></span><br><span class="line">.<span class="keyword">long</span> MULTIBOOT_HEADER_MAGIC</span><br><span class="line">.<span class="keyword">long</span> MULTIBOOT_HEADER_FLAGS</span><br><span class="line">.<span class="keyword">long</span> CHECKSUM</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># '_start' specifies the ELF entry point.  Since we haven't set up</span></span><br><span class="line"><span class="preprocessor"># virtual memory when the bootloader enters this code, we need the</span></span><br><span class="line"><span class="preprocessor"># bootloader to jump to the *physical* address of the entry point.</span></span><br><span class="line">.globl		_start</span><br><span class="line">_start = RELOC(entry)</span><br><span class="line"></span><br><span class="line">.globl entry</span><br><span class="line">entry:</span><br><span class="line">	movw	$<span class="number">0x1234</span>,<span class="number">0x472</span>			<span class="preprocessor"># warm boot</span></span><br><span class="line"></span><br><span class="line">    <span class="preprocessor"># entry_pgdir 是 page directory，被硬编码在内核中。</span></span><br><span class="line">	movl	$(RELOC(entry_pgdir)), %eax</span><br><span class="line">	movl	%eax, %cr3</span><br><span class="line">	<span class="preprocessor"># Turn on paging.  开启 PAGING</span></span><br><span class="line">	movl	%cr0, %eax</span><br><span class="line">	orl	$(CR0_PE|CR0_PG|CR0_WP), %eax</span><br><span class="line">	movl	%eax, %cr0</span><br><span class="line"><span class="preprocessor">#接下面的汇编代码</span></span><br></pre></td></tr></table></figure></p>
+<p>##BootLoader 到内核<br>BIOS 把硬盘第一个扇区的数据(BootLoader)加载到内存物理地址<code>0x7c00</code>后，便把<code>eip = 7c00</code>，CPU 开始执行内存<code>7c00</code>处(BootLoader)的代码，此时 CPU 还未开启 <code>PAGING</code>，并处于16位模式。BootLoager要做的就是关闭中断，开启保护模式，进入32位工作状态，并且把硬盘中的内核加载代内存<code>0x10000</code>处，然后把硬件的使用权移交给内核。</p>
+<p>##内核初期的内存映射</p>
+<p>###开启 MMU<br>内核接管硬件后，所有的地址都是物理地址，<code>eip</code>寄存器指向物理地址的内核指令。之后，内核第一时间开启了<code>MMU</code>。下面是 JOS 内核启动的头几条汇编代码，在<code>entry.S</code>文件中。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line"><span class="preprocessor"># The Multiboot header</span></span><br><span class="line">.align <span class="number">4</span></span><br><span class="line">.<span class="keyword">long</span> MULTIBOOT_HEADER_MAGIC</span><br><span class="line">.<span class="keyword">long</span> MULTIBOOT_HEADER_FLAGS</span><br><span class="line">.<span class="keyword">long</span> CHECKSUM</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># '_start' specifies the ELF entry point.  Since we haven't set up</span></span><br><span class="line"><span class="preprocessor"># virtual memory when the bootloader enters this code, we need the</span></span><br><span class="line"><span class="preprocessor"># bootloader to jump to the *physical* address of the entry point.</span></span><br><span class="line">.globl		_start</span><br><span class="line">_start = RELOC(entry)</span><br><span class="line"></span><br><span class="line">.globl entry</span><br><span class="line">entry:</span><br><span class="line">	movw	$<span class="number">0x1234</span>,<span class="number">0x472</span>			<span class="preprocessor"># warm boot</span></span><br><span class="line"></span><br><span class="line">    <span class="preprocessor"># entry_pgdir 是 page directory，被硬编码在内核中。</span></span><br><span class="line">	movl	$(RELOC(entry_pgdir)), %eax</span><br><span class="line">	movl	%eax, %cr3</span><br><span class="line">	<span class="preprocessor"># Turn on paging.  开启 PAGING</span></span><br><span class="line">	movl	%cr0, %eax</span><br><span class="line">	orl	$(CR0_PE|CR0_PG|CR0_WP), %eax</span><br><span class="line">	movl	%eax, %cr0</span><br><span class="line"><span class="preprocessor">#接下面的汇编代码</span></span><br></pre></td></tr></table></figure></p>
 <p>但此时虚拟内存还没有建立，代码操作的地址还是物理地址，所用的 page directory 及 page table 硬编码在内核中，虚拟地址和物理地址是<em>一对一且连续映射</em>的。<br>下面是硬编码在内核中的 page directory。大意就是虚拟地址<code>0x0000 0000～0x0040 0000</code>和<code>0xF000 0000～0xF040 0000</code>都映射到物理地址<code>0x0000 0000～0x0040 0000</code>，且是<em>连续一对一映射</em>。换句话说，整个内核的虚拟地址就是物理地址加上<code>KERNBASE</code>，详细下面内核结构会解释。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KERNBASE 0xF0000000</span></span><br><span class="line">__attribute__((__aligned__(PGSIZE)))  <span class="comment">// 4KB 对齐</span></span><br><span class="line"><span class="keyword">pde_t</span> entry_pgdir[<span class="number">1024</span>] = &#123;</span><br><span class="line">	<span class="comment">// Map VA's [0, 4MB) to PA's [0, 4MB)</span></span><br><span class="line">	[<span class="number">0</span>]</span><br><span class="line">		= ((<span class="keyword">uintptr_t</span>)entry_pgtable - KERNBASE) + PTE_P,</span><br><span class="line">	<span class="comment">// Map VA's [KERNBASE, KERNBASE+4MB) to PA's [0, 4MB)</span></span><br><span class="line">	[KERNBASE&gt;&gt;<span class="number">22</span>]</span><br><span class="line">		= ((<span class="keyword">uintptr_t</span>)entry_pgtable - KERNBASE) + PTE_P + PTE_W</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>不过这样做还是有问题，这个 page directory 及其 page table 必须要在内存开始的头4MB之内，不然MMU就会报错。不过幸好，我们的内核还不大，4MB足够装下，实际上还有许多空闲的空间。</p>
-<h3 id="工作在虚拟地址">工作在虚拟地址</h3><p>开启<code>MMU</code>后，所有对内存的操作都会经过翻译，CPU 的<code>eip</code>寄存器还是指向低位的物理地址，为了后续代码的正常工作，我们要把它转化为指向高位的虚拟地址，在 JOS 这个转化很简单，其实质就是加上<code>KERNBASE</code>，理由见上面<code>entry_pgdir</code>。</p>
+<p>###工作在虚拟地址<br>开启<code>MMU</code>后，所有对内存的操作都会经过翻译，CPU 的<code>eip</code>寄存器还是指向低位的物理地址，为了后续代码的正常工作，我们要把它转化为指向高位的虚拟地址，在 JOS 这个转化很简单，其实质就是加上<code>KERNBASE</code>，理由见上面<code>entry_pgdir</code>。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#接上面的汇编代码。</span></span><br><span class="line">	<span class="preprocessor"># Now paging is enabled, but we're still running at a low EIP</span></span><br><span class="line">	<span class="preprocessor"># (why is this okay?).  Jump up above KERNBASE before entering</span></span><br><span class="line">	<span class="preprocessor"># C code.</span></span><br><span class="line">	mov	$relocated, %eax</span><br><span class="line">	jmp	*%eax</span><br><span class="line">relocated:  <span class="preprocessor"># 此处的虚拟地址=物理地址+KERNBASE</span></span><br><span class="line">    <span class="preprocessor"># ...</span></span><br></pre></td></tr></table></figure>
 <p><code>jmp</code>之后内存就正式工作完成初期的<code>PAGING</code>。<br>为什么要<code>jmp</code>一下（疑惑脸）？请看<code>内核的结构</code>。</p>
-<h3 id="内核的结构">内核的结构</h3><p>我<em>认为（可能有错，还没学过编译）</em>：</p>
+<p>###内核的结构<br>我<em>认为（可能有错，还没学过编译）</em>：</p>
 <blockquote>
 <p>JOS 的内核是虚拟按地址链接的，所有<code>symbol</code>（，代码和静态变量？）的地址都是虚拟地址（对于内核初期来说）。</p>
 </blockquote>
@@ -279,41 +280,42 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 <p>再看内核的 symbol table：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ objdump -t obj/kern/kernel | sed &#39;1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d&#39;&#10;addr.      sym.&#10;0010000c T _start&#10;f010000c T entry&#10;f010002f t relocated&#10;f010003e t spin&#10;f0100040 T i386_init&#10;f0100094 T _panic&#10;f01000f3 T _warn&#10;...</span><br></pre></td></tr></table></figure>
 <p><code>0010000c T _start</code> 和 <code>f010000c T entry</code> 它们就是上面的汇编代码中的<code>_start</code> 和 <code>entry</code>。<br>这意味着 <code>0010000c</code> 和 <code>f010000c</code> 指向的是同一处。因为内核从<code>f010000c</code>开始链接，所以<code>relocated</code>处于高位（即虚拟地址）。<code>jmp</code>是为了使<code>eip</code>指向虚拟地址的内核代码。<code>mov</code>是为了防止 assembler 把<code>jmp</code>“优化”掉。</p>
-<h3 id="内核建立虚拟内存">内核建立虚拟内存</h3><p>完成上面的工作之后，内核开始建立虚拟内存。<br><code>pmap.c</code>是 JOS 的内存管理的源码文件。下面是一些关键的全局变量。</p>
+<p>###内核建立虚拟内存<br>完成上面的工作之后，内核开始建立虚拟内存。<br><code>pmap.c</code>是 JOS 的内存管理的源码文件。下面是一些关键的全局变量。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// These variables are set by i386_detect_memory()</span></span><br><span class="line"><span class="keyword">size_t</span> npages;			<span class="comment">// Amount of physical memory (in pages)</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">size_t</span> npages_basemem;	<span class="comment">// Amount of base memory (in pages)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// These variables are set in mem_init()</span></span><br><span class="line"><span class="keyword">pde_t</span> *kern_pgdir;		<span class="comment">// Kernel's initial page directory</span></span><br><span class="line"><span class="comment">// 用来代表`page`的结构体</span></span><br><span class="line"><span class="keyword">struct</span> PageInfo *pages;		<span class="comment">// Physical page state array</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">struct</span> PageInfo *page_free_list;	<span class="comment">// Free list of physical pages</span></span><br></pre></td></tr></table></figure>
 <p><code>void mem_init(void);</code>这函数初始化硬件的全部内存并建立虚拟内存。下面我节选了部分代码。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mem_init</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// Find out how much memory the machine has (npages &amp; npages_basemem).</span></span><br><span class="line">	<span class="comment">// 首先探测所有的机器有多少内存</span></span><br><span class="line">	i386_detect_memory();</span><br><span class="line">	<span class="comment">//////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	<span class="comment">// create initial page directory.</span></span><br><span class="line">	<span class="comment">// 用一个简易的 alloc 函数为变量`kern_pgdir`申请一个`page`，</span></span><br><span class="line">	<span class="comment">// 此`page`在kernel之后。`kern_pgdir`指向一个高位的虚拟地址。</span></span><br><span class="line">	kern_pgdir = (<span class="keyword">pde_t</span> *) boot_alloc(PGSIZE);</span><br><span class="line">	<span class="built_in">memset</span>(kern_pgdir, <span class="number">0</span>, PGSIZE);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 把`kern_pgdir`所在的 page 的低位物理地址插入到`kern_pgdir`对应的槽中，</span></span><br><span class="line">	<span class="comment">// 并设置权限。Permissions: kernel R, user R</span></span><br><span class="line">	kern_pgdir[PDX(UVPT)] = PADDR(kern_pgdir) | PTE_U | PTE_P;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 为`PageInfo`申请空间，物理内存有多少就申请多少个`PageInfo`，这个链表在`kern_pgdir`之后</span></span><br><span class="line">	<span class="comment">// 这些`PageInfo`是为了新的内存管理机制做准备的，用以跟踪各`page`的使用情况。</span></span><br><span class="line">	pages = (<span class="keyword">struct</span> PageInfo *)boot_alloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> PageInfo) * npages);</span><br><span class="line">	<span class="comment">// 等等。。。</span></span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line">此时的物理内存的使用情况是这样的：</span><br></pre></td></tr></table></figure>
 <pre><code>[BASEMEM] &lt;------------- 0x00000000
-<span class="bullet">...
-</span><span class="bullet">...   </span>640KB
-<span class="bullet">...
-</span>[IOPHYSMEM] &lt;----------- 0x000A0000
-<span class="bullet">...
-</span><span class="bullet">...   </span>I/O hole
-<span class="bullet">...
-</span>[EXTPHYSMEM] &lt;---------- 0x00100000
-<span class="bullet">...
-</span>extern char entry[]; &lt;-- 0x0010000c
-<span class="bullet">...
-</span><span class="bullet">...   </span>kernel
-<span class="bullet">...
-</span>extern char end[]; &lt;---- 0x00113970
-<span class="bullet">...
-</span><span class="bullet">...   </span>由于4KB对齐，这会有空白
-<span class="bullet">...
-</span><span class="code">`kern_pgdir`</span>
-<span class="bullet">...
-</span><span class="bullet">....  </span>one page gap
-<span class="bullet">...
-</span><span class="code">`pages`</span> itself!
-<span class="bullet">...   </span>used!
-<span class="bullet">...   </span>...
-<span class="bullet">...   </span>used!
-<span class="bullet">...   </span>unused!
+...
+...   640KB
+...
+[IOPHYSMEM] &lt;----------- 0x000A0000
+...
+...   I/O hole
+...
+[EXTPHYSMEM] &lt;---------- 0x00100000
+...
+extern char entry[]; &lt;-- 0x0010000c
+...
+...   kernel
+...
+extern char end[]; &lt;---- 0x00113970
+...
+...   由于4KB对齐，这会有空白
+...
+`kern_pgdir`
+...
+....  one page gap
+...
+`pages` itself!
+...   used!
+...   ...
+...   used!
+...   unused!
 </code></pre><figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">之后的一些函数根据上面的图把已用的内存记录到`kern_pgdir`和`pagetable`中并设置权限。记录的方法大致是这样的：</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line"><span class="comment">// addr &gt;&gt; 22 取前10位</span></span><br><span class="line"><span class="comment">// (addr &gt;&gt;12) &amp; 0x3FF 取中间10位</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// log virtual_addr</span></span><br><span class="line">pagetable_phys_addr = kern_pgdir[virtual_addr&gt;&gt;<span class="number">22</span>]</span><br><span class="line">pagetable_phys_addr[<span class="params">(virtual_addr&gt;&gt;<span class="number">12</span>)</span> &amp; <span class="number">0</span>x3FF] = page_phys_addr</span><br><span class="line"></span><br><span class="line"><span class="comment">// `MMU` workflow</span></span><br><span class="line"><span class="comment">// virtual_addr to physical_addr</span></span><br><span class="line">pagetable_phys_addr = kern_pgdir[<span class="params">(virtual_addr)</span>&gt;&gt;<span class="number">22</span>]</span><br><span class="line">page_phys_addr = pagetable[<span class="params">(virtual_addr&gt;&gt;<span class="number">12</span>)</span> &amp; <span class="number">0</span>x3FF]</span><br><span class="line">physical_addr = <span class="params">(page_phy_addr &amp; <span class="number">0</span>x3FF)</span> | <span class="params">(virtual_addr &amp; <span class="number">0</span>xFFFFFC00)</span></span><br></pre></td></tr></table></figure>
 <p>最后，内核实现了虚拟内存，并能动态分配，可以多个虚拟地址指向同一物理地址。JOS 这种的管理方式使得<code>page</code>只有在被使用时才会记录到<code>pagetable</code>中，类似于 lazy initialization。<br>这种虚拟地址的记录方式也同样解释了为什么程序在使用一个野指针的时候会退出，因为这个野指针指向的地址该程序无权访问的可能性很大，一旦访问<code>MMU</code>会报<code>pagefault</code>，从而使程序退出。</p>
 <p>完整的 pmap.c 文件在<a href="/asset/code/pmap.c">这可以获取</a>，里面有比较完整的注释。</p>
-<h2 id="总结">总结</h2><p>JOS 内核一启动就开启<code>MMU</code>，用的<code>page directory</code>是手写的预先编译在内核中的。之后再建立一个新的<code>page directory</code>，这个<code>page directory</code>是可以动态增加减少记录的，此时 JOS 内存的初始化算是完成了。</p>
+<p>##总结</p>
+<p>JOS 内核一启动就开启<code>MMU</code>，用的<code>page directory</code>是手写的预先编译在内核中的。之后再建立一个新的<code>page directory</code>，这个<code>page directory</code>是可以动态增加减少记录的，此时 JOS 内存的初始化算是完成了。</p>
 <p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
 </span>
       
@@ -415,7 +417,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -424,7 +426,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -479,7 +481,7 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MMU的工作机制"><span class="nav-number">2.</span> <span class="nav-text">MMU的工作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BootLoader_到内核"><span class="nav-number">3.</span> <span class="nav-text">BootLoader 到内核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内核初期的内存映射"><span class="nav-number">4.</span> <span class="nav-text">内核初期的内存映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开启_MMU"><span class="nav-number">4.1.</span> <span class="nav-text">开启 MMU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工作在虚拟地址"><span class="nav-number">4.2.</span> <span class="nav-text">工作在虚拟地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核的结构"><span class="nav-number">4.3.</span> <span class="nav-text">内核的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核建立虚拟内存"><span class="nav-number">4.4.</span> <span class="nav-text">内核建立虚拟内存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -757,6 +759,29 @@ MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址�
 
   
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
   

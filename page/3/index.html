@@ -203,6 +203,92 @@
             
             
               
+                <a class="post-title-link" href="/2015/08/13/dispatch_and_handle_motionevent_in_android/" itemprop="url">
+                  Android触屏事件处理分发--以SwipeRefreshLayout为例
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-08-13T14:33:00+08:00" content="2015-08-13">
+              2015-08-13
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2015/08/13/dispatch_and_handle_motionevent_in_android/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/13/dispatch_and_handle_motionevent_in_android/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="PullToRefresh__u4E0E_SwipeRefreshLayout"><a href="#PullToRefresh__u4E0E_SwipeRefreshLayout" class="headerlink" title="PullToRefresh 与 SwipeRefreshLayout"></a>PullToRefresh 与 SwipeRefreshLayout</h2><p>这段时间我在 Easyinking 公司实习， 做安卓开发。之前的 App 中大量使用 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh">Android-PullToRefresh</a>。这个轮子很经典，在较久版本的安卓上面也很好使，不过作者已经放弃维护了，在我们的 App 上也发现了一个诡异的BUG：与WebView配合使用时，在网络环境差的情况下会出现一次下拉多次刷新的情况，症状就是整个网页在那上下抽搐。在官方支持库 support-v4:22 中自带了一个类似的 SwipeRefreshLayout，效果也是一级棒。由于两者的 API 设计差不多，使用的情景也几乎一样，所以可以无痛地从 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh">PullToRefresh</a> 转移过来。</p>
+<h2 id="u654F_u611F_u7684_SwipeRefreshLayout"><a href="#u654F_u611F_u7684_SwipeRefreshLayout" class="headerlink" title="敏感的 SwipeRefreshLayout"></a>敏感的 SwipeRefreshLayout</h2><p>从 PullToRefresh 转移到 SwipeRefreshLayout 大概花了十来分钟，初步测试出来的效果也令人满意。但是，实际使用中总会有意想不到的问题。我们把一个WebView放在了 SwipeRefreshLayout 中， 该 WebView 呈现的网页中有一个图片轮播，可左右滑动，下面的问题是 SwipeRefreshLayout 过于敏感，它把稍有下拉倾向的左右滑动全部拦截掉，并把他们当作下拉的手势，典型的 False Positive ， 处理的思路也很简单，既然是误报，过滤之即可。</p>
+<h3 id="u8BEF_u62A5_u7684_u624B_u52BF"><a href="#u8BEF_u62A5_u7684_u624B_u52BF" class="headerlink" title="误报的手势"></a><strong>误报的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1xydoiwoj20u01hcwoe.jpg" alt=""><img src="http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev1ys28bm4j20u01hc12q.jpg" alt=""></p>
+<h3 id="u7406_u60F3_u4E2D_u7684_u624B_u52BF"><a href="#u7406_u60F3_u4E2D_u7684_u624B_u52BF" class="headerlink" title="理想中的手势"></a><strong>理想中的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1ytgovwpj20u01hcgve.jpg" alt=""></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/08/13/dispatch_and_handle_motionevent_in_android/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/07/04/goto_and_topological_sorting/" itemprop="url">
                   GOTO与拓扑排序
                 </a>
@@ -246,8 +332,8 @@
 
       
         
-          <h2 id="goto_in_C">goto in C</h2><p><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
-<h3 id="goto,_break,_continue">goto, break, continue</h3><p><code>goto</code>,<code>break</code>,<code>continue</code> 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的<code>{}</code>(scope)。<br><code>continue</code> 只能写在loop里，不然编译报：continue statement not within loop，<br><code>break</code>只能写在loop或者switch中，不然编译报：break statement not within loop or switch。<br><code>goto</code>则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。<br>
+          <p>##goto in C<br><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
+<p>###goto, break, continue<br><code>goto</code>,<code>break</code>,<code>continue</code> 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的<code>{}</code>(scope)。<br><code>continue</code> 只能写在loop里，不然编译报：continue statement not within loop，<br><code>break</code>只能写在loop或者switch中，不然编译报：break statement not within loop or switch。<br><code>goto</code>则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。<br>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/07/04/goto_and_topological_sorting/#more" rel="contents">
               Read more &raquo;
@@ -330,8 +416,8 @@
 
       
         
-          <h2 id="引言">引言</h2><p>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf">The UNIX Time-Sharing System</a>。</p>
-<h2 id="MMU的工作机制">MMU的工作机制</h2><p><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。<br><code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
+          <p>##引言<br>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf">The UNIX Time-Sharing System</a>。</p>
+<p>##MMU的工作机制<br><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。<br><code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
 <p>本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。<br>先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：<br>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/07/02/os_setup_and_virtual_memory_setup/#more" rel="contents">
@@ -481,7 +567,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -490,7 +576,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -649,6 +735,29 @@
 
   
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
   

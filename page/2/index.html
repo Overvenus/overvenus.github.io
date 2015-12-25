@@ -203,6 +203,97 @@
             
             
               
+                <a class="post-title-link" href="/2015/10/08/golang_note/" itemprop="url">
+                  Go Note
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-08T22:03:00+08:00" content="2015-10-08">
+              2015-10-08
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2015/10/08/golang_note/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/08/golang_note/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <!--
+TODO:
+   - ...
+-->
+<h2 id="new_2C_make_and_Local_variable"><a href="#new_2C_make_and_Local_variable" class="headerlink" title="new, make and Local variable"></a><code>new</code>, <code>make</code> and Local variable</h2><p>In short: new allocates memory; make initializes the slice, map, and channel types; local variable may be not <em>local</em> at all.</p>
+<blockquote>
+<p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
+<p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).  </p>
+<p>Local variable: unlike in C, it’s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., <code>return &amp;File{fd: fd, name: name}</code>)<br> – <a href="https://golang.org/doc/effective_go.html#allocation_new">Effective GO#allocation_new</a><br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/08/golang_note/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/09/21/fragment_structured_Computer_Organization/" itemprop="url">
                   ReadingFragment Structured Computer Organization
                 </a>
@@ -246,8 +337,8 @@
 
       
         
-          <h1 id="Parallelism_in_Computer_Organization">Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics — the speed of light and memory becomes the bottleneck of computer.</p>
-<h2 id="Parallelism_in_CPU">Parallelism in CPU</h2><ul>
+          <h1 id="Parallelism_in_Computer_Organization"><a href="#Parallelism_in_Computer_Organization" class="headerlink" title="Parallelism in Computer Organization"></a>Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics – the speed of light and memory becomes the bottleneck of computer.</p>
+<h2 id="Parallelism_in_CPU"><a href="#Parallelism_in_CPU" class="headerlink" title="Parallelism in CPU"></a>Parallelism in CPU</h2><ul>
 <li>Pipeline<ul>
 <li>Sinlge pipeline</li>
 <li>Mutli-pipeline</li>
@@ -257,7 +348,7 @@
 <li>Array Computers, single control unit and a array of processor.</li>
 <li>Multiprocessors, multiple CPUs shared with one common  main memory, and communicate through BUS.</li>
 </ul>
-<h2 id="Parallelism_in_Memory">Parallelism in Memory</h2><ul>
+<h2 id="Parallelism_in_Memory"><a href="#Parallelism_in_Memory" class="headerlink" title="Parallelism in Memory"></a>Parallelism in Memory</h2><ul>
 <li>Modern CPUs has it’s own private memory, cache.</li>
 <li>Redundant Array of Inexpensive Disk(RAID), there are 5 level of RAID. I will be surprised if one system supports all 5 level RAID, especially level 2 and 3 ;-)<ul>
 <li>Level 0, strips data(typically, a sector) over disks in round robin fashion. No backups.</li>
@@ -347,8 +438,8 @@
 
       
         
-          <h1 id="Jupyter_与_IPython">Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
-<h1 id="BUG？">BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
+          <h1 id="Jupyter__u4E0E_IPython"><a href="#Jupyter__u4E0E_IPython" class="headerlink" title="Jupyter 与 IPython"></a>Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
+<h1 id="BUG_uFF1F"><a href="#BUG_uFF1F" class="headerlink" title="BUG？"></a>BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
 <blockquote>
 <p><a href="https://ipython.org/">Jupyter and the future of IPython - IPython</a></p>
 </blockquote>
@@ -548,92 +639,6 @@
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/08/13/dispatch_and_handle_motionevent_in_android/" itemprop="url">
-                  Android触屏事件处理分发--以SwipeRefreshLayout为例
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            Posted on
-            <time itemprop="dateCreated" datetime="2015-08-13T14:33:00+08:00" content="2015-08-13">
-              2015-08-13
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2015/08/13/dispatch_and_handle_motionevent_in_android/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/13/dispatch_and_handle_motionevent_in_android/" itemprop="commentsCount"></span>
-              </a>
-            </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="PullToRefresh_与_SwipeRefreshLayout">PullToRefresh 与 SwipeRefreshLayout</h2><p>这段时间我在 Easyinking 公司实习， 做安卓开发。之前的 App 中大量使用 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh">Android-PullToRefresh</a>。这个轮子很经典，在较久版本的安卓上面也很好使，不过作者已经放弃维护了，在我们的 App 上也发现了一个诡异的BUG：与WebView配合使用时，在网络环境差的情况下会出现一次下拉多次刷新的情况，症状就是整个网页在那上下抽搐。在官方支持库 support-v4:22 中自带了一个类似的 SwipeRefreshLayout，效果也是一级棒。由于两者的 API 设计差不多，使用的情景也几乎一样，所以可以无痛地从 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh">PullToRefresh</a> 转移过来。</p>
-<h2 id="敏感的_SwipeRefreshLayout">敏感的 SwipeRefreshLayout</h2><p>从 PullToRefresh 转移到 SwipeRefreshLayout 大概花了十来分钟，初步测试出来的效果也令人满意。但是，实际使用中总会有意想不到的问题。我们把一个WebView放在了 SwipeRefreshLayout 中， 该 WebView 呈现的网页中有一个图片轮播，可左右滑动，下面的问题是 SwipeRefreshLayout 过于敏感，它把稍有下拉倾向的左右滑动全部拦截掉，并把他们当作下拉的手势，典型的 False Positive ， 处理的思路也很简单，既然是误报，过滤之即可。</p>
-<h3 id="误报的手势"><strong>误报的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1xydoiwoj20u01hcwoe.jpg" alt=""><img src="http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev1ys28bm4j20u01hc12q.jpg" alt=""></p>
-<h3 id="理想中的手势"><strong>理想中的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1ytgovwpj20u01hcgve.jpg" alt=""></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/08/13/dispatch_and_handle_motionevent_in_android/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -676,7 +681,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -685,7 +690,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -844,6 +849,29 @@
 
   
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
   
