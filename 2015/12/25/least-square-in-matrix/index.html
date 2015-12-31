@@ -53,7 +53,7 @@
 <meta property="og:url" content="http://neilsh.me/2015/12/25/least-square-in-matrix/index.html">
 <meta property="og:site_name" content="Neil">
 <meta property="og:description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
-<meta property="og:updated_time" content="2015-12-25T13:58:44.000Z">
+<meta property="og:updated_time" content="2015-12-31T06:52:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="最小二乘法的矩阵形式">
 <meta name="twitter:description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
@@ -268,11 +268,12 @@
 </blockquote>
 <p>根据上面定理，可得：<br>$$<br>\frac{d\Delta}{d\beta} = \frac{d}{d\beta}\left(\left( Y - V\beta \right)^T\left( Y - V\beta \right)\right) = -2V^T\left(Y-V\beta\right)<br>$$</p>
 <p>为使 $\Delta$ 最小，可使 $\frac{d\Delta}{d\beta} = 0 \Rightarrow -2V^T\left(Y-V\beta\right) = 0$。</p>
-<p>目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。<br>&lt;!– 这三个算法应用在计算机中时，有几点需要注意：</p>
-<ol>
-<li>计算机中，浮点数的精度有限，当数过小时，就成0.</li>
-<li>–&gt;</li>
-</ol>
+<p>目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。</p>
+<!--
+这三个算法应用在计算机中时，有几点需要注意：
+ 1. 计算机中，浮点数的精度有限，当数过小时，就成0.
+ 2. 
+-->
 <!--
 TOOD: 
  0. 是否可逆，奇异矩阵
@@ -311,6 +312,10 @@ TOOD:
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/31/summary-2015/" rel="prev" title="2015年总结">
+                2015年总结 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -398,7 +403,7 @@ TOOD:
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -407,7 +412,7 @@ TOOD:
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

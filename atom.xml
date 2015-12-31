@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2015-12-25T13:58:44.000Z</updated>
+  <updated>2015-12-31T06:52:40.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -15,11 +15,99 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[2015年总结]]></title>
+    <link href="http://neilsh.me/2015/12/31/summary-2015/"/>
+    <id>http://neilsh.me/2015/12/31/summary-2015/</id>
+    <published>2015-12-31T03:12:58.000Z</published>
+    <updated>2015-12-31T06:52:40.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="u516C_u5F00_u8BFE"><a href="#u516C_u5F00_u8BFE" class="headerlink" title="公开课"></a>公开课</h2><p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。<br>等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。<br>论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
+<ul>
+<li>Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf" target="_blank" rel="external">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf</a>.</li>
+<li>Belay, Adam, George Prekas, Ana Klimovic, Samuel Grossman, Christos Kozyrakis, and Edouard Bugnion. 2014. “IX: A Protected Dataplane Operating System for High Throughput and Low Latency.” Proceedings of the 11th USENIX Conference on Operating Systems Design and Implementation, 49–65. <a href="http://dl.acm.org/citation.cfm?id=2685048.2685053" target="_blank" rel="external">http://dl.acm.org/citation.cfm?id=2685048.2685053</a>.</li>
+<li>Boyd-wickizer, Silas, M Frans Kaashoek, Robert Morris, and Nickolai Zeldovich. 2012. “Non-Scalable Locks Are Dangerous.” Proceedings of the Linux Symposium. <a href="http://ns1.fs.net/papers/linux:lock.pdf" target="_blank" rel="external">http://ns1.fs.net/papers/linux:lock.pdf</a>.</li>
+<li>Clements, Austin T, M Frans Kaashoek, and Nickolai Zeldovich. 2013. “RadixVM : Scalable Address Spaces for Multithreaded Applications.” EuroSys, 211–24. doi:10.1145/2465351.2465373.</li>
+<li>Engler, D R, M F Kaaspoek, and J O’Toole. 1995. “ExoKernel: An Operating System Architecture for Application Level Resource Management.” Proceedings of the 15th ACM Symposium on Operating System Principles 1 (212): 256–66. doi:<a href="http://doi.acm.org/10.1145/224056.224076" target="_blank" rel="external">http://doi.acm.org/10.1145/224056.224076</a>.</li>
+<li>Hunt, Galen C, and James R Larus. 2007. “Singularity: Rethinking the Software Stack.” Contract 41 (2): 37–49. doi:10.1145/1243418.1243424.<a id="more"></a></li>
+<li>Kivity, Avi, Uri Lublin, Anthony Liguori, Yaniv Kamay, and Dor Laor. 2007. “Kvm: The Linux Virtual Machine Monitor.” Proceedings of the Linux Symposium 1: 225–30. <a href="https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225" target="_blank" rel="external">https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225</a>.</li>
+<li>Ritchie, D M, and K Thompson. 1974. “The UNIX Time-Sharing System.” Communications of the ACM 17 (7): 365–75.</li>
+<li>Ritchie, Dm. 1984. “The Evolution of the Unix Time-Sharing System.” AT&amp;T Bell Laboratories Technical Journal 63 (6): 1577–93. doi:10.1007/3-540-09745-7_2.</li>
+<li>Simon, Herbert A, Philosophical Society, and No Dec. 2007. “The Architecture of Complexity” 106 (6): 467–82. doi:10.2307/985254.</li>
+<li>Tang, Shuo, Haohui Mai, and S.T. King. 2010. “Trust and Protection in the Illinois Browser Operating System.” Proceedings of the 9th USENIX Symposium on Operating Systems Design and Implementation (OSDI ’10), no. October: 17–31. <a href="http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf" target="_blank" rel="external">http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf</a>.</li>
+<li>Bolosky, William J, Dexter Bradshaw, Randolph B Haagens, Norbert P Kusters, and Peng Li. 2011. “Paxos Replicated State Machines as the Basis of a High-Performance Data Store 2 . Paxos Replicated State Ma- Chines.” System, 11.</li>
+<li>Cao, P, E Felten, and K Li. 1994. “Implementation and Performance of Application-Controlled File Caching.” Proceedings of the First Symposium on Operating Systems Design and Implementation, 165–78. citeseer.ifi.unizh.ch/cao94implementation.html.</li>
+<li>Chandra, Tushar, Robert Griesemer, and Joshua Redstone. 2007a. “Paxos Made Live - An Engineering Perspective ( 2006 Invited Talk ).” Perspective 7: 398–407. doi:10.1145/1281100.1281103.</li>
+<li>Tushar Chandra, Robert Griesemer, and Joshua Redstone. 2007b. “Paxos Made Live: An Engineering Perspective.” Proceedings of the Twenty-Sixth Annual ACM Symposium on Principles of Distributed Computing, 398–407. doi:10.1145/1281100.1281103.</li>
+<li>Corbett, James C, Jeffrey Dean, Michael Epstein, Andrew Fikes, Christopher Frost, J J Furman, Sanjay Ghemawat, et al. 2012. “Spanner : Google ’ S Globally-Distributed Database.” Proceedings of OSDI 2012, 1–14. doi:10.1145/2491245.</li>
+<li>Cully, Brendan, Geoffrey Lefebvre, and Dutch Meyer. 2008. “Remus: High Availability via Asynchronous Virtual Machine Replication.” Proceedings of the 5th … vi: 161–74. <a href="http://portal.acm.org/citation.cfm?id=1387589.1387601\nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/" target="_blank" rel="external">http://portal.acm.org/citation.cfm?id=1387589.1387601\nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/</a>.</li>
+<li>Dean, Jeffrey, and Sanjay Ghemawat. n.d. “MapReduce : Simplified Data Processing on Large Clusters,” 137–49.</li>
+<li>Fischer, Michael J., Nancy A. Lynch, and Michael S. Paterson. 1985. “Impossibility of Distributed Consensus with One Faulty Process.” Journal of the ACM 32 (2): 374–82. doi:10.1145/3149.214121.</li>
+<li>Hunt, Patrick, Mahadev Konar, Fp Junqueira, and Benjamin Reed. 2010. “ZooKeeper: Wait-Free Coordination for Internet-Scale Systems.” USENIX Annual Technical … 8: 11–11. <a href="http://portal.acm.org/citation.cfm?id=1855851\nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf" target="_blank" rel="external">http://portal.acm.org/citation.cfm?id=1855851\nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf</a>.</li>
+<li>Lamport, Leslie. 2001. “Paxos Made Simple.” ACM SIGACT News 32 (4): 51–58. doi:10.1145/568425.568433.</li>
+<li>Liskov, Barbara, and James Cowling. 2012. “Viewstamped Replication Revisited,” no. MIT-CSAIL-TR-2012-021: 1–14.</li>
+<li>Liskov, Barbara, Sanjay Ghemawat, Robert Gruber, Paul Johnson, and Liuba Shrira. 1991. “Replication in the Harp File System.” ACM SIGOPS Operating Systems Review 25: 226–38. doi:10.1145/121133.121169.</li>
+<li>Nightingale, Edmund B., Jeremy Elson, and Jinliang Fan. 2012. “Flat Datacenter Storage.” OSDI’12 Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 1–15. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf" target="_blank" rel="external">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf</a>.</li>
+<li>Drepper, Ulrich. 2007. “What Every Programmer Should Know about Memory.” Red Hat, Inc 3: 114. doi:10.1.1.91.957.</li>
+<li>Fähndrich, Manuel, Mark Aiken, Chris Hawblitzel, Orion Hodson, Galen Hunt, James R. Larus, and Steven Levi. 2006. “Language Support for Fast and Reliable Message-Based Communication in Singularity OS.” ACM SIGOPS Operating Systems Review 40 (4): 177. doi:10.1145/1218063.1217953.</li>
+<li>Mellor-crummey, John M, and Michael L Scott. 1991. “Calable Synchronization on.” Computer 9 (1): 21–65. doi:10.1145/103727.103729.</li>
+<li>Patterson, David a., Garth Gibson, and Randy H. Katz. 1988. “A Case for Redundant Arrays of Inexpensive Disks (RAID).” ACM SIGMOD Record 17 (3): 109–16. doi:10.1145/971701.50214.</li>
+<li>Saltzer, J. H., D. P. Reed, and D. D. Clark. 1984. “End-to-End Arguments in System Design.” ACM Transactions on Computer Systems 2 (4): 277–88. doi:10.1145/357401.357402.</li>
+<li>Savage, Stefan, Michael Burrows, Greg Nelson, Patrick Sobalvarro, and Thomas Anderson. 1997. “Eraser: A Dynamic Data Race Detector for Multithreaded Programs.” ACM Transactions on Computer Systems 15 (4): 391–411. doi:10.1145/265924.265927.</li>
+<li>Tweedie, SC. 1998. “Journaling the Linux ext2fs Filesystem.” The Fourth Annual Linux Expo, 1–8. <a href="http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf" target="_blank" rel="external">http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf</a>.</li>
+<li>Uhlig, Rich, Gil Neiger, Dion Rodgers, Amy L. Santoni, Fernando C M Martins, Andrew V. Anderson, Steven M. Bennett, Alain Kägi, Felix H. Leung, and Larry Smith. 2005. “Intel Virtualization Technology.” Computer 38 (5): 48–56. doi:10.1109/MC.2005.163.</li>
+</ul>
+<h2 id="u9879_u76EE"><a href="#u9879_u76EE" class="headerlink" title="项目"></a>项目</h2><p>JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中<a href="/2015/08/30/few_words_about_6_828/">学到了很多</a>。<br>其他的几个小项目倒更像是玩具，不在这显摆了。</p>
+<h2 id="u9605_u8BFB"><a href="#u9605_u8BFB" class="headerlink" title="阅读"></a>阅读</h2><p>在 2015 一年里，书看得不是很多。我很难想象别人是怎么看完那长长的书单的。</p>
+<ul>
+<li>《C和指针》 Kenneth A. Reek</li>
+<li>《算法导论》前四章 Thomas H.Cormen, Charles E.Leiserson, Ronald L.Rivest, Clifford Stein</li>
+<li>《计算机系统设计原理》 Jerome H. Saltzer, M. Frans Kaashoek</li>
+<li>《现代操作系统》 Andrew S. Tanenbaum</li>
+<li>《Structured Computer Organization》 Andrew S. Tanenbaum</li>
+<li>《深入理解计算机系统》 Randal E.Bryant, David R.O’Hallaron</li>
+</ul>
+<hr>
+<ul>
+<li>《如何阅读一本书》 莫提默·J. 艾德勒 查尔斯·范多伦 </li>
+<li>《民主的细节》 刘瑜</li>
+<li>《黑客与画家》 Paul Graham</li>
+<li>《三体》 刘慈欣</li>
+<li>《百年孤独》 加西亚·马尔克斯 著 范晔 译</li>
+<li>《基督山伯爵》 大仲马</li>
+</ul>
+<h2 id="u503C_u5F97_u4E00_u63D0"><a href="#u503C_u5F97_u4E00_u63D0" class="headerlink" title="值得一提"></a>值得一提</h2><ul>
+<li>在 StackOverflow 回答了第一个问题，并被接受！</li>
+</ul>
+<p><img src="http://ww3.sinaimg.cn/large/7f793092gw1ezitciklpaj20gf0cqjv1.jpg" alt=""></p>
+<ul>
+<li>Github 第一个 Pull Requset，并被合并。我为科学计算界做出了贡献！ (΄◞ิ౪◟ิ‵)</li>
+<li>第一份实习，简历有点料了！</li>
+<li>建立了这个博客！</li>
+</ul>
+<h2 id="u603B_u7ED3_u4E0E_u5C55_u671B"><a href="#u603B_u7ED3_u4E0E_u5C55_u671B" class="headerlink" title="总结与展望"></a>总结与展望</h2><p>总的来说，我在 2015 年过得很充实，对自己的表现也很满意。有得必有失，这一年我长期呆在实验室里，闷头看书学习，户外活动急剧减少，2014 年坚持的跑步也在今年放弃了，起初安慰自己没时间，有雾霾，但真的是这样吗？时间就像海绵里的水，只要你愿意挤，总还是有的。雾霾天跑步诚然不利于健康，但也不会天天都是。<br>2016 年，我希望自己在保持这股子学习劲儿的同时还要恢复户外锻炼的习惯，就酱。</p>
+<p>完</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="u516C_u5F00_u8BFE"><a href="#u516C_u5F00_u8BFE" class="headerlink" title="公开课"></a>公开课</h2><p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。<br>等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。<br>论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
+<ul>
+<li>Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf</a>.</li>
+<li>Belay, Adam, George Prekas, Ana Klimovic, Samuel Grossman, Christos Kozyrakis, and Edouard Bugnion. 2014. “IX: A Protected Dataplane Operating System for High Throughput and Low Latency.” Proceedings of the 11th USENIX Conference on Operating Systems Design and Implementation, 49–65. <a href="http://dl.acm.org/citation.cfm?id=2685048.2685053">http://dl.acm.org/citation.cfm?id=2685048.2685053</a>.</li>
+<li>Boyd-wickizer, Silas, M Frans Kaashoek, Robert Morris, and Nickolai Zeldovich. 2012. “Non-Scalable Locks Are Dangerous.” Proceedings of the Linux Symposium. <a href="http://ns1.fs.net/papers/linux:lock.pdf">http://ns1.fs.net/papers/linux:lock.pdf</a>.</li>
+<li>Clements, Austin T, M Frans Kaashoek, and Nickolai Zeldovich. 2013. “RadixVM : Scalable Address Spaces for Multithreaded Applications.” EuroSys, 211–24. doi:10.1145/2465351.2465373.</li>
+<li>Engler, D R, M F Kaaspoek, and J O’Toole. 1995. “ExoKernel: An Operating System Architecture for Application Level Resource Management.” Proceedings of the 15th ACM Symposium on Operating System Principles 1 (212): 256–66. doi:<a href="http://doi.acm.org/10.1145/224056.224076">http://doi.acm.org/10.1145/224056.224076</a>.</li>
+<li>Hunt, Galen C, and James R Larus. 2007. “Singularity: Rethinking the Software Stack.” Contract 41 (2): 37–49. doi:10.1145/1243418.1243424.]]>
+    
+    </summary>
+    
+      <category term="Summary" scheme="http://neilsh.me/tags/Summary/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[最小二乘法的矩阵形式]]></title>
     <link href="http://neilsh.me/2015/12/25/least-square-in-matrix/"/>
     <id>http://neilsh.me/2015/12/25/least-square-in-matrix/</id>
     <published>2015-12-25T02:10:28.000Z</published>
-    <updated>2015-12-25T13:58:44.000Z</updated>
+    <updated>2015-12-31T06:52:40.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><a href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5" class="headerlink" title="拟合曲线与最小二乘法"></a>拟合曲线与最小二乘法</h2><p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
 <p>最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :</p>
 <p>$$<br>\begin{align}<br>\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\<br>y &amp;= \hat{y} + \delta<br>\end{align}<br>$$</p>
@@ -45,11 +133,12 @@
 </blockquote>
 <p>根据上面定理，可得：<br>$$<br>\frac{d\Delta}{d\beta} = \frac{d}{d\beta}\left(\left( Y - V\beta \right)^T\left( Y - V\beta \right)\right) = -2V^T\left(Y-V\beta\right)<br>$$</p>
 <p>为使 $\Delta$ 最小，可使 $\frac{d\Delta}{d\beta} = 0 \Rightarrow -2V^T\left(Y-V\beta\right) = 0$。</p>
-<p>目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。<br>&lt;!– 这三个算法应用在计算机中时，有几点需要注意：</p>
-<ol>
-<li>计算机中，浮点数的精度有限，当数过小时，就成0.</li>
-<li>–&gt;</li>
-</ol>
+<p>目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。</p>
+<!--
+这三个算法应用在计算机中时，有几点需要注意：
+ 1. 计算机中，浮点数的精度有限，当数过小时，就成0.
+ 2. 
+-->
 <!--
 TOOD: 
  0. 是否可逆，奇异矩阵
