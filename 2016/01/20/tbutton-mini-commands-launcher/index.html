@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="Hacking,JavaScript," />
+  <meta name="keywords" content="Python,Ubuntu," />
 
 
 
@@ -47,21 +47,17 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
 
 
-<meta name="description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
+<meta name="description" content="众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：killall -s STOP vmware-vmx过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机">
 <meta property="og:type" content="article">
-<meta property="og:title" content="解除尔雅公开课暂停">
-<meta property="og:url" content="http://neilsh.me/2015/11/29/erya-no-pause/index.html">
+<meta property="og:title" content="TButton 命令行快捷按钮">
+<meta property="og:url" content="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/index.html">
 <meta property="og:site_name" content="Neil">
-<meta property="og:description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
-<meta property="og:image" content="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg">
-<meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg">
-<meta property="og:updated_time" content="2016-01-20T04:08:49.000Z">
+<meta property="og:description" content="众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：killall -s STOP vmware-vmx过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机">
+<meta property="og:image" content="https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png">
+<meta property="og:updated_time" content="2016-01-20T05:52:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="解除尔雅公开课暂停">
-<meta name="twitter:description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
+<meta name="twitter:title" content="TButton 命令行快捷按钮">
+<meta name="twitter:description" content="众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：killall -s STOP vmware-vmx过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -73,7 +69,7 @@
 
 
 
-  <title> 解除尔雅公开课暂停 | Neil </title>
+  <title> TButton 命令行快捷按钮 | Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -207,7 +203,7 @@
             
             
               
-                解除尔雅公开课暂停
+                TButton 命令行快捷按钮
               
             
           </h1>
@@ -216,8 +212,8 @@
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-11-29T22:04:04+08:00" content="2015-11-29">
-              2015-11-29
+            <time itemprop="dateCreated" datetime="2016-01-20T12:02:36+08:00" content="2016-01-20">
+              2016-01-20
             </time>
           </span>
 
@@ -227,8 +223,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2015/11/29/erya-no-pause/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/29/erya-no-pause/" itemprop="commentsCount"></span>
+              <a href="/2016/01/20/tbutton-mini-commands-launcher/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/20/tbutton-mini-commands-launcher/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -247,27 +243,13 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="u6076_u5FC3_u7684_u6682_u505C"><a href="#u6076_u5FC3_u7684_u6682_u505C" class="headerlink" title="恶心的暂停"></a>恶心的暂停</h2><p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
-<h2 id="u8FC7_u7A0B"><a href="#u8FC7_u7A0B" class="headerlink" title="过程"></a>过程</h2><p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：<br><a id="more"></a><br><img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt=""><br>这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#eryaPlayer'</span>).pauseMovie();</span><br></pre></td></tr></table></figure></p>
-<p>视频就暂停了。</p>
-<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg" alt=""></p>
-<p>再输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onblur = <span class="literal">null</span></span><br></pre></td></tr></table></figure></p>
-<p>上面命令执行完之后，暂停的限制就解除了。 LOL</p>
-<h2 id="u811A_u672C"><a href="#u811A_u672C" class="headerlink" title="脚本"></a>脚本</h2><p>我并没有学过 js，只能照葫芦画瓢，根据官方文档来写[<a href="http://wiki.greasespot.net/Greasemonkey_Manual" target="_blank" rel="external">2</a>]。如果哪里出错或写的不好，欢迎提出来。</p>
-<p>Firefox + Greasemonkey[<a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" target="_blank" rel="external">3</a>]，把脚本拖入浏览器即使用。</p>
-<script src="https://gist.github.com/Overvenus/c41a34f7e039b9207210.js"></script>
-
-
-<h2 id="u5DF2_u77E5_u95EE_u9898"><a href="#u5DF2_u77E5_u95EE_u9898" class="headerlink" title="已知问题"></a>已知问题</h2><ol>
-<li>无法去除随机暂停及验证码暂停。</li>
-<li>Chrome 无法使用。</li>
-</ol>
-<h2 id="u94FE_u63A5"><a href="#u94FE_u63A5" class="headerlink" title="链接"></a>链接</h2><blockquote>
-<p>[1]: <a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">Event listeners popup, @media sidebar, Cubic bezier editor + more – Firefox Developer Tools Episode 33</a></p>
-<p>[2]: <a href="http://wiki.greasespot.net/Greasemonkey_Manual" target="_blank" rel="external">Greasemonkey Manual - GreaseSpot Wiki</a></p>
-<p>[3]: <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" target="_blank" rel="external">Greasemonkey :: Add-ons for Firefox</a></p>
-</blockquote>
-<p>End.</p>
+        <span itemprop="articleBody"><p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：<br><code>killall -s STOP vmware-vmx</code><br>过不了多久，之前还呼啸的风扇现在已经没声音了。<br>要恢复被暂停的虚拟机也非常简单，只要输入：<br><code>killall -s CONT vmware-vmx</code></p>
+<p>如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。</p>
+<p>不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 <a href="https://github.com/overvenus/tbutton" target="_blank" rel="external"><strong>TButton</strong></a>.</p>
+<p><strong>TButton</strong> 是用 Python 写的，做做很快，没花多长时间。参考了 <a href="https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py" target="_blank" rel="external">goagent-gtk</a><br>开源在 <em><a href="https://github.com/overvenus/tbutton" target="_blank" rel="external">https://github.com/overvenus/tbutton</a></em><br>昨天我做了一个安装包，<a href="https://github.com/overvenus/tbutton/releases" target="_blank" rel="external">戳这下载</a><br>目前的功能还很简单，就只有“点击 –&gt; 执行”，对应的命令要在配置文件中写好，配置文件在 <code>~/.config/Tbutton/</code></p>
+<p>下面是 TButton 在我电脑上的使用效果：</p>
+<p><img src="https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png" alt=""></p>
+<p>PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。</p>
 </span>
       
     </div>
@@ -276,9 +258,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Hacking/" rel="tag">#Hacking</a>
+            <a href="/tags/Python/" rel="tag">#Python</a>
           
-            <a href="/tags/JavaScript/" rel="tag">#JavaScript</a>
+            <a href="/tags/Ubuntu/" rel="tag">#Ubuntu</a>
           
         </div>
       
@@ -287,17 +269,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/25/paxos_digest/" rel="next" title="paxos-digest">
-                <i class="fa fa-chevron-left"></i> paxos-digest
+              <a href="/2015/12/31/summary-2015/" rel="next" title="2015年总结">
+                <i class="fa fa-chevron-left"></i> 2015年总结
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/12/25/least-square-in-matrix/" rel="prev" title="最小二乘法的矩阵形式">
-                最小二乘法的矩阵形式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -430,7 +408,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u6076_u5FC3_u7684_u6682_u505C"><span class="nav-number">1.</span> <span class="nav-text">恶心的暂停</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FC7_u7A0B"><span class="nav-number">2.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u811A_u672C"><span class="nav-number">3.</span> <span class="nav-text">脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5DF2_u77E5_u95EE_u9898"><span class="nav-number">4.</span> <span class="nav-text">已知问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u94FE_u63A5"><span class="nav-number">5.</span> <span class="nav-text">链接</span></a></li></ol></div>
+              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -485,9 +463,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'neilsh';
-      var disqus_identifier = '2015/11/29/erya-no-pause/';
-      var disqus_title = '解除尔雅公开课暂停';
-      var disqus_url = 'http://neilsh.me/2015/11/29/erya-no-pause/';
+      var disqus_identifier = '2016/01/20/tbutton-mini-commands-launcher/';
+      var disqus_title = 'TButton 命令行快捷按钮';
+      var disqus_url = 'http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

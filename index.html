@@ -203,6 +203,95 @@
             
             
               
+                <a class="post-title-link" href="/2016/01/20/tbutton-mini-commands-launcher/" itemprop="url">
+                  TButton 命令行快捷按钮
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2016-01-20T12:02:36+08:00" content="2016-01-20">
+              2016-01-20
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/01/20/tbutton-mini-commands-launcher/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/20/tbutton-mini-commands-launcher/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：<br><code>killall -s STOP vmware-vmx</code><br>过不了多久，之前还呼啸的风扇现在已经没声音了。<br>要恢复被暂停的虚拟机也非常简单，只要输入：<br><code>killall -s CONT vmware-vmx</code></p>
+<p>如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。</p>
+<p>不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 <a href="https://github.com/overvenus/tbutton" target="_blank" rel="external"><strong>TButton</strong></a>.</p>
+<p><strong>TButton</strong> 是用 Python 写的，做做很快，没花多长时间。参考了 <a href="https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py" target="_blank" rel="external">goagent-gtk</a><br>开源在 <em><a href="https://github.com/overvenus/tbutton" target="_blank" rel="external">https://github.com/overvenus/tbutton</a></em><br>昨天我做了一个安装包，<a href="https://github.com/overvenus/tbutton/releases" target="_blank" rel="external">戳这下载</a><br>目前的功能还很简单，就只有“点击 –&gt; 执行”，对应的命令要在配置文件中写好，配置文件在 <code>~/.config/Tbutton/</code></p>
+<p>下面是 TButton 在我电脑上的使用效果：</p>
+<p><img src="https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png" alt=""></p>
+<p>PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/12/31/summary-2015/" itemprop="url">
                   2015年总结
                 </a>
@@ -544,101 +633,11 @@
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/11/09/make_slice_map_channel/" itemprop="url">
-                  make slice map channel
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            Posted on
-            <time itemprop="dateCreated" datetime="2015-11-09T15:16:55+08:00" content="2015-11-09">
-              2015-11-09
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2015/11/09/make_slice_map_channel/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/09/make_slice_map_channel/" itemprop="commentsCount"></span>
-              </a>
-            </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="Where_is_the_make_implemention_3F"><a href="#Where_is_the_make_implemention_3F" class="headerlink" title="Where is the make implemention?"></a>Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[<a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8">1</a>] are also implemented in this package.</p>
-<h2 id="Slices"><a href="#Slices" class="headerlink" title="Slices"></a>Slices</h2><p>Source file: go/src/runtime/slice.go</p>
-<h3 id="Data_structure"><a href="#Data_structure" class="headerlink" title="Data structure"></a>Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Underlying data structure of <strong>slice</strong> is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of <code>unsafe.Pointer</code></p>
-<blockquote>
-<p>// Pointer represents a pointer to an arbitrary type.  There are four special operations<br>// available for type Pointer that are not available for other types.<br>//  1) A pointer value of any type can be converted to a Pointer.<br>//  2) A Pointer can be converted to a pointer value of any type.  &lt;– here!<br>//  3) A uintptr can be converted to a Pointer.<br>//  4) A Pointer can be converted to a uintptr.<br>// Pointer therefore allows a program to defeat the type system and read and write<br>// arbitrary memory. It should be used with extreme care.</p>
-</blockquote>
-<p>In my opinion, <strong>Pointer</strong> in Go and <strong>*void</strong> in C are very like. <em>Pointer</em> anesthetizes the type system and read and write arbitrary memory in Go. <em>*void</em> can be converted to any type without warning in C.</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/11/09/make_slice_map_channel/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -676,7 +675,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -685,7 +684,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -746,8 +745,8 @@
     <footer id="footer" class="footer">
       <div class="footer-inner"> <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2015</span>
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

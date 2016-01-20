@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2015-12-31T06:55:48.000Z</updated>
+  <updated>2016-01-20T05:52:44.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -15,11 +15,35 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[TButton 命令行快捷按钮]]></title>
+    <link href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/"/>
+    <id>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</id>
+    <published>2016-01-20T04:02:36.000Z</published>
+    <updated>2016-01-20T05:52:44.000Z</updated>
+    <content type="html"><![CDATA[<p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：<br><code>killall -s STOP vmware-vmx</code><br>过不了多久，之前还呼啸的风扇现在已经没声音了。<br>要恢复被暂停的虚拟机也非常简单，只要输入：<br><code>killall -s CONT vmware-vmx</code></p>
+<p>如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。</p>
+<p>不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 <a href="https://github.com/overvenus/tbutton" target="_blank" rel="external"><strong>TButton</strong></a>.</p>
+<p><strong>TButton</strong> 是用 Python 写的，做做很快，没花多长时间。参考了 <a href="https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py" target="_blank" rel="external">goagent-gtk</a><br>开源在 <em><a href="https://github.com/overvenus/tbutton" target="_blank" rel="external">https://github.com/overvenus/tbutton</a></em><br>昨天我做了一个安装包，<a href="https://github.com/overvenus/tbutton/releases" target="_blank" rel="external">戳这下载</a><br>目前的功能还很简单，就只有“点击 –&gt; 执行”，对应的命令要在配置文件中写好，配置文件在 <code>~/.config/Tbutton/</code></p>
+<p>下面是 TButton 在我电脑上的使用效果：</p>
+<p><img src="https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png" alt=""></p>
+<p>PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以]]>
+    </summary>
+    
+      <category term="Python" scheme="http://neilsh.me/tags/Python/"/>
+    
+      <category term="Ubuntu" scheme="http://neilsh.me/tags/Ubuntu/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[2015年总结]]></title>
     <link href="http://neilsh.me/2015/12/31/summary-2015/"/>
     <id>http://neilsh.me/2015/12/31/summary-2015/</id>
     <published>2015-12-31T03:12:58.000Z</published>
-    <updated>2015-12-31T06:55:48.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u516C_u5F00_u8BFE"><a href="#u516C_u5F00_u8BFE" class="headerlink" title="公开课"></a>公开课</h2><p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。<br>等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。<br>论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
 <ul>
 <li>Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf" target="_blank" rel="external">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf</a>.</li>
@@ -107,7 +131,7 @@
     <link href="http://neilsh.me/2015/12/25/least-square-in-matrix/"/>
     <id>http://neilsh.me/2015/12/25/least-square-in-matrix/</id>
     <published>2015-12-25T02:10:28.000Z</published>
-    <updated>2015-12-31T06:55:48.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><a href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5" class="headerlink" title="拟合曲线与最小二乘法"></a>拟合曲线与最小二乘法</h2><p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
 <p>最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :</p>
 <p>$$<br>\begin{align}<br>\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\<br>y &amp;= \hat{y} + \delta<br>\end{align}<br>$$</p>
@@ -174,7 +198,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/29/erya-no-pause/"/>
     <id>http://neilsh.me/2015/11/29/erya-no-pause/</id>
     <published>2015-11-29T14:04:04.000Z</published>
-    <updated>2015-12-25T02:00:59.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u6076_u5FC3_u7684_u6682_u505C"><a href="#u6076_u5FC3_u7684_u6682_u505C" class="headerlink" title="恶心的暂停"></a>恶心的暂停</h2><p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
 <h2 id="u8FC7_u7A0B"><a href="#u8FC7_u7A0B" class="headerlink" title="过程"></a>过程</h2><p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：<br><a id="more"></a><br><img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt=""><br>这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#eryaPlayer'</span>).pauseMovie();</span><br></pre></td></tr></table></figure></p>
 <p>视频就暂停了。</p>
@@ -214,7 +238,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/25/paxos_digest/"/>
     <id>http://neilsh.me/2015/11/25/paxos_digest/</id>
     <published>2015-11-25T11:25:23.000Z</published>
-    <updated>2015-12-25T02:00:59.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">1</a>]<br>Here are some notes about Basic Paxos.</p>
 <h2 id="Three_roles_in_Paxos"><a href="#Three_roles_in_Paxos" class="headerlink" title="Three roles in Paxos"></a>Three roles in Paxos</h2><ol>
 <li>Proposers</li>
@@ -282,7 +306,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/09/make_slice_map_channel/"/>
     <id>http://neilsh.me/2015/11/09/make_slice_map_channel/</id>
     <published>2015-11-09T07:16:55.000Z</published>
-    <updated>2015-12-25T02:00:59.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Where_is_the_make_implemention_3F"><a href="#Where_is_the_make_implemention_3F" class="headerlink" title="Where is the make implemention?"></a>Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[<a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8" target="_blank" rel="external">1</a>] are also implemented in this package.</p>
 <h2 id="Slices"><a href="#Slices" class="headerlink" title="Slices"></a>Slices</h2><p>Source file: go/src/runtime/slice.go</p>
 <h3 id="Data_structure"><a href="#Data_structure" class="headerlink" title="Data structure"></a>Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -341,7 +365,7 @@ TOOD:
     <link href="http://neilsh.me/2015/10/23/protocol_and_fsm/"/>
     <id>http://neilsh.me/2015/10/23/protocol_and_fsm/</id>
     <published>2015-10-23T13:17:00.000Z</published>
-    <updated>2015-11-11T12:33:40.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h2><p>本文中 Protocol 特指通讯协议。<br>首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
 <blockquote>
 <p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  –<a href="https://en.wikipedia.org/wiki/Protocol" target="_blank" rel="external">WIKI#Protocol</a></p>
@@ -514,7 +538,7 @@ TOOD:
     <link href="http://neilsh.me/2015/10/08/golang_note/"/>
     <id>http://neilsh.me/2015/10/08/golang_note/</id>
     <published>2015-10-08T14:03:00.000Z</published>
-    <updated>2015-11-11T12:33:40.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<!--
 TODO:
    - ...
@@ -587,7 +611,7 @@ TODO:
     <link href="http://neilsh.me/2015/09/21/fragment_structured_Computer_Organization/"/>
     <id>http://neilsh.me/2015/09/21/fragment_structured_Computer_Organization/</id>
     <published>2015-09-21T11:44:00.000Z</published>
-    <updated>2015-11-11T12:33:40.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Parallelism_in_Computer_Organization"><a href="#Parallelism_in_Computer_Organization" class="headerlink" title="Parallelism in Computer Organization"></a>Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics – the speed of light and memory becomes the bottleneck of computer.</p>
 <h2 id="Parallelism_in_CPU"><a href="#Parallelism_in_CPU" class="headerlink" title="Parallelism in CPU"></a>Parallelism in CPU</h2><ul>
 <li>Pipeline<ul>
@@ -671,7 +695,7 @@ TODO:
     <link href="http://neilsh.me/2015/09/18/jupyter_core_406/"/>
     <id>http://neilsh.me/2015/09/18/jupyter_core_406/</id>
     <published>2015-09-18T12:39:00.000Z</published>
-    <updated>2015-11-11T12:33:40.000Z</updated>
+    <updated>2016-01-20T05:52:44.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Jupyter__u4E0E_IPython"><a href="#Jupyter__u4E0E_IPython" class="headerlink" title="Jupyter 与 IPython"></a>Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
 <h1 id="BUG_uFF1F"><a href="#BUG_uFF1F" class="headerlink" title="BUG？"></a>BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
 <blockquote>
@@ -705,9 +729,9 @@ TODO:
     
     </summary>
     
-      <category term="git" scheme="http://neilsh.me/tags/git/"/>
+      <category term="Git" scheme="http://neilsh.me/tags/Git/"/>
     
-      <category term="python" scheme="http://neilsh.me/tags/python/"/>
+      <category term="Python" scheme="http://neilsh.me/tags/Python/"/>
     
   </entry>
   
@@ -716,7 +740,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/30/few_words_about_6_828/"/>
     <id>http://neilsh.me/2015/08/30/few_words_about_6_828/</id>
     <published>2015-08-30T14:14:00.000Z</published>
-    <updated>2015-12-25T02:00:59.000Z</updated>
+    <updated>2016-01-20T04:08:49.000Z</updated>
     <content type="html"><![CDATA[<p>Recently I’ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
 <a id="more"></a>
 <h2 id="6-828_u7B80_u4ECB"><a href="#6-828_u7B80_u4ECB" class="headerlink" title="6.828简介"></a>6.828简介</h2><p>好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。</p>
