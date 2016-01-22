@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2016-01-22T09:53:12.000Z</updated>
+  <updated>2016-01-22T10:02:21.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -15,11 +15,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title><![CDATA[Debian packaging 教程]]></title>
-    <link href="http://neilsh.me/2016/01/20/debian%20packaging-step-by-step/"/>
-    <id>http://neilsh.me/2016/01/20/debian packaging-step-by-step/</id>
+    <title><![CDATA[Debian Packaging 教程]]></title>
+    <link href="http://neilsh.me/2016/01/20/debian-packaging-step-by-step/"/>
+    <id>http://neilsh.me/2016/01/20/debian-packaging-step-by-step/</id>
     <published>2016-01-20T06:22:58.000Z</published>
-    <updated>2016-01-22T09:53:12.000Z</updated>
+    <updated>2016-01-22T10:02:21.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u65B0_u624B_u4E4B_u75DB"><a href="#u65B0_u624B_u4E4B_u75DB" class="headerlink" title="新手之痛"></a>新手之痛</h2><p>说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> apt-<span class="preprocessor">get</span> install <span class="keyword">build-essential </span>devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts</span><br></pre></td></tr></table></figure></p>
 <p>这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)</p>
 <p>有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。</p>
@@ -139,7 +139,7 @@
     <link href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/"/>
     <id>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</id>
     <published>2016-01-20T04:02:36.000Z</published>
-    <updated>2016-01-22T09:53:12.000Z</updated>
+    <updated>2016-01-22T10:02:01.000Z</updated>
     <content type="html"><![CDATA[<p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入： </p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall -s STOP vmware-vmx</span><br></pre></td></tr></table></figure>
 <p>过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：</p>
@@ -168,7 +168,7 @@
     <link href="http://neilsh.me/2015/12/31/summary-2015/"/>
     <id>http://neilsh.me/2015/12/31/summary-2015/</id>
     <published>2015-12-31T03:12:58.000Z</published>
-    <updated>2016-01-22T09:43:36.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u516C_u5F00_u8BFE"><a href="#u516C_u5F00_u8BFE" class="headerlink" title="公开课"></a>公开课</h2><p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。<br>等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。<br>论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
 <ul>
 <li>Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf" target="_blank" rel="external">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf</a>.</li>
@@ -256,7 +256,7 @@
     <link href="http://neilsh.me/2015/12/25/least-square-in-matrix/"/>
     <id>http://neilsh.me/2015/12/25/least-square-in-matrix/</id>
     <published>2015-12-25T02:10:28.000Z</published>
-    <updated>2016-01-22T09:43:36.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><a href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5" class="headerlink" title="拟合曲线与最小二乘法"></a>拟合曲线与最小二乘法</h2><p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
 <p>最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :</p>
 <p>$$<br>\begin{align}<br>\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\<br>y &amp;= \hat{y} + \delta<br>\end{align}<br>$$</p>
@@ -323,7 +323,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/29/erya-no-pause/"/>
     <id>http://neilsh.me/2015/11/29/erya-no-pause/</id>
     <published>2015-11-29T14:04:04.000Z</published>
-    <updated>2016-01-22T09:43:36.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u6076_u5FC3_u7684_u6682_u505C"><a href="#u6076_u5FC3_u7684_u6682_u505C" class="headerlink" title="恶心的暂停"></a>恶心的暂停</h2><p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
 <h2 id="u8FC7_u7A0B"><a href="#u8FC7_u7A0B" class="headerlink" title="过程"></a>过程</h2><p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：<br><a id="more"></a><br><img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt=""><br>这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#eryaPlayer'</span>).pauseMovie();</span><br></pre></td></tr></table></figure></p>
 <p>视频就暂停了。</p>
@@ -363,7 +363,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/25/paxos_digest/"/>
     <id>http://neilsh.me/2015/11/25/paxos_digest/</id>
     <published>2015-11-25T11:25:23.000Z</published>
-    <updated>2016-01-22T09:43:36.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">1</a>]<br>Here are some notes about Basic Paxos.</p>
 <h2 id="Three_roles_in_Paxos"><a href="#Three_roles_in_Paxos" class="headerlink" title="Three roles in Paxos"></a>Three roles in Paxos</h2><ol>
 <li>Proposers</li>
@@ -431,7 +431,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/09/make_slice_map_channel/"/>
     <id>http://neilsh.me/2015/11/09/make_slice_map_channel/</id>
     <published>2015-11-09T07:16:55.000Z</published>
-    <updated>2016-01-22T09:43:36.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Where_is_the_make_implemention_3F"><a href="#Where_is_the_make_implemention_3F" class="headerlink" title="Where is the make implemention?"></a>Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[<a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8" target="_blank" rel="external">1</a>] are also implemented in this package.</p>
 <h2 id="Slices"><a href="#Slices" class="headerlink" title="Slices"></a>Slices</h2><p>Source file: go/src/runtime/slice.go</p>
 <h3 id="Data_structure"><a href="#Data_structure" class="headerlink" title="Data structure"></a>Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -490,7 +490,7 @@ TOOD:
     <link href="http://neilsh.me/2015/10/23/protocol_and_fsm/"/>
     <id>http://neilsh.me/2015/10/23/protocol_and_fsm/</id>
     <published>2015-10-23T13:17:00.000Z</published>
-    <updated>2016-01-22T09:02:01.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h2><p>本文中 Protocol 特指通讯协议。<br>首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
 <blockquote>
 <p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  –<a href="https://en.wikipedia.org/wiki/Protocol" target="_blank" rel="external">WIKI#Protocol</a></p>
@@ -663,7 +663,7 @@ TOOD:
     <link href="http://neilsh.me/2015/10/08/golang_note/"/>
     <id>http://neilsh.me/2015/10/08/golang_note/</id>
     <published>2015-10-08T14:03:00.000Z</published>
-    <updated>2016-01-22T09:02:01.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<!--
 TODO:
    - ...
@@ -736,7 +736,7 @@ TODO:
     <link href="http://neilsh.me/2015/09/21/fragment_structured_Computer_Organization/"/>
     <id>http://neilsh.me/2015/09/21/fragment_structured_Computer_Organization/</id>
     <published>2015-09-21T11:44:00.000Z</published>
-    <updated>2016-01-22T09:02:01.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Parallelism_in_Computer_Organization"><a href="#Parallelism_in_Computer_Organization" class="headerlink" title="Parallelism in Computer Organization"></a>Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics – the speed of light and memory becomes the bottleneck of computer.</p>
 <h2 id="Parallelism_in_CPU"><a href="#Parallelism_in_CPU" class="headerlink" title="Parallelism in CPU"></a>Parallelism in CPU</h2><ul>
 <li>Pipeline<ul>
@@ -820,7 +820,7 @@ TODO:
     <link href="http://neilsh.me/2015/09/18/jupyter_core_406/"/>
     <id>http://neilsh.me/2015/09/18/jupyter_core_406/</id>
     <published>2015-09-18T12:39:00.000Z</published>
-    <updated>2016-01-22T09:43:36.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Jupyter__u4E0E_IPython"><a href="#Jupyter__u4E0E_IPython" class="headerlink" title="Jupyter 与 IPython"></a>Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
 <h1 id="BUG_uFF1F"><a href="#BUG_uFF1F" class="headerlink" title="BUG？"></a>BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
 <blockquote>
@@ -865,7 +865,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/30/few_words_about_6_828/"/>
     <id>http://neilsh.me/2015/08/30/few_words_about_6_828/</id>
     <published>2015-08-30T14:14:00.000Z</published>
-    <updated>2016-01-22T09:43:36.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<p>Recently I’ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
 <a id="more"></a>
 <h2 id="6-828_u7B80_u4ECB"><a href="#6-828_u7B80_u4ECB" class="headerlink" title="6.828简介"></a>6.828简介</h2><p>好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。</p>
@@ -914,7 +914,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/29/my_frist_internship/"/>
     <id>http://neilsh.me/2015/08/29/my_frist_internship/</id>
     <published>2015-08-29T06:33:00.000Z</published>
-    <updated>2016-01-22T09:02:01.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<p>两个月一晃而过，暑假结束了，第一份实习也结束了。</p>
 <p>这段时间，我在 EasyLinking 实习，得到了 FULL TIME 的安卓开发工作经历，真真切切地认识到<strong>文档和注释</strong>重要性，同时还结识了一帮前辈：重视人才的纪总，平和的游总，自学成才的 iOS 大牛老王，后台开发大牛老邹和小胡，开发资历第一丁老师，全栈的北大高材生超哥，等等。</p>
 <p>实习中给我印象最深的还是团队协作。不得不说，这个技术团队成员之间协助效率非常高，一个问题发现之后，马上就能得到反馈，我想这应该得利于扁平化的管理模式。</p>
@@ -937,7 +937,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/13/dispatch_and_handle_motionevent_in_android/"/>
     <id>http://neilsh.me/2015/08/13/dispatch_and_handle_motionevent_in_android/</id>
     <published>2015-08-13T06:33:00.000Z</published>
-    <updated>2016-01-22T09:02:01.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<h2 id="PullToRefresh__u4E0E_SwipeRefreshLayout"><a href="#PullToRefresh__u4E0E_SwipeRefreshLayout" class="headerlink" title="PullToRefresh 与 SwipeRefreshLayout"></a>PullToRefresh 与 SwipeRefreshLayout</h2><p>这段时间我在 Easyinking 公司实习， 做安卓开发。之前的 App 中大量使用 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh" target="_blank" rel="external">Android-PullToRefresh</a>。这个轮子很经典，在较久版本的安卓上面也很好使，不过作者已经放弃维护了，在我们的 App 上也发现了一个诡异的BUG：与WebView配合使用时，在网络环境差的情况下会出现一次下拉多次刷新的情况，症状就是整个网页在那上下抽搐。在官方支持库 support-v4:22 中自带了一个类似的 SwipeRefreshLayout，效果也是一级棒。由于两者的 API 设计差不多，使用的情景也几乎一样，所以可以无痛地从 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh" target="_blank" rel="external">PullToRefresh</a> 转移过来。</p>
 <h2 id="u654F_u611F_u7684_SwipeRefreshLayout"><a href="#u654F_u611F_u7684_SwipeRefreshLayout" class="headerlink" title="敏感的 SwipeRefreshLayout"></a>敏感的 SwipeRefreshLayout</h2><p>从 PullToRefresh 转移到 SwipeRefreshLayout 大概花了十来分钟，初步测试出来的效果也令人满意。但是，实际使用中总会有意想不到的问题。我们把一个WebView放在了 SwipeRefreshLayout 中， 该 WebView 呈现的网页中有一个图片轮播，可左右滑动，下面的问题是 SwipeRefreshLayout 过于敏感，它把稍有下拉倾向的左右滑动全部拦截掉，并把他们当作下拉的手势，典型的 False Positive ， 处理的思路也很简单，既然是误报，过滤之即可。</p>
 <h3 id="u8BEF_u62A5_u7684_u624B_u52BF"><a href="#u8BEF_u62A5_u7684_u624B_u52BF" class="headerlink" title="误报的手势"></a><strong>误报的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1xydoiwoj20u01hcwoe.jpg" alt=""><img src="http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev1ys28bm4j20u01hc12q.jpg" alt=""></p>
@@ -1040,7 +1040,7 @@ TODO:
     <link href="http://neilsh.me/2015/07/04/goto_and_topological_sorting/"/>
     <id>http://neilsh.me/2015/07/04/goto_and_topological_sorting/</id>
     <published>2015-07-04T14:26:00.000Z</published>
-    <updated>2016-01-22T09:02:01.000Z</updated>
+    <updated>2016-01-22T09:57:05.000Z</updated>
     <content type="html"><![CDATA[<p>##goto in C<br><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
 <p>###goto, break, continue<br><code>goto</code>,<code>break</code>,<code>continue</code> 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的<code>{}</code>(scope)。<br><code>continue</code> 只能写在loop里，不然编译报：continue statement not within loop，<br><code>break</code>只能写在loop或者switch中，不然编译报：break statement not within loop or switch。<br><code>goto</code>则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。<br><a id="more"></a></p>
 <blockquote>
