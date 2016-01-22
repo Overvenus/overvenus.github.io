@@ -1,11 +1,16 @@
 <!doctype html>
-<html class="theme-next use-motion theme-next-mist">
-<head>
+
+
+
   
 
-<meta charset="UTF-8"/>
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,25 +23,27 @@
 
 
 
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
 
 
 
-  
-    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
 
 
-<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
-
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="It's now, or never." />
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="Algorithms,C," />
+
+
 
 
 
@@ -44,7 +51,12 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
+
+
+
+
 
 
 <meta name="description" content="##goto in Cgoto在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。
@@ -57,36 +69,33 @@
 ###goto, break, continuegoto,break,continue 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的{}(scope)。continue 只能写在loop里，不然编译报：conti">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/7f793092gw1ets46e3xppj20ok0kcq4d.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/7f793092gw1etufs6cjxnj20av0m1gmq.jpg">
-<meta property="og:updated_time" content="2015-11-07T04:04:21.000Z">
+<meta property="og:updated_time" content="2016-01-22T09:02:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GOTO与拓扑排序">
 <meta name="twitter:description" content="##goto in Cgoto在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。
 ###goto, break, continuegoto,break,continue 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的{}(scope)。continue 只能写在loop里，不然编译报：conti">
 
 
+
 <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
   var CONFIG = {
-    scheme: 'Mist',
-    sidebar: 'post'
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
   };
 </script>
-
-
 
   <title> GOTO与拓扑排序 | Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  <!--[if lte IE 8]>
-  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
-    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
-      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
-           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
-           style='margin-left:auto;margin-right:auto;display: block;'/>
-    </a>
-  </div>
-<![endif]-->
   
 
 
@@ -104,7 +113,14 @@
 
 
 
-  <div class="container one-column page-post-detail">
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -178,6 +194,7 @@
 
       
       
+      
     </ul>
   
 
@@ -189,11 +206,17 @@
 
     <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content"> 
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
   <div id="posts" class="posts-expand">
     
 
+  
+  
+
+  
   
   
 
@@ -216,7 +239,10 @@
 
         <div class="post-meta">
           <span class="post-time">
-            发表于
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
             <time itemprop="dateCreated" datetime="2015-07-04T22:26:00+08:00" content="2015-07-04">
               2015-07-04
             </time>
@@ -237,18 +263,20 @@
 
           
 
+          
+          
         </div>
       </header>
     
 
 
-    <div class="post-body">
+    <div class="post-body" itemprop="articleBody">
 
       
       
 
       
-        <span itemprop="articleBody"><p>##goto in C<br><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
+        <p>##goto in C<br><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
 <p>###goto, break, continue<br><code>goto</code>,<code>break</code>,<code>continue</code> 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的<code>{}</code>(scope)。<br><code>continue</code> 只能写在loop里，不然编译报：continue statement not within loop，<br><code>break</code>只能写在loop或者switch中，不然编译报：break statement not within loop or switch。<br><code>goto</code>则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。<br><a id="more"></a></p>
 <blockquote>
 <p>I think goto’s are fine, and they are often more readable than large<br>amounts of indentation. That’s <em>especially</em> true if the code flow isn’t<br>actually naturally indented (in this case it is, so I don’t think using<br>goto is in any way <em>clearer</em> than not, but in general goto’s can be quite<br>good for readability).<br>—Linus</p>
@@ -269,7 +297,7 @@
 <p><a href="https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto" target="_blank" rel="external">https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto</a><br><a href="https://en.wikipedia.org/wiki/Topological_sorting" target="_blank" rel="external">https://en.wikipedia.org/wiki/Topological_sorting</a><br><a href="https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131" target="_blank" rel="external">https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131</a><br>Knuth, Donald E. “Structured Programming with go to Statements.” ACM Computing Surveys (CSUR) 6, no. 4 (1974): 261-301.</p>
 </blockquote>
 <p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
-</span>
+
       
     </div>
 
@@ -335,23 +363,24 @@
     </div>
   </div>
 
- </div>
 
-        
-
-        
-          <div class="comments" id="comments">
-            
-              <div class="ds-thread" data-thread-key="2015/07/04/goto_and_topological_sorting/"
-                   data-title="GOTO与拓扑排序" data-url="http://neilsh.me/2015/07/04/goto_and_topological_sorting/">
-              </div>
-            
           </div>
-        
-      </div>
+          
 
-      
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/07/04/goto_and_topological_sorting/"
+           data-title="GOTO与拓扑排序" data-url="http://neilsh.me/2015/07/04/goto_and_topological_sorting/">
+      </div>
+    
+  </div>
+
+
+        </div>
         
+          
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -379,14 +408,16 @@
 
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
+          <img class="site-author-image" itemprop="image"
+               src="/asset/image/avatar.jpg"
+               alt="Neil Shen" />
           <p class="site-author-name" itemprop="name">Neil Shen</p>
+          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -405,7 +436,7 @@
         
           <div class="feed-link motion-element">
             <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
+              <i class="fa fa-rss"></i>
               RSS
             </a>
           </div>
@@ -416,13 +447,17 @@
             
               <span class="links-of-author-item">
                 <a href="https://github.com/Overvenus" target="_blank">
-                  <i class="fa fa-github fa-fw"></i> GitHub
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/idstn" target="_blank">
-                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
                 </a>
               </span>
             
@@ -432,8 +467,8 @@
         
         
           <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by.svg" alt="Creative Commons" />
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
             </a>
           </div>
         
@@ -446,14 +481,20 @@
 
       
         <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
           <div class="post-toc">
+            
+              
             
             
               <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
         </section>
       
 
@@ -461,11 +502,13 @@
   </aside>
 
 
-      
+        
+      </div>
     </main>
 
     <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
+      <div class="footer-inner">
+        <div class="copyright" >
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2016</span>
@@ -482,69 +525,53 @@
 <div class="theme-info">
   主题 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Mist
+    NexT.Muse
   </a>
 </div>
 
 
- </div>
+
+      </div>
     </footer>
 
     <div class="back-to-top"></div>
   </div>
 
+  
+
+
+  
+
+
+
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
 
-  
-  
-  
-    
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"neilsh"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-    
-     
-
-
-    
-  
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
-
-
-  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
-
-
-
-
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
-  
-  
-<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
 
 <script type="text/javascript" id="sidebar.toc.highlight">
   $(document).ready(function () {
@@ -624,7 +651,7 @@
 
     function tocOverflowIndicator (indicator, action) {
       var $indicator = $(indicator);
-      var opacity = action === 'show' ? 0.4 : 0;
+      var opacity = action === 'show' ? 1 : 0;
       $indicator.velocity ?
         $indicator.velocity('stop').velocity({
           opacity: opacity
@@ -678,7 +705,7 @@
 
     $('.post-toc a').on('click', function (e) {
       e.preventDefault();
-      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
       var offset = $(targetSelector).offset().top;
       hasVelocity ?
         html.velocity('stop').velocity('scroll', {
@@ -691,11 +718,12 @@
     });
 
     // Expand sidebar on post detail page by default, when post has a toc.
-    motionMiddleWares.sidebar = function () {
+    NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
+
       if (CONFIG.sidebar === 'post') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          displaySidebar();
+          NexT.utils.displaySidebar();
         }
       }
     };
@@ -704,23 +732,39 @@
 
 
 
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
   <script type="text/javascript">
-    $(document).ready(function () {
-
-      isMobile() && FastClick.attach(document.body);
-
-      // Define Motion Sequence.
-      motionIntegrator
-        .add(motionMiddleWares.logo)
-        .add(motionMiddleWares.menu)
-        .add(motionMiddleWares.backToTop)
-        .add(motionMiddleWares.postList)
-        .add(motionMiddleWares.sidebar);
-
-      // Bootstrap Motion.
-      motionIntegrator.bootstrap();
-    });
+    var duoshuoQuery = {short_name:"neilsh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
   </script>
+
+  
+    
+  
+
+
+
+
 
   
   
@@ -752,15 +796,6 @@
   
   
 
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
+
 </body>
 </html>

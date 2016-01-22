@@ -1,11 +1,16 @@
 <!doctype html>
-<html class="theme-next use-motion theme-next-mist">
-<head>
+
+
+
   
 
-<meta charset="UTF-8"/>
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,25 +23,27 @@
 
 
 
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
 
 
 
-  
-    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
 
 
-<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
-
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="It's now, or never." />
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="C,C.S.笔记,MIT," />
+
+
 
 
 
@@ -44,7 +51,12 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
+
+
+
+
 
 
 <meta name="description" content="##引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
@@ -63,29 +75,26 @@
 ##MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址">
 
 
+
 <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
   var CONFIG = {
-    scheme: 'Mist',
-    sidebar: 'post'
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
   };
 </script>
-
-
 
   <title> 内核的启动和建立虚拟内存 | Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  <!--[if lte IE 8]>
-  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
-    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
-      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
-           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
-           style='margin-left:auto;margin-right:auto;display: block;'/>
-    </a>
-  </div>
-<![endif]-->
   
 
 
@@ -103,7 +112,14 @@
 
 
 
-  <div class="container one-column page-post-detail">
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -177,6 +193,7 @@
 
       
       
+      
     </ul>
   
 
@@ -188,11 +205,17 @@
 
     <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content"> 
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
   <div id="posts" class="posts-expand">
     
 
+  
+  
+
+  
   
   
 
@@ -215,7 +238,10 @@
 
         <div class="post-meta">
           <span class="post-time">
-            发表于
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
             <time itemprop="dateCreated" datetime="2015-07-02T18:02:00+08:00" content="2015-07-02">
               2015-07-02
             </time>
@@ -236,18 +262,20 @@
 
           
 
+          
+          
         </div>
       </header>
     
 
 
-    <div class="post-body">
+    <div class="post-body" itemprop="articleBody">
 
       
       
 
       
-        <span itemprop="articleBody"><p>##引言<br>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf" target="_blank" rel="external">The UNIX Time-Sharing System</a>。</p>
+        <p>##引言<br>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf" target="_blank" rel="external">The UNIX Time-Sharing System</a>。</p>
 <p>##MMU的工作机制<br><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。<br><code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
 <p>本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。<br>先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：<br><a id="more"></a><br><img src="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg" alt=""><br>术语说明：</p>
 <blockquote>
@@ -318,7 +346,7 @@ extern char end[]; &lt;---- 0x00113970
 <p>##总结</p>
 <p>JOS 内核一启动就开启<code>MMU</code>，用的<code>page directory</code>是手写的预先编译在内核中的。之后再建立一个新的<code>page directory</code>，这个<code>page directory</code>是可以动态增加减少记录的，此时 JOS 内存的初始化算是完成了。</p>
 <p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
-</span>
+
       
     </div>
 
@@ -386,23 +414,24 @@ extern char end[]; &lt;---- 0x00113970
     </div>
   </div>
 
- </div>
 
-        
-
-        
-          <div class="comments" id="comments">
-            
-              <div class="ds-thread" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/"
-                   data-title="内核的启动和建立虚拟内存" data-url="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/">
-              </div>
-            
           </div>
-        
-      </div>
+          
 
-      
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/07/02/os_setup_and_virtual_memory_setup/"
+           data-title="内核的启动和建立虚拟内存" data-url="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/">
+      </div>
+    
+  </div>
+
+
+        </div>
         
+          
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -430,14 +459,16 @@ extern char end[]; &lt;---- 0x00113970
 
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
+          <img class="site-author-image" itemprop="image"
+               src="/asset/image/avatar.jpg"
+               alt="Neil Shen" />
           <p class="site-author-name" itemprop="name">Neil Shen</p>
+          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -456,7 +487,7 @@ extern char end[]; &lt;---- 0x00113970
         
           <div class="feed-link motion-element">
             <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
+              <i class="fa fa-rss"></i>
               RSS
             </a>
           </div>
@@ -467,13 +498,17 @@ extern char end[]; &lt;---- 0x00113970
             
               <span class="links-of-author-item">
                 <a href="https://github.com/Overvenus" target="_blank">
-                  <i class="fa fa-github fa-fw"></i> GitHub
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/idstn" target="_blank">
-                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
                 </a>
               </span>
             
@@ -483,8 +518,8 @@ extern char end[]; &lt;---- 0x00113970
         
         
           <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by.svg" alt="Creative Commons" />
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
             </a>
           </div>
         
@@ -497,14 +532,20 @@ extern char end[]; &lt;---- 0x00113970
 
       
         <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
           <div class="post-toc">
+            
+              
             
             
               <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
         </section>
       
 
@@ -512,11 +553,13 @@ extern char end[]; &lt;---- 0x00113970
   </aside>
 
 
-      
+        
+      </div>
     </main>
 
     <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
+      <div class="footer-inner">
+        <div class="copyright" >
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2016</span>
@@ -533,69 +576,53 @@ extern char end[]; &lt;---- 0x00113970
 <div class="theme-info">
   主题 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Mist
+    NexT.Muse
   </a>
 </div>
 
 
- </div>
+
+      </div>
     </footer>
 
     <div class="back-to-top"></div>
   </div>
 
+  
+
+
+  
+
+
+
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
 
-  
-  
-  
-    
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"neilsh"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-    
-     
-
-
-    
-  
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
-
-
-  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
-
-
-
-
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
-  
-  
-<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
 
 <script type="text/javascript" id="sidebar.toc.highlight">
   $(document).ready(function () {
@@ -675,7 +702,7 @@ extern char end[]; &lt;---- 0x00113970
 
     function tocOverflowIndicator (indicator, action) {
       var $indicator = $(indicator);
-      var opacity = action === 'show' ? 0.4 : 0;
+      var opacity = action === 'show' ? 1 : 0;
       $indicator.velocity ?
         $indicator.velocity('stop').velocity({
           opacity: opacity
@@ -729,7 +756,7 @@ extern char end[]; &lt;---- 0x00113970
 
     $('.post-toc a').on('click', function (e) {
       e.preventDefault();
-      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
       var offset = $(targetSelector).offset().top;
       hasVelocity ?
         html.velocity('stop').velocity('scroll', {
@@ -742,11 +769,12 @@ extern char end[]; &lt;---- 0x00113970
     });
 
     // Expand sidebar on post detail page by default, when post has a toc.
-    motionMiddleWares.sidebar = function () {
+    NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
+
       if (CONFIG.sidebar === 'post') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          displaySidebar();
+          NexT.utils.displaySidebar();
         }
       }
     };
@@ -755,23 +783,39 @@ extern char end[]; &lt;---- 0x00113970
 
 
 
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
   <script type="text/javascript">
-    $(document).ready(function () {
-
-      isMobile() && FastClick.attach(document.body);
-
-      // Define Motion Sequence.
-      motionIntegrator
-        .add(motionMiddleWares.logo)
-        .add(motionMiddleWares.menu)
-        .add(motionMiddleWares.backToTop)
-        .add(motionMiddleWares.postList)
-        .add(motionMiddleWares.sidebar);
-
-      // Bootstrap Motion.
-      motionIntegrator.bootstrap();
-    });
+    var duoshuoQuery = {short_name:"neilsh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
   </script>
+
+  
+    
+  
+
+
+
+
 
   
   
@@ -803,15 +847,6 @@ extern char end[]; &lt;---- 0x00113970
   
   
 
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
+
 </body>
 </html>

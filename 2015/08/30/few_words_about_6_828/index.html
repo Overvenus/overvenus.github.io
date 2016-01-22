@@ -1,11 +1,16 @@
 <!doctype html>
-<html class="theme-next use-motion theme-next-mist">
-<head>
+
+
+
   
 
-<meta charset="UTF-8"/>
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,25 +23,27 @@
 
 
 
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
 
 
 
-  
-    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
 
 
-<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
-
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="It's now, or never." />
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="C.S.笔记,MIT," />
+
+
 
 
 
@@ -44,7 +51,12 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
+
+
+
+
 
 
 <meta name="description" content="Recently I’ve been working on JOS, which is part of 6.828: Operating System Engineering. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this cours">
@@ -55,35 +67,32 @@
 <meta property="og:description" content="Recently I’ve been working on JOS, which is part of 6.828: Operating System Engineering. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this cours">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1evo1wpue9bg20770cm3yd.gif">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1evohw0nih7j20k00bw75r.jpg">
-<meta property="og:updated_time" content="2016-01-20T04:08:49.000Z">
+<meta property="og:updated_time" content="2016-01-22T09:43:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Few words about 6.828">
 <meta name="twitter:description" content="Recently I’ve been working on JOS, which is part of 6.828: Operating System Engineering. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this cours">
 
 
+
 <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
   var CONFIG = {
-    scheme: 'Mist',
-    sidebar: 'post'
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
   };
 </script>
-
-
 
   <title> Few words about 6.828 | Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  <!--[if lte IE 8]>
-  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
-    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
-      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
-           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
-           style='margin-left:auto;margin-right:auto;display: block;'/>
-    </a>
-  </div>
-<![endif]-->
   
 
 
@@ -101,7 +110,14 @@
 
 
 
-  <div class="container one-column page-post-detail">
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -175,6 +191,7 @@
 
       
       
+      
     </ul>
   
 
@@ -186,11 +203,17 @@
 
     <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content"> 
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
   <div id="posts" class="posts-expand">
     
 
+  
+  
+
+  
   
   
 
@@ -213,7 +236,10 @@
 
         <div class="post-meta">
           <span class="post-time">
-            发表于
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
             <time itemprop="dateCreated" datetime="2015-08-30T22:14:00+08:00" content="2015-08-30">
               2015-08-30
             </time>
@@ -234,18 +260,20 @@
 
           
 
+          
+          
         </div>
       </header>
     
 
 
-    <div class="post-body">
+    <div class="post-body" itemprop="articleBody">
 
       
       
 
       
-        <span itemprop="articleBody"><p>Recently I’ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
+        <p>Recently I’ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
 <a id="more"></a>
 <h2 id="6-828_u7B80_u4ECB"><a href="#6-828_u7B80_u4ECB" class="headerlink" title="6.828简介"></a>6.828简介</h2><p>好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。</p>
 <h2 id="u77E5_u65B0"><a href="#u77E5_u65B0" class="headerlink" title="知新"></a>知新</h2><h3 id="u5BFB_u627E_u8D44_u6599_u7684_u6B63_u786E_u59FF_u52BF"><a href="#u5BFB_u627E_u8D44_u6599_u7684_u6B63_u786E_u59FF_u52BF" class="headerlink" title="寻找资料的正确姿势"></a>寻找资料的正确姿势</h3><p>课程实验中有许多地方并没有说得很仔细，只有大概的意图，实现的细节需要你自己去查阅资料。比如说汇编里面的 <code>call</code> <code>ret</code> 对 <code>ESP``EBP``EIP</code>三个寄存器的影响，它指出了这两个指令于函数调用上、传递参数有关，然后它让你写一个栈回溯函数。<br>Google <code>ret call</code> 的第一个结果：<a href="http://www.c-jump.com/CIS77/ASM/Procedures/P77_0010_call_ret.htm" target="_blank" rel="external">CALL and RET Instructions</a></p>
@@ -276,7 +304,7 @@
 <p>最后，再次感谢 MIT 的教师职员们，并以一张 JOS 靓照结尾。</p>
 <p><img src="http://ww1.sinaimg.cn/large/7f793092gw1evohw0nih7j20k00bw75r.jpg" alt=""></p>
 <p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
-</span>
+
       
     </div>
 
@@ -342,23 +370,24 @@
     </div>
   </div>
 
- </div>
 
-        
-
-        
-          <div class="comments" id="comments">
-            
-              <div class="ds-thread" data-thread-key="2015/08/30/few_words_about_6_828/"
-                   data-title="Few words about 6.828" data-url="http://neilsh.me/2015/08/30/few_words_about_6_828/">
-              </div>
-            
           </div>
-        
-      </div>
+          
 
-      
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/08/30/few_words_about_6_828/"
+           data-title="Few words about 6.828" data-url="http://neilsh.me/2015/08/30/few_words_about_6_828/">
+      </div>
+    
+  </div>
+
+
+        </div>
         
+          
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -386,14 +415,16 @@
 
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
+          <img class="site-author-image" itemprop="image"
+               src="/asset/image/avatar.jpg"
+               alt="Neil Shen" />
           <p class="site-author-name" itemprop="name">Neil Shen</p>
+          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -412,7 +443,7 @@
         
           <div class="feed-link motion-element">
             <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
+              <i class="fa fa-rss"></i>
               RSS
             </a>
           </div>
@@ -423,13 +454,17 @@
             
               <span class="links-of-author-item">
                 <a href="https://github.com/Overvenus" target="_blank">
-                  <i class="fa fa-github fa-fw"></i> GitHub
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/idstn" target="_blank">
-                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
                 </a>
               </span>
             
@@ -439,8 +474,8 @@
         
         
           <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by.svg" alt="Creative Commons" />
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
             </a>
           </div>
         
@@ -453,14 +488,20 @@
 
       
         <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
           <div class="post-toc">
+            
+              
             
             
               <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-828_u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">6.828简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u77E5_u65B0"><span class="nav-number">2.</span> <span class="nav-text">知新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5BFB_u627E_u8D44_u6599_u7684_u6B63_u786E_u59FF_u52BF"><span class="nav-number">2.1.</span> <span class="nav-text">寻找资料的正确姿势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C__u7684_u9ED1_u9B54_u6CD5"><span class="nav-number">2.2.</span> <span class="nav-text">C 的黑魔法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#u7ED9_u7ED3_u6784_u4F53_u521D_u59CB_u5316_u65F6_u7ED9_u6307_u5B9A_u6210_u5458_u8D4B_u503C_uFF1A"><span class="nav-number">2.2.1.</span> <span class="nav-text">给结构体初始化时给指定成员赋值：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u8DE8_u6E90_u6587_u4EF6_u8C03_u7528_u533F_u540D_u7ED3_u6784_u4F53_u53D8_u91CF_uFF1A"><span class="nav-number">2.2.2.</span> <span class="nav-text">跨源文件调用匿名结构体变量：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u5173_u952E_u5B57_volatile"><span class="nav-number">2.2.3.</span> <span class="nav-text">关键字 volatile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u6307_u9488_u4E0E_u6570_u7EC4"><span class="nav-number">2.2.4.</span> <span class="nav-text">指针与数组</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6742_u9879"><span class="nav-number">2.3.</span> <span class="nav-text">杂项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u8D44_u6E90"><span class="nav-number">3.</span> <span class="nav-text">一些资源</span></a></li></ol></div>
             
           </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
         </section>
       
 
@@ -468,11 +509,13 @@
   </aside>
 
 
-      
+        
+      </div>
     </main>
 
     <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
+      <div class="footer-inner">
+        <div class="copyright" >
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2016</span>
@@ -489,69 +532,53 @@
 <div class="theme-info">
   主题 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Mist
+    NexT.Muse
   </a>
 </div>
 
 
- </div>
+
+      </div>
     </footer>
 
     <div class="back-to-top"></div>
   </div>
 
+  
+
+
+  
+
+
+
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
 
-  
-  
-  
-    
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"neilsh"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-    
-     
-
-
-    
-  
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
-
-
-  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
-
-
-
-
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
-  
-  
-<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
 
 <script type="text/javascript" id="sidebar.toc.highlight">
   $(document).ready(function () {
@@ -631,7 +658,7 @@
 
     function tocOverflowIndicator (indicator, action) {
       var $indicator = $(indicator);
-      var opacity = action === 'show' ? 0.4 : 0;
+      var opacity = action === 'show' ? 1 : 0;
       $indicator.velocity ?
         $indicator.velocity('stop').velocity({
           opacity: opacity
@@ -685,7 +712,7 @@
 
     $('.post-toc a').on('click', function (e) {
       e.preventDefault();
-      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
       var offset = $(targetSelector).offset().top;
       hasVelocity ?
         html.velocity('stop').velocity('scroll', {
@@ -698,11 +725,12 @@
     });
 
     // Expand sidebar on post detail page by default, when post has a toc.
-    motionMiddleWares.sidebar = function () {
+    NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
+
       if (CONFIG.sidebar === 'post') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          displaySidebar();
+          NexT.utils.displaySidebar();
         }
       }
     };
@@ -711,23 +739,39 @@
 
 
 
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
   <script type="text/javascript">
-    $(document).ready(function () {
-
-      isMobile() && FastClick.attach(document.body);
-
-      // Define Motion Sequence.
-      motionIntegrator
-        .add(motionMiddleWares.logo)
-        .add(motionMiddleWares.menu)
-        .add(motionMiddleWares.backToTop)
-        .add(motionMiddleWares.postList)
-        .add(motionMiddleWares.sidebar);
-
-      // Bootstrap Motion.
-      motionIntegrator.bootstrap();
-    });
+    var duoshuoQuery = {short_name:"neilsh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
   </script>
+
+  
+    
+  
+
+
+
+
 
   
   
@@ -759,15 +803,6 @@
   
   
 
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
+
 </body>
 </html>

@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2016-01-20T05:52:44.000Z</updated>
+  <updated>2016-01-22T09:53:12.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -15,15 +15,140 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[Debian packaging 教程]]></title>
+    <link href="http://neilsh.me/2016/01/20/debian%20packaging-step-by-step/"/>
+    <id>http://neilsh.me/2016/01/20/debian packaging-step-by-step/</id>
+    <published>2016-01-20T06:22:58.000Z</published>
+    <updated>2016-01-22T09:53:12.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="u65B0_u624B_u4E4B_u75DB"><a href="#u65B0_u624B_u4E4B_u75DB" class="headerlink" title="新手之痛"></a>新手之痛</h2><p>说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> apt-<span class="preprocessor">get</span> install <span class="keyword">build-essential </span>devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts</span><br></pre></td></tr></table></figure></p>
+<p>这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)</p>
+<p>有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。</p>
+<p>我<strong>没有</strong>严格遵守 Debian 社区打包的步骤，这记录的是一个 quick and dirty way not the Debian way!这是大概的过程:</p>
+<ol>
+<li>创建 GPG: 用于给 deb 签名</li>
+<li>打包 DEB: 有点麻烦，规矩多，步骤多</li>
+<li>上传 Launchpad: 添加到 PPA，以后安装就方便了</li>
+</ol>
+<h2 id="u521B_u5EFA_GPG"><a href="#u521B_u5EFA_GPG" class="headerlink" title="创建 GPG"></a>创建 GPG</h2><p>阮一峰有一篇非常棒的 <a href="http://www.ruanyifeng.com/blog/2013/07/gpg.html" target="_blank" rel="external">GPG入门教程</a>，里面涵盖了新手上手 GPG 所需的基本步骤。</p>
+<p>我在这补充一下，他的文章中上传公钥使用的是 <code>hkp://subkeys.pgp.net</code>，我这试了几次都出现了连接错误。所以，我推荐 <code>hkp://keyserver.ubuntu.com</code>，使用它，不仅是因为连得上，还因为在 Launchpad 创建 PPA 也要用它。</p>
+<h2 id="u521B_u5EFA_PPA"><a href="#u521B_u5EFA_PPA" class="headerlink" title="创建 PPA"></a>创建 PPA</h2><p>摘自 <a href="http://askubuntu.com/a/71516/436021" target="_blank" rel="external">How do I create a PPA?</a></p>
+<blockquote>
+<p><a href="https://login.launchpad.net/+new_account" target="_blank" rel="external">创建 Launchpad 帐号</a><br><a href="https://launchpad.net/people/+me/" target="_blank" rel="external">激活 PPA</a><br>用 GPG 签约 <a href="https://launchpad.net/codeofconduct" target="_blank" rel="external">the Ubuntu code of conduct</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="u6253_u5305_DEB"><a href="#u6253_u5305_DEB" class="headerlink" title="打包 DEB"></a>打包 DEB</h2><p>这儿以我的最近写的 <a href="/2016/01/20/tbutton-mini-commands-launcher/">TButton</a> 为例。TButton 关键就 3 个文件：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  indicator-tbutton-0.1  tree&#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton&#10;&#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;0 directories, 3 files</span><br></pre></td></tr></table></figure>
+<p>对上面命令的解释：</p>
+<blockquote>
+<p><code>➜</code> :一行新命令的开始标志</p>
+<p><code>indicator-tbutton-0.1</code> : 当前文件夹</p>
+<p><code>tree</code> : Linux 命令，列出当前目录的结构</p>
+</blockquote>
+<h3 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h3><p>在开始之前先把一些<strong>准备工作</strong>做好。</p>
+<h4 id="u5B89_u88C5_u5DE5_u5177"><a href="#u5B89_u88C5_u5DE5_u5177" class="headerlink" title="安装工具"></a>安装工具</h4><p>我没有安装上面提及的所以工具，这条命令会安装这篇教程中涉及到的工具。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get insatll build-essential debhelper fakeroot dh-make lintian dput python-bzrlib tree vim</span><br></pre></td></tr></table></figure>
+<h4 id="u7EF4_u62A4_u8005_u4FE1_u606F"><a href="#u7EF4_u62A4_u8005_u4FE1_u606F" class="headerlink" title="维护者信息"></a>维护者信息</h4><p>向控制台配置文件(一般为 <code>～/.bashrc</code> 或者 <code>~/.zshrc</code>)中添加：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> DEBEMAIL=&lt;YOUR EMAIL&gt;   <span class="comment"># 我们的电子邮件地址</span></span><br><span class="line"><span class="built_in">export</span> DEBFULLNAME=&lt;YOUR NAME&gt; <span class="comment"># 我们的真实姓名</span></span><br></pre></td></tr></table></figure>
+<p>这两个信息在生成 debian 配置文件，也就是下面 <em>第6步</em> 中会被用到。</p>
+<h3 id="u521B_u5EFA_debian__u6A21_u677F"><a href="#u521B_u5EFA_debian__u6A21_u677F" class="headerlink" title="创建 debian 模板"></a>创建 debian 模板</h3><p>创建步骤：</p>
+<ol>
+<li>在 Home 文件夹里创建个叫 sandbox 的文件夹</li>
+<li>把 indicator-tbutton-0.1 文件夹复制到 sandbox</li>
+<li>把 indicator-tbutton-0.1 文件夹整个打包成 indicator-tbutton-0.1.tar.gz</li>
+<li>把 indicator-tbutton-0.1.tar.gz 移动到 indicator-tbutton-0.1 文件夹中</li>
+<li>进入 indicator-tbutton-0.1 文件夹中</li>
+<li>运行 <code>dh_make</code>，参数： （完整文档可以运行<code>man dh_make</code>）<ul>
+<li><code>-c gpl3</code>: license 信息，我这儿用 GPLv3</li>
+<li><code>-f indicator-tbutton-0.1.tar.gz</code>: 指定<strong>原</strong>源代码压缩包</li>
+</ul>
+</li>
+<li>删除不必要的文件，具体可以参见 <a href="https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian" target="_blank" rel="external">TButton/debian</a></li>
+<li>编辑 debian 文件夹中的配置文件</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  ~  cp -R indicator-tbutton-0.1 sandbox&#10;&#10140;  ~  cd sandbox &#10;&#10140;  sandbox  tree&#10;.&#10;&#9492;&#9472;&#9472; indicator-tbutton-0.1&#10;    &#9500;&#9472;&#9472; indicator-tbutton&#10;    &#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;    &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;1 directory, 3 files&#10;&#10;&#10140;  sandbox  tar -cvzf indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1&#10;indicator-tbutton-0.1/&#10;indicator-tbutton-0.1/tbutton-icon.png&#10;indicator-tbutton-0.1/indicator-tbutton&#10;indicator-tbutton-0.1/indicator-tbutton.desktop&#10;&#10;&#10140;  sandbox  cp indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1/&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;&#10140;  indicator-tbutton-0.1  tree&#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;0 directories, 4 files&#10;&#10;&#10140;  indicator-tbutton-0.1  dh_make -c gpl3  -f indicator-tbutton-0.1.tar.gz&#10;&#10;Type of package: single binary, indep binary, multiple binary, library, kernel module, kernel patch?&#10; [s/i/m/l/k/n] s  # &#36825;&#37324;&#36755;&#20837; s&#10;&#10;Maintainer name  : Neil Shen&#10;Email-Address    : overvenus@gmail.com &#10;Date             : Thu, 21 Jan 2016 14:07:51 +0800&#10;Package Name     : indicator-tbutton&#10;Version          : 0.1&#10;License          : gpl3&#10;Type of Package  : Single&#10;Hit &#60;enter&#62; to confirm:   # &#36825;&#37324;&#25353;&#22238;&#36710;&#10;Currently there is no top level Makefile. This may require additional tuning.&#10;Done. Please edit the files in the debian/ subdirectory now. You should also&#10;check that the indicator-tbutton Makefiles install into $DESTDIR and not in / .&#10;&#10;&#10140;  indicator-tbutton-0.1  tree&#10;.&#10;&#9500;&#9472;&#9472; debian&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; changelog&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; compat&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; docs&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.cron.d.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.default.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.doc-base.EX&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; init.d.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; manpage.1.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; manpage.sgml.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; manpage.xml.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; menu.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; postinst.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; postrm.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; preinst.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; prerm.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; README.Debian&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; README.source&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; rules&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; source&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; format&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; watch.ex&#10;&#9500;&#9472;&#9472; indicator-tbutton&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;2 directories, 26 files&#10;&#10;# &#21024;&#38500;&#25991;&#20214;ing...&#10;# &#26368;&#32456;&#30446;&#24405;&#32467;&#26500;&#10;&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  tree &#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; debian&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; changelog&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; compat&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; rules&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; source&#10;&#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; format&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#9492;&#9472;&#9472; indicator-tbutton_0.1.orig.tar.gz&#10;&#10;3 directories, 10 files</span><br></pre></td></tr></table></figure>
+<h3 id="u7F16_u8F91_debian__u914D_u7F6E_u6587_u4EF6"><a href="#u7F16_u8F91_debian__u914D_u7F6E_u6587_u4EF6" class="headerlink" title="编辑 debian 配置文件"></a>编辑 debian 配置文件</h3><p>配置文件指的是 <code>debian\</code> 文件夹下的那几个文件，每个都有不同的功能，有的一旦配置完以后都不用去改动，还有的每次发布都到改动。<br>对几个重要文件的说明：</p>
+<ul>
+<li>changelog: 记录每次发布的对软件的更改和控制发布的版本号</li>
+<li>rule: 控制如何安装软件, 语法于 Makefile 类似（可以参看我的 rule）</li>
+<li>copyright: 软件的版权与发布协议</li>
+<li>control: 维护者信息，软件简介，依赖</li>
+</ul>
+<p>上面四个文件是我们需要编辑的，具体内容怎么写可以参照 <a href="https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian" target="_blank" rel="external">TButton/debian</a>，详细信息请看 <a href="http://www.debian.org/doc/manuals/maint-guide/" target="_blank" rel="external">Debian New Maintainers’ Guide</a></p>
+<h3 id="u672C_u5730_u6253_u5305_u6D4B_u8BD5"><a href="#u672C_u5730_u6253_u5305_u6D4B_u8BD5" class="headerlink" title="本地打包测试"></a>本地打包测试</h3><p>到了这一步就简单了，就是一句命令的事儿 — <code>fakeroot dpkg-buildpackage -F</code> </p>
+<blockquote>
+<p><code>-F</code> : 以完全模式打包，创建 .deb 文件，打包源码，GPG 签名等等。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># &#25509;&#19978;&#38754;&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;&#10140;  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F &#10;dpkg-buildpackage: source package indicator-tbutton-0.1&#10;dpkg-buildpackage: source version 0.1-1&#10;dpkg-buildpackage: source distribution trusty&#10;dpkg-buildpackage: source changed by Neil Shen &#60;overvenus@gmail.com&#62;&#10;dpkg-buildpackage: host architecture amd64&#10; dpkg-source --before-build indicator-tbutton-0.1&#10; debian/rules clean&#10;dh_testdir&#10;dh_testroot&#10;rm -f build-stamp&#10;dh_clean&#10; dpkg-source -b indicator-tbutton-0.1&#10;dpkg-source: error: can&#39;t build with source format &#39;3.0 (quilt)&#39;: no upstream tarball found at ../indicator-tbutton-0.1_0.1.orig.tar.&#123;bz2,gz,lzma,xz&#125;&#10;dpkg-buildpackage: error: dpkg-source -b indicator-tbutton-0.1 gave error exit status 255</span><br></pre></td></tr></table></figure>
+<p>Oops，出错了！来看看是什么错误。。。<br>哦，原来是没有找到 <code>../indicator-tbutton-0.1_0.1.orig.tar.{bz2,gz,lzma,xz}</code>，我们在 sandbox 下有 <code>indicator-tbutton_0.1.orig.tar.gz</code> 但是，dpkg 要求我们提供 <code>indicator-tbutton-0.1_0.1.orig.tar.gz</code>。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1  indicator-tbutton_0.1.orig.tar.gz&#10;# &#37325;&#21629;&#21517;&#10;&#10140;  sandbox  mv indicator-tbutton_0.1.orig.tar.gz indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;# &#20877;&#26469;&#35797;&#19968;&#19979;&#10;&#10140;  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F &#10;dpkg-buildpackage: source package indicator-tbutton-0.1&#10;dpkg-buildpackage: source version 0.1-1&#10;dpkg-buildpackage: source distribution trusty&#10;dpkg-buildpackage: source changed by Neil Shen &#60;overvenus@gmail.com&#62;&#10;dpkg-buildpackage: host architecture amd64&#10; dpkg-source --before-build indicator-tbutton-0.1&#10; debian/rules clean&#10;dh_testdir&#10;dh_testroot&#10;rm -f build-stamp&#10;dh_clean&#10; dpkg-source -b indicator-tbutton-0.1&#10;dpkg-source: info: using source format `3.0 (quilt)&#39;&#10;dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc&#10; debian/rules build&#10;dh_testdir&#10;touch configure-stamp&#10;touch build-stamp&#10; debian/rules binary&#10;dh_testdir&#10;dh_testroot&#10;dh_prep&#10;dh_installdirs&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart&#10;install -m 755 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin&#10;install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/tbutton-icon.png /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps&#10;install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications&#10;install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart&#10;dh_testdir&#10;dh_testroot&#10;dh_installchangelogs&#10;dh_installdocs&#10;dh_icons&#10;dh_installmenu&#10;# dh_python2&#10;# dh_pysupport&#10;dh_link&#10;dh_strip&#10;dh_compress&#10;dh_fixperms&#10;dh_installdeb&#10;dh_gencontrol&#10;dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable $&#123;python:Depends&#125;&#10;dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable $&#123;shlibs:Depends&#125;&#10;dh_md5sums&#10;dh_builddeb&#10;dpkg-deb: building package `indicator-tbutton&#39; in `../indicator-tbutton_0.1-1_amd64.deb&#39;.&#10; signfile indicator-tbutton-0.1_0.1-1.dsc&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-genchanges  &#62;../indicator-tbutton-0.1_0.1-1_amd64.changes&#10;dpkg-genchanges: including full source code in upload&#10; signfile indicator-tbutton-0.1_0.1-1_amd64.changes&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-source --after-build indicator-tbutton-0.1&#10;dpkg-buildpackage: full upload (original source is included)&#10;&#10;&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1&#10;indicator-tbutton-0.1_0.1-1_amd64.changes&#10;indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;indicator-tbutton-0.1_0.1-1.dsc&#10;indicator-tbutton-0.1_0.1.orig.tar.gz&#10;indicator-tbutton_0.1-1_amd64.deb&#10;&#10;# OK! &#22823;&#21151;&#21578;&#25104;</span><br></pre></td></tr></table></figure>
+<p>现在我们有了 .deb 文件，先把它解压，看看有没有打包进全部的文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  mkdir temp&#10;&#10140;  sandbox  dpkg -x indicator-tbutton_0.1-1_amd64.deb temp&#10;&#10140;  sandbox  tree&#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; build-stamp&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; configure-stamp&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; debian&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; changelog&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; compat&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; files&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; DEBIAN&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; conffiles&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; md5sums&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; etc&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; xdg&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; autostart&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; usr&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9500;&#9472;&#9472; bin&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; share&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9500;&#9472;&#9472; applications&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9500;&#9472;&#9472; doc&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160;     &#9500;&#9472;&#9472; changelog.Debian.gz&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160;     &#9492;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9492;&#9472;&#9472; icons&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;             &#9492;&#9472;&#9472; hicolor&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;                 &#9492;&#9472;&#9472; 96x96&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;                     &#9492;&#9472;&#9472; apps&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;                         &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.debhelper.log&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.substvars&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; rules&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; source&#10;&#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; format&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1-1_amd64.changes&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1-1.dsc&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton_0.1-1_amd64.deb&#10;&#9492;&#9472;&#9472; temp&#10;    &#9500;&#9472;&#9472; etc&#10;    &#9474;&#160;&#160; &#9492;&#9472;&#9472; xdg&#10;    &#9474;&#160;&#160;     &#9492;&#9472;&#9472; autostart&#10;    &#9474;&#160;&#160;         &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;    &#9492;&#9472;&#9472; usr&#10;        &#9500;&#9472;&#9472; bin&#10;        &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;        &#9492;&#9472;&#9472; share&#10;            &#9500;&#9472;&#9472; applications&#10;            &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;            &#9500;&#9472;&#9472; doc&#10;            &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;            &#9474;&#160;&#160;     &#9500;&#9472;&#9472; changelog.Debian.gz&#10;            &#9474;&#160;&#160;     &#9492;&#9472;&#9472; copyright&#10;            &#9492;&#9472;&#9472; icons&#10;                &#9492;&#9472;&#9472; hicolor&#10;                    &#9492;&#9472;&#9472; 96x96&#10;                        &#9492;&#9472;&#9472; apps&#10;                            &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;32 directories, 34 files</span><br></pre></td></tr></table></figure>
+<p>Perfect! 全部打包了！ ヽ(○´∀`)ﾉ♪ </p>
+<p>如果电脑中有装有 Ubuntu 的虚拟机的话，可以在里面安装，再次验证。</p>
+<p>如果我们还有耐心的话，可用 lintain 来检查 deb 包的其他问题。下面是我的 .deb 问题，两个警告，一个错误，但并无大碍。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  lintian indicator-tbutton_0.1-1_amd64.deb&#10;W: indicator-tbutton: new-package-should-close-itp-bug&#10;W: indicator-tbutton: binary-without-manpage usr/bin/indicator-tbutton&#10;E: indicator-tbutton: python-script-but-no-python-dep usr/bin/indicator-tbutton</span><br></pre></td></tr></table></figure>
+<h2 id="u4E0A_u4F20_Launchpad"><a href="#u4E0A_u4F20_Launchpad" class="headerlink" title="上传 Launchpad"></a>上传 Launchpad</h2><p>最后一部分，涉及的工具只有 <code>dput</code>。首先，先要对它配置一下。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  vim ~/.dput.cf</span><br></pre></td></tr></table></figure>
+<p>输入以下内容：<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[my-ppa]</span><br><span class="line">fqdn = ppa.launchpad.net</span><br><span class="line"><span class="keyword">method</span> = sftp               <span class="comment"># 确保我们已将 ssh-key 添加到 Launchpad!</span></span><br><span class="line">incoming = &lt;<span class="type">YOUR</span> <span class="type">PPA</span> <span class="type">PATH</span>&gt;  <span class="comment"># 这是我的： ~overvenus/ubuntu/ppa/</span></span><br><span class="line">login = &lt;<span class="type">YOUR</span> <span class="type">ACCONT</span> <span class="type">NAME</span>&gt;  <span class="comment"># 这是我的： overvenus</span></span><br><span class="line">allow_unsigned_uploads = <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<p>在上传之前，我们先要清理一下，然后换个模式 build， <code>fakeroot dpkg-buildpackage -S</code>。</p>
+<blockquote>
+<p><code>-S</code> : 只打包源码，GPG 签名。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  ls&#10;indicator-tbutton-0.1&#10;indicator-tbutton-0.1_0.1-1_amd64.changes&#10;indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;indicator-tbutton-0.1_0.1-1.dsc&#10;indicator-tbutton-0.1_0.1.orig.tar.gz&#10;indicator-tbutton_0.1-1_amd64.deb&#10;temp&#10;&#10;# &#21024;&#38500;&#25991;&#20214;ing&#10;&#10140;  sandbox  rm -r indicator-tbutton-0.1_0.1-1_amd64.changes indicator-tbutton-0.1_0.1-1.debian.tar.gz indicator-tbutton-0.1_0.1-1.dsc indicator-tbutton_0.1-1_amd64.deb temp&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#10;# &#28165;&#29702;&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;&#10140;  indicator-tbutton-0.1  dh_clean&#10;#  &#25442;&#20010;&#27169;&#24335; build&#10;&#10140;  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -S &#10;dpkg-buildpackage: source package indicator-tbutton-0.1&#10;dpkg-buildpackage: source version 0.1-1&#10;dpkg-buildpackage: source distribution trusty&#10;dpkg-buildpackage: source changed by Neil Shen &#60;overvenus@gmail.com&#62;&#10; dpkg-source --before-build indicator-tbutton-0.1&#10; debian/rules clean&#10;dh_testdir&#10;dh_testroot&#10;rm -f build-stamp&#10;dh_clean&#10; dpkg-source -b indicator-tbutton-0.1&#10;dpkg-source: info: using source format `3.0 (quilt)&#39;&#10;dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc&#10; signfile indicator-tbutton-0.1_0.1-1.dsc&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-genchanges -S &#62;../indicator-tbutton-0.1_0.1-1_source.changes&#10;dpkg-genchanges: including full source code in upload&#10; signfile indicator-tbutton-0.1_0.1-1_source.changes&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-source --after-build indicator-tbutton-0.1&#10;dpkg-buildpackage: full upload (original source is included)&#10;&#10;# &#27880;&#24847;&#65292;&#27809;&#26377; deb&#65281;&#10;&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1&#10;indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;indicator-tbutton-0.1_0.1-1.dsc&#10;indicator-tbutton-0.1_0.1-1_source.changes&#10;indicator-tbutton-0.1_0.1.orig.tar.gz&#10;# &#19978;&#20256;&#21040; PPA&#10;&#10140;  sandbox  dput my-ppa  indicator-tbutton-0.1_0.1-1_source.changes&#10;Checking signature on .changes&#10;gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7&#10;gpg: Good signature from &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1_source.changes.&#10;Checking signature on .dsc&#10;gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7&#10;gpg: Good signature from &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1.dsc.&#10;Uploading to my-ppa (via sftp to ppa.launchpad.net):&#10;  indicator-tbutton-0.1_0.1-1.dsc: Agent admitted failure to sign using the key.&#10;Enter passphrase for key &#39;/home/neil/.ssh/id_rsa&#39;: &#10;...&#10;...</span><br></pre></td></tr></table></figure>
+<p>等上传完毕后 Launchpad 会发一封邮件给我们，被接受，会有以下回复。被拒，也会把原因写在邮件中。</p>
+<p><img src="http://ww2.sinaimg.cn/large/7f793092gw1f08c4vj25bj20hf0d141a.jpg" alt=""></p>
+<p>如果一切正常，30 分钟后，我们就能从 PPA 中安装我们的软件。比如安装 TButton：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:overvenus/ppa&#10;sudo apt-get update&#10;sudo apt-get install indicator-tbutton</span><br></pre></td></tr></table></figure>
+<p>End.</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<p><a href="/2016/01/20/tbutton-mini-commands-launcher/">TButton</a></p>
+<p><a href="https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian" target="_blank" rel="external">TButton/debian</a></p>
+<p><a href="http://www.ruanyifeng.com/blog/2013/07/gpg.html" target="_blank" rel="external">GPG入门教程</a></p>
+<p><a href="http://askubuntu.com/a/71516/436021" target="_blank" rel="external">How do I create a PPA?</a></p>
+<p><a href="http://packaging.ubuntu.com/singlehtml/" target="_blank" rel="external">Ubuntu Packaging Guide</a></p>
+<p><a href="https://www.youtube.com/watch?v=nhoRyd2CEVs" target="_blank" rel="external">How to build a simple Debian package (*.Deb) - YouTube</a></p>
+<p><a href="http://www.debian.org/doc/manuals/maint-guide/" target="_blank" rel="external">Debian New Maintainers’ Guide</a></p>
+<p><a href="https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf" target="_blank" rel="external">Packaging tutorial</a></p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="u65B0_u624B_u4E4B_u75DB"><a href="#u65B0_u624B_u4E4B_u75DB" class="headerlink" title="新手之痛"></a>新手之痛</h2><p>说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> apt-<span class="preprocessor">get</span> install <span class="keyword">build-essential </span>devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts</span><br></pre></td></tr></table></figure></p>
+<p>这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)</p>
+<p>有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。</p>
+<p>我<strong>没有</strong>严格遵守 Debian 社区打包的步骤，这记录的是一个 quick and dirty way not the Debian way!这是大概的过程:</p>
+<ol>
+<li>创建 GPG: 用于给 deb 签名</li>
+<li>打包 DEB: 有点麻烦，规矩多，步骤多</li>
+<li>上传 Launchpad: 添加到 PPA，以后安装就方便了</li>
+</ol>
+<h2 id="u521B_u5EFA_GPG"><a href="#u521B_u5EFA_GPG" class="headerlink" title="创建 GPG"></a>创建 GPG</h2><p>阮一峰有一篇非常棒的 <a href="http://www.ruanyifeng.com/blog/2013/07/gpg.html">GPG入门教程</a>，里面涵盖了新手上手 GPG 所需的基本步骤。</p>
+<p>我在这补充一下，他的文章中上传公钥使用的是 <code>hkp://subkeys.pgp.net</code>，我这试了几次都出现了连接错误。所以，我推荐 <code>hkp://keyserver.ubuntu.com</code>，使用它，不仅是因为连得上，还因为在 Launchpad 创建 PPA 也要用它。</p>
+<h2 id="u521B_u5EFA_PPA"><a href="#u521B_u5EFA_PPA" class="headerlink" title="创建 PPA"></a>创建 PPA</h2><p>摘自 <a href="http://askubuntu.com/a/71516/436021">How do I create a PPA?</a></p>
+<blockquote>
+<p><a href="https://login.launchpad.net/+new_account">创建 Launchpad 帐号</a><br><a href="https://launchpad.net/people/+me/">激活 PPA</a><br>用 GPG 签约 <a href="https://launchpad.net/codeofconduct">the Ubuntu code of conduct</a></p>
+</blockquote>]]>
+    
+    </summary>
+    
+      <category term="Ubuntu" scheme="http://neilsh.me/tags/Ubuntu/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[TButton 命令行快捷按钮]]></title>
     <link href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/"/>
     <id>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</id>
     <published>2016-01-20T04:02:36.000Z</published>
-    <updated>2016-01-20T05:52:44.000Z</updated>
-    <content type="html"><![CDATA[<p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：<br><code>killall -s STOP vmware-vmx</code><br>过不了多久，之前还呼啸的风扇现在已经没声音了。<br>要恢复被暂停的虚拟机也非常简单，只要输入：<br><code>killall -s CONT vmware-vmx</code></p>
+    <updated>2016-01-22T09:53:12.000Z</updated>
+    <content type="html"><![CDATA[<p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入： </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall -s STOP vmware-vmx</span><br></pre></td></tr></table></figure>
+<p>过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall -s CONT vmware-vmx</span><br></pre></td></tr></table></figure>
 <p>如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。</p>
 <p>不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 <a href="https://github.com/overvenus/tbutton" target="_blank" rel="external"><strong>TButton</strong></a>.</p>
-<p><strong>TButton</strong> 是用 Python 写的，做做很快，没花多长时间。参考了 <a href="https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py" target="_blank" rel="external">goagent-gtk</a><br>开源在 <em><a href="https://github.com/overvenus/tbutton" target="_blank" rel="external">https://github.com/overvenus/tbutton</a></em><br>昨天我做了一个安装包，<a href="https://github.com/overvenus/tbutton/releases" target="_blank" rel="external">戳这下载</a><br>目前的功能还很简单，就只有“点击 –&gt; 执行”，对应的命令要在配置文件中写好，配置文件在 <code>~/.config/Tbutton/</code></p>
+<p><strong>TButton</strong> 是用 Python 写的，做做很快，没花多长时间。参考了 <a href="https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py" target="_blank" rel="external">goagent-gtk</a><br>开源在 <em><a href="https://github.com/overvenus/tbutton" target="_blank" rel="external">https://github.com/overvenus/tbutton</a></em><br>昨天我做了一个安装包，<a href="https://github.com/overvenus/tbutton/releases" target="_blank" rel="external">戳这下载</a>。或者从我的 PPA 安装：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:overvenus/ppa&#10;sudo apt-get update&#10;sudo apt-get install indicator-tbutton</span><br></pre></td></tr></table></figure>
+<p>目前的功能还很简单，就只有“点击 –&gt; 执行”，对应的命令要在配置文件中写好，配置文件在 <code>~/.config/Tbutton/</code></p>
 <p>下面是 TButton 在我电脑上的使用效果：</p>
 <p><img src="https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png" alt=""></p>
 <p>PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。</p>
@@ -43,7 +168,7 @@
     <link href="http://neilsh.me/2015/12/31/summary-2015/"/>
     <id>http://neilsh.me/2015/12/31/summary-2015/</id>
     <published>2015-12-31T03:12:58.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:43:36.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u516C_u5F00_u8BFE"><a href="#u516C_u5F00_u8BFE" class="headerlink" title="公开课"></a>公开课</h2><p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。<br>等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。<br>论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
 <ul>
 <li>Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf" target="_blank" rel="external">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf</a>.</li>
@@ -131,7 +256,7 @@
     <link href="http://neilsh.me/2015/12/25/least-square-in-matrix/"/>
     <id>http://neilsh.me/2015/12/25/least-square-in-matrix/</id>
     <published>2015-12-25T02:10:28.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:43:36.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><a href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5" class="headerlink" title="拟合曲线与最小二乘法"></a>拟合曲线与最小二乘法</h2><p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
 <p>最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :</p>
 <p>$$<br>\begin{align}<br>\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\<br>y &amp;= \hat{y} + \delta<br>\end{align}<br>$$</p>
@@ -198,7 +323,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/29/erya-no-pause/"/>
     <id>http://neilsh.me/2015/11/29/erya-no-pause/</id>
     <published>2015-11-29T14:04:04.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:43:36.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u6076_u5FC3_u7684_u6682_u505C"><a href="#u6076_u5FC3_u7684_u6682_u505C" class="headerlink" title="恶心的暂停"></a>恶心的暂停</h2><p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
 <h2 id="u8FC7_u7A0B"><a href="#u8FC7_u7A0B" class="headerlink" title="过程"></a>过程</h2><p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：<br><a id="more"></a><br><img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt=""><br>这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#eryaPlayer'</span>).pauseMovie();</span><br></pre></td></tr></table></figure></p>
 <p>视频就暂停了。</p>
@@ -238,7 +363,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/25/paxos_digest/"/>
     <id>http://neilsh.me/2015/11/25/paxos_digest/</id>
     <published>2015-11-25T11:25:23.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:43:36.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf" target="_blank" rel="external">1</a>]<br>Here are some notes about Basic Paxos.</p>
 <h2 id="Three_roles_in_Paxos"><a href="#Three_roles_in_Paxos" class="headerlink" title="Three roles in Paxos"></a>Three roles in Paxos</h2><ol>
 <li>Proposers</li>
@@ -306,7 +431,7 @@ TOOD:
     <link href="http://neilsh.me/2015/11/09/make_slice_map_channel/"/>
     <id>http://neilsh.me/2015/11/09/make_slice_map_channel/</id>
     <published>2015-11-09T07:16:55.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:43:36.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Where_is_the_make_implemention_3F"><a href="#Where_is_the_make_implemention_3F" class="headerlink" title="Where is the make implemention?"></a>Where is the make implemention?</h2><p>package <strong>runtime</strong><br>By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[<a href="https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8" target="_blank" rel="external">1</a>] are also implemented in this package.</p>
 <h2 id="Slices"><a href="#Slices" class="headerlink" title="Slices"></a>Slices</h2><p>Source file: go/src/runtime/slice.go</p>
 <h3 id="Data_structure"><a href="#Data_structure" class="headerlink" title="Data structure"></a>Data structure</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer</span><br><span class="line">    <span class="built_in">len</span>   <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="typename">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -365,7 +490,7 @@ TOOD:
     <link href="http://neilsh.me/2015/10/23/protocol_and_fsm/"/>
     <id>http://neilsh.me/2015/10/23/protocol_and_fsm/</id>
     <published>2015-10-23T13:17:00.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:02:01.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h2><p>本文中 Protocol 特指通讯协议。<br>首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
 <blockquote>
 <p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  –<a href="https://en.wikipedia.org/wiki/Protocol" target="_blank" rel="external">WIKI#Protocol</a></p>
@@ -538,7 +663,7 @@ TOOD:
     <link href="http://neilsh.me/2015/10/08/golang_note/"/>
     <id>http://neilsh.me/2015/10/08/golang_note/</id>
     <published>2015-10-08T14:03:00.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:02:01.000Z</updated>
     <content type="html"><![CDATA[<!--
 TODO:
    - ...
@@ -611,7 +736,7 @@ TODO:
     <link href="http://neilsh.me/2015/09/21/fragment_structured_Computer_Organization/"/>
     <id>http://neilsh.me/2015/09/21/fragment_structured_Computer_Organization/</id>
     <published>2015-09-21T11:44:00.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:02:01.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Parallelism_in_Computer_Organization"><a href="#Parallelism_in_Computer_Organization" class="headerlink" title="Parallelism in Computer Organization"></a>Parallelism in Computer Organization</h1><p>Why we need parallel computing? Because we are close to the limit of physics – the speed of light and memory becomes the bottleneck of computer.</p>
 <h2 id="Parallelism_in_CPU"><a href="#Parallelism_in_CPU" class="headerlink" title="Parallelism in CPU"></a>Parallelism in CPU</h2><ul>
 <li>Pipeline<ul>
@@ -695,7 +820,7 @@ TODO:
     <link href="http://neilsh.me/2015/09/18/jupyter_core_406/"/>
     <id>http://neilsh.me/2015/09/18/jupyter_core_406/</id>
     <published>2015-09-18T12:39:00.000Z</published>
-    <updated>2016-01-20T05:52:44.000Z</updated>
+    <updated>2016-01-22T09:43:36.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Jupyter__u4E0E_IPython"><a href="#Jupyter__u4E0E_IPython" class="headerlink" title="Jupyter 与 IPython"></a>Jupyter 与 IPython</h1><p>Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。</p>
 <h1 id="BUG_uFF1F"><a href="#BUG_uFF1F" class="headerlink" title="BUG？"></a>BUG？</h1><p>IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 <a href="https://jupyter.readthedocs.org/en/latest/install.html" target="_blank" rel="external">Installation</a> ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。</p>
 <blockquote>
@@ -740,7 +865,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/30/few_words_about_6_828/"/>
     <id>http://neilsh.me/2015/08/30/few_words_about_6_828/</id>
     <published>2015-08-30T14:14:00.000Z</published>
-    <updated>2016-01-20T04:08:49.000Z</updated>
+    <updated>2016-01-22T09:43:36.000Z</updated>
     <content type="html"><![CDATA[<p>Recently I’ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html" target="_blank" rel="external">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
 <a id="more"></a>
 <h2 id="6-828_u7B80_u4ECB"><a href="#6-828_u7B80_u4ECB" class="headerlink" title="6.828简介"></a>6.828简介</h2><p>好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。</p>
@@ -789,7 +914,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/29/my_frist_internship/"/>
     <id>http://neilsh.me/2015/08/29/my_frist_internship/</id>
     <published>2015-08-29T06:33:00.000Z</published>
-    <updated>2015-11-07T04:04:21.000Z</updated>
+    <updated>2016-01-22T09:02:01.000Z</updated>
     <content type="html"><![CDATA[<p>两个月一晃而过，暑假结束了，第一份实习也结束了。</p>
 <p>这段时间，我在 EasyLinking 实习，得到了 FULL TIME 的安卓开发工作经历，真真切切地认识到<strong>文档和注释</strong>重要性，同时还结识了一帮前辈：重视人才的纪总，平和的游总，自学成才的 iOS 大牛老王，后台开发大牛老邹和小胡，开发资历第一丁老师，全栈的北大高材生超哥，等等。</p>
 <p>实习中给我印象最深的还是团队协作。不得不说，这个技术团队成员之间协助效率非常高，一个问题发现之后，马上就能得到反馈，我想这应该得利于扁平化的管理模式。</p>
@@ -812,7 +937,7 @@ TODO:
     <link href="http://neilsh.me/2015/08/13/dispatch_and_handle_motionevent_in_android/"/>
     <id>http://neilsh.me/2015/08/13/dispatch_and_handle_motionevent_in_android/</id>
     <published>2015-08-13T06:33:00.000Z</published>
-    <updated>2015-11-07T04:04:21.000Z</updated>
+    <updated>2016-01-22T09:02:01.000Z</updated>
     <content type="html"><![CDATA[<h2 id="PullToRefresh__u4E0E_SwipeRefreshLayout"><a href="#PullToRefresh__u4E0E_SwipeRefreshLayout" class="headerlink" title="PullToRefresh 与 SwipeRefreshLayout"></a>PullToRefresh 与 SwipeRefreshLayout</h2><p>这段时间我在 Easyinking 公司实习， 做安卓开发。之前的 App 中大量使用 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh" target="_blank" rel="external">Android-PullToRefresh</a>。这个轮子很经典，在较久版本的安卓上面也很好使，不过作者已经放弃维护了，在我们的 App 上也发现了一个诡异的BUG：与WebView配合使用时，在网络环境差的情况下会出现一次下拉多次刷新的情况，症状就是整个网页在那上下抽搐。在官方支持库 support-v4:22 中自带了一个类似的 SwipeRefreshLayout，效果也是一级棒。由于两者的 API 设计差不多，使用的情景也几乎一样，所以可以无痛地从 <a href="https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh" target="_blank" rel="external">PullToRefresh</a> 转移过来。</p>
 <h2 id="u654F_u611F_u7684_SwipeRefreshLayout"><a href="#u654F_u611F_u7684_SwipeRefreshLayout" class="headerlink" title="敏感的 SwipeRefreshLayout"></a>敏感的 SwipeRefreshLayout</h2><p>从 PullToRefresh 转移到 SwipeRefreshLayout 大概花了十来分钟，初步测试出来的效果也令人满意。但是，实际使用中总会有意想不到的问题。我们把一个WebView放在了 SwipeRefreshLayout 中， 该 WebView 呈现的网页中有一个图片轮播，可左右滑动，下面的问题是 SwipeRefreshLayout 过于敏感，它把稍有下拉倾向的左右滑动全部拦截掉，并把他们当作下拉的手势，典型的 False Positive ， 处理的思路也很简单，既然是误报，过滤之即可。</p>
 <h3 id="u8BEF_u62A5_u7684_u624B_u52BF"><a href="#u8BEF_u62A5_u7684_u624B_u52BF" class="headerlink" title="误报的手势"></a><strong>误报的手势</strong></h3><p><img src="http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1xydoiwoj20u01hcwoe.jpg" alt=""><img src="http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev1ys28bm4j20u01hc12q.jpg" alt=""></p>
@@ -915,7 +1040,7 @@ TODO:
     <link href="http://neilsh.me/2015/07/04/goto_and_topological_sorting/"/>
     <id>http://neilsh.me/2015/07/04/goto_and_topological_sorting/</id>
     <published>2015-07-04T14:26:00.000Z</published>
-    <updated>2015-11-07T04:04:21.000Z</updated>
+    <updated>2016-01-22T09:02:01.000Z</updated>
     <content type="html"><![CDATA[<p>##goto in C<br><code>goto</code>在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。</p>
 <p>###goto, break, continue<br><code>goto</code>,<code>break</code>,<code>continue</code> 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的<code>{}</code>(scope)。<br><code>continue</code> 只能写在loop里，不然编译报：continue statement not within loop，<br><code>break</code>只能写在loop或者switch中，不然编译报：break statement not within loop or switch。<br><code>goto</code>则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过用的好当然也可以增加效率的同时提到可读性。<br><a id="more"></a></p>
 <blockquote>

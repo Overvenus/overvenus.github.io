@@ -1,11 +1,16 @@
 <!doctype html>
-<html class="theme-next use-motion theme-next-mist">
-<head>
+
+
+
   
 
-<meta charset="UTF-8"/>
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,25 +23,27 @@
 
 
 
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
 
 
 
-  
-    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
 
 
-<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
-
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="It's now, or never." />
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="Overvenus, Neil Shen, Blog, Programming, Software" />
+
+
 
 
 
@@ -44,52 +51,51 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
 
 
-<meta name="description" content="###关于我
-我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。
-###这博客
-这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。
+
+
+
+
+<meta name="description" content="关于我我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。
+这博客这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。
 感谢 Gitcafe 提供空间。本静态博客由 hexo 生成。
-###联系我
-E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾舍尔
-###许">
+联系我E-mail: Github: overvenusBitbucket: overvenusLaunchpad: overvenusStackOverflow: NeilShenWeibo:">
 <meta property="og:type" content="website">
 <meta property="og:title" content="About me">
 <meta property="og:url" content="http://neilsh.me/me/index.html">
 <meta property="og:site_name" content="Neil">
-<meta property="og:description" content="###关于我
-我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。
-###这博客
-这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。
+<meta property="og:description" content="关于我我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。
+这博客这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。
 感谢 Gitcafe 提供空间。本静态博客由 hexo 生成。
-###联系我
-E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾舍尔
-###许">
+联系我E-mail: Github: overvenusBitbucket: overvenusLaunchpad: overvenusStackOverflow: NeilShenWeibo:">
 <meta property="og:image" content="http://neilsh.me/asset/image/email.addr.gif">
 <meta property="og:image" content="https://i.creativecommons.org/l/by/4.0/88x31.png">
-<meta property="og:updated_time" content="2016-01-20T05:54:22.000Z">
+<meta property="og:updated_time" content="2016-01-22T09:53:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="About me">
-<meta name="twitter:description" content="###关于我
-我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。
-###这博客
-这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。
+<meta name="twitter:description" content="关于我我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。
+这博客这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。
 感谢 Gitcafe 提供空间。本静态博客由 hexo 生成。
-###联系我
-E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾舍尔
-###许">
+联系我E-mail: Github: overvenusBitbucket: overvenusLaunchpad: overvenusStackOverflow: NeilShenWeibo:">
+
 
 
 <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
   var CONFIG = {
-    scheme: 'Mist',
-    sidebar: 'post'
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
   };
 </script>
-
-
 
   <title>
   
@@ -102,15 +108,6 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  <!--[if lte IE 8]>
-  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
-    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
-      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
-           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
-           style='margin-left:auto;margin-right:auto;display: block;'/>
-    </a>
-  </div>
-<![endif]-->
   
 
 
@@ -128,7 +125,14 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
 
 
 
-  <div class="container one-column ">
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -202,6 +206,7 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
 
       
       
+      
     </ul>
   
 
@@ -213,20 +218,19 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
 
     <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content"> 
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
   <div id="posts" class="posts-expand">
     
     
-      <p>###关于我</p>
-<p>我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。</p>
-<p>###这博客</p>
-<p>这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。</p>
+      <h2 id="u5173_u4E8E_u6211"><a href="#u5173_u4E8E_u6211" class="headerlink" title="关于我"></a>关于我</h2><p>我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。</p>
+<h2 id="u8FD9_u535A_u5BA2"><a href="#u8FD9_u535A_u5BA2" class="headerlink" title="这博客"></a>这博客</h2><p>这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。</p>
 <p>感谢 <a href="https://gitcafe.com" target="_blank" rel="external">Gitcafe</a> 提供空间。<br>本静态博客由 <a href="https://hexo.io" target="_blank" rel="external">hexo</a> 生成。</p>
-<p>###联系我</p>
-<p>E-mail: <img src="/asset/image/email.addr.gif" alt=""><br>Github: <a href="https://github.com/Overvenus" target="_blank" rel="external">Overvenus</a><br>Bitbucket: <a href="https://bitbucket.org/overvenus/" target="_blank" rel="external">Overvenus</a><br>StackOverflow: <a href="https://stackoverflow.com/users/3920448/neilshen" target="_blank" rel="external">NeilShen</a><br>Weibo: <a href="http://weibo.com/idstn/home" target="_blank" rel="external">艾舍尔</a></p>
-<p>###许可</p>
-<p><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt=""><br>本博客所有文章和作品如未特别说明均采用知识共享署名-非商业性使用 4.0 国际许可协议 (CC BY 4.0)进行许可。</p>
+<h2 id="u8054_u7CFB_u6211"><a href="#u8054_u7CFB_u6211" class="headerlink" title="联系我"></a>联系我</h2><p>E-mail: <img src="/asset/image/email.addr.gif" alt=""><br>Github: <a href="https://github.com/Overvenus" target="_blank" rel="external">overvenus</a><br>Bitbucket: <a href="https://bitbucket.org/overvenus/" target="_blank" rel="external">overvenus</a><br>Launchpad: <a href="https://launchpad.net/~overvenus" target="_blank" rel="external">overvenus</a><br>StackOverflow: <a href="https://stackoverflow.com/users/3920448/neilshen" target="_blank" rel="external">NeilShen</a><br>Weibo: <a href="http://weibo.com/idstn/home" target="_blank" rel="external">艾舍尔</a></p>
+<h2 id="GPG"><a href="#GPG" class="headerlink" title="GPG"></a>GPG</h2><p>将于 2016-12-26 过期<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">-----BEGIN PGP PUBLIC KEY BLOCK-----</span><br><span class="line"><span class="string">Version:</span> GnuPG v1</span><br><span class="line"></span><br><span class="line">mQENBFZ<span class="regexp">/uU0BCADnN3zImaDg4E0exrRN9UlCd4z1Umkaubg9AYczJrY7/</span>B/<span class="number">4</span>IyXZ</span><br><span class="line">GAls8TZ5JFMSOMlY<span class="regexp">/YhtuoqhzuP8SAQkFLvUj/</span>XZXbhaVvZ5DC<span class="regexp">/VMQQz/</span><span class="number">7</span>KUgdsJ</span><br><span class="line">GnlSVxOUIuDby<span class="regexp">/9gMqdQgyx/</span>N3jI7/gfbtZf9m2Dlp0yRdDHXgp7AVAVzdqU74kD</span><br><span class="line">fsSYnhtEftywl0uprM2hg758bEStBocGB94rhXrJDJtm6yJPnLYMslpNtoXwFqrR</span><br><span class="line">/As56hfFRAEKTWMRBZRGOH78mDCyT127Muze2CEWczPlDLZslu7FNiFSsn+VCFWm</span><br><span class="line"><span class="number">6</span>bNowOrPiGkydBWYVOkoHurAgAVVgxOJLNefABEBAAG0H05laWwgU2hlbiA8b3Zl</span><br><span class="line">cnZlbnVzQGdtYWlsLmNvbT6JAT4EEwECACgFAlZ/uU0CGwMFCQHhM4AGCwkIBwMC</span><br><span class="line">BhUIAgkKCwQWAgMBAh4BAheAAAoJEHl++tOQ6frHgdkIAIWs/w8nzDiyqlvlO97g</span><br><span class="line"><span class="number">458</span>PdvnOvrB5UBCdxmZT1RFesDJxInn85RGsIHi+uCjHX23hhB4U+ZZNzVRXacpy</span><br><span class="line">iGFTGt9GXNuDskArGM<span class="regexp">/JEnmepcN/</span>lLYhH91Hveswjqt17YIWpYXvfRfD7LKZWR65</span><br><span class="line">g3b1juARux<span class="regexp">/y7WdMRdAHAQHrAKSMsalpy1YEnOuTtlAKzWVvQYmUSM/</span>+uUNhzKJE</span><br><span class="line"><span class="number">8</span>juUIpjrBMhkyRXK8OudZNgiL/tK4OgaWtGZF6Y+UINXU75dTiswcnJev5w6M50C</span><br><span class="line">TNH/AoNANljuBu98qCPKexqcFOTZdwLYVnwoMq6RCF+n3t+<span class="number">7</span>sRAnxpGPy6E6aqhC</span><br><span class="line">s+<span class="number">25</span>AQ0EVn+<span class="number">5</span>TQEIAKi3UNeCjet0S7qidW2W9wGbG8/WwieiMj099N+srLyNQFla</span><br><span class="line">Q0pdkFuninvAlPiqFAQI5xyiFdHh5lbHZImAp367XNPN3rq43jrKpHmr0LHzGR3H</span><br><span class="line">zviLtQVBsiFl3<span class="regexp">/BdOOeMTBPa6BqaItXI7TI+F/</span>dorNE07oI67BD2LBLC2wcYpTBU</span><br><span class="line">cGZdpiZ2DoLNE+<span class="number">7</span>fC8KwZbMXk+cdIEVwn+RykqKrBiRVU0ITv8A57rBCROdShNEm</span><br><span class="line">wL8tpMj27ZZrDJGg5s4LAMW5nCk8wze1Uxatp+rq6uu6h0GcAiIHFtvVINnRv7ey</span><br><span class="line">+Hp5Ux8d42/Xzimfps6FZj2kRG+i8jxL8UTC7PMAEQEAAYkBJQQYAQIADwUCVn+<span class="number">5</span></span><br><span class="line">TQIbDAUJAeEzgAAKCRB5fvrTkOn6x0kMB/<span class="number">9</span>GuyioS4jx7Gcr3S1czjhtJkUan4N1</span><br><span class="line">VMx88EgxrV5oHklgVsM92GpYCMFesB2XqUEJwX7iQ5N8iZtiYcWe17TYR8kCd0wr</span><br><span class="line"><span class="number">4</span>luVD<span class="regexp">/j5NYqFrV1XC8de2NEUBBx9TO3tVI4gptQtsbSwzGJ3/</span><span class="number">5</span>u/BCmMW0RV4aG0</span><br><span class="line">VkvNnFcKgigxu<span class="regexp">/mbFjHyMy0iNtR4T62Xf5LO0VBPcc0Oglo+rWzgxkhZlCP/</span><span class="number">4</span>YQ5</span><br><span class="line">ZVPJAmvsbI1NgHVeNu97GEv7KdMlMueZTs0IIkh8QhapX/OhDEQwoVn2ZFrCtMXt</span><br><span class="line"><span class="number">3</span>WyN6YeDr9TJHAywuIY8RWsnU7RYHkDLBkaq9xqdHtvq7Qvi4XFigL50</span><br><span class="line">=Ue1K</span><br><span class="line">-----END PGP PUBLIC KEY BLOCK-----</span><br></pre></td></tr></table></figure></p>
+<h2 id="u8BB8_u53EF"><a href="#u8BB8_u53EF" class="headerlink" title="许可"></a>许可</h2><p><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt=""><br>本博客所有文章和作品如未特别说明均采用知识共享署名 - 非商业性使用 - 相同方式共享4.0国际许可。(CC BY NC SA 4.0)进行许可。</p>
 <blockquote>
 <p>如无必要，勿增实体。<br>Entities should not be multiplied unnecessarily<br>Numquam ponenda est pluralitas sine necessitate.<br>                             – Occam’s razor</p>
 </blockquote>
@@ -234,23 +238,24 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
     
   </div>
 
- </div>
 
-        
-
-        
-          <div class="comments" id="comments">
-            
-              <div class="ds-thread" data-thread-key="me/index.html"
-                   data-title="About me" data-url="http://neilsh.me/me/index.html">
-              </div>
-            
           </div>
-        
-      </div>
+          
 
-      
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="me/index.html"
+           data-title="About me" data-url="http://neilsh.me/me/index.html">
+      </div>
+    
+  </div>
+
+
+        </div>
         
+          
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -269,14 +274,16 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
 
       <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
+          <img class="site-author-image" itemprop="image"
+               src="/asset/image/avatar.jpg"
+               alt="Neil Shen" />
           <p class="site-author-name" itemprop="name">Neil Shen</p>
+          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -295,7 +302,7 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
         
           <div class="feed-link motion-element">
             <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
+              <i class="fa fa-rss"></i>
               RSS
             </a>
           </div>
@@ -306,13 +313,17 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
             
               <span class="links-of-author-item">
                 <a href="https://github.com/Overvenus" target="_blank">
-                  <i class="fa fa-github fa-fw"></i> GitHub
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/idstn" target="_blank">
-                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
                 </a>
               </span>
             
@@ -322,8 +333,8 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
         
         
           <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by.svg" alt="Creative Commons" />
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
             </a>
           </div>
         
@@ -340,11 +351,13 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
   </aside>
 
 
-      
+        
+      </div>
     </main>
 
     <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
+      <div class="footer-inner">
+        <div class="copyright" >
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2016</span>
@@ -361,23 +374,60 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
 <div class="theme-info">
   主题 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Mist
+    NexT.Muse
   </a>
 </div>
 
 
- </div>
+
+      </div>
     </footer>
 
     <div class="back-to-top"></div>
   </div>
 
+  
+
+
+  
+
+
+
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
 
   
   
+
   
-    
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
 
   
     
@@ -395,50 +445,14 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
       || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
   </script>
-    
-     
 
-
+  
     
   
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
-
-
-  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
 
 
 
 
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  
-
-  <script type="text/javascript">
-    $(document).ready(function () {
-
-      isMobile() && FastClick.attach(document.body);
-
-      // Define Motion Sequence.
-      motionIntegrator
-        .add(motionMiddleWares.logo)
-        .add(motionMiddleWares.menu)
-        .add(motionMiddleWares.backToTop)
-        .add(motionMiddleWares.postList)
-        .add(motionMiddleWares.sidebar);
-
-      // Bootstrap Motion.
-      motionIntegrator.bootstrap();
-    });
-  </script>
 
   
   
@@ -470,15 +484,6 @@ E-mail: Github: OvervenusBitbucket: OvervenusStackOverflow: NeilShenWeibo: 艾�
   
   
 
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
+
 </body>
 </html>

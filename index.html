@@ -1,11 +1,16 @@
 <!doctype html>
-<html class="theme-next use-motion theme-next-mist">
-<head>
+
+
+
   
 
-<meta charset="UTF-8"/>
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,25 +23,27 @@
 
 
 
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
 
 
 
-  
-    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
 
 
-<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
-
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="It's now, or never." />
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="Overvenus, Neil Shen, Blog, Programming, Software" />
+
+
 
 
 
@@ -44,7 +51,12 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.4.5.2" />
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
+
+
+
+
 
 
 <meta name="description" content="It&apos;s now, or never.">
@@ -58,29 +70,26 @@
 <meta name="twitter:description" content="It&apos;s now, or never.">
 
 
+
 <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
   var CONFIG = {
-    scheme: 'Mist',
-    sidebar: 'post'
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
   };
 </script>
-
-
 
   <title> Neil </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  <!--[if lte IE 8]>
-  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
-    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
-      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
-           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
-           style='margin-left:auto;margin-right:auto;display: block;'/>
-    </a>
-  </div>
-<![endif]-->
   
 
 
@@ -98,9 +107,16 @@
 
 
 
-  <div class="container one-column 
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left 
    page-home 
-">
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -174,6 +190,7 @@
 
       
       
+      
     </ul>
   
 
@@ -185,11 +202,23 @@
 
     <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content"> 
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
   <section id="posts" class="posts-expand">
+
+    
+
+    
+    
+
     
       
 
+  
+  
+
+  
   
   
 
@@ -204,8 +233,9 @@
             
             
               
-                <a class="post-title-link" href="/2016/01/20/tbutton-mini-commands-launcher/" itemprop="url">
-                  TButton 命令行快捷按钮
+                
+                <a class="post-title-link" href="/2016/01/20/debian packaging-step-by-step/" itemprop="url">
+                  Debian packaging 教程
                 </a>
               
             
@@ -214,8 +244,11 @@
 
         <div class="post-meta">
           <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-20T12:02:36+08:00" content="2016-01-20">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-01-20T14:22:58+08:00" content="2016-01-20">
               2016-01-20
             </time>
           </span>
@@ -226,8 +259,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/01/20/tbutton-mini-commands-launcher/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/20/tbutton-mini-commands-launcher/" itemprop="commentsCount"></span>
+                <a href="/2016/01/20/debian packaging-step-by-step/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/20/debian packaging-step-by-step/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -235,30 +268,40 @@
 
           
 
+          
+          
         </div>
       </header>
     
 
 
-    <div class="post-body">
+    <div class="post-body" itemprop="articleBody">
 
       
       
 
       
         
-          <span itemprop="articleBody">
-            
-              <p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：<br><code>killall -s STOP vmware-vmx</code><br>过不了多久，之前还呼啸的风扇现在已经没声音了。<br>要恢复被暂停的虚拟机也非常简单，只要输入：<br><code>killall -s CONT vmware-vmx</code></p>
-<p>如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。</p>
-<p>不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 <a href="https://github.com/overvenus/tbutton" target="_blank" rel="external"><strong>TButton</strong></a>.</p>
-<p><strong>TButton</strong> 是用 Python 写的，做做很快，没花多长时间。参考了 <a href="https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py" target="_blank" rel="external">goagent-gtk</a><br>开源在 <em><a href="https://github.com/overvenus/tbutton" target="_blank" rel="external">https://github.com/overvenus/tbutton</a></em><br>昨天我做了一个安装包，<a href="https://github.com/overvenus/tbutton/releases" target="_blank" rel="external">戳这下载</a><br>目前的功能还很简单，就只有“点击 –&gt; 执行”，对应的命令要在配置文件中写好，配置文件在 <code>~/.config/Tbutton/</code></p>
-<p>下面是 TButton 在我电脑上的使用效果：</p>
-<p><img src="https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png" alt=""></p>
-<p>PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。</p>
-
-            
-          </span>
+          <h2 id="u65B0_u624B_u4E4B_u75DB"><a href="#u65B0_u624B_u4E4B_u75DB" class="headerlink" title="新手之痛"></a>新手之痛</h2><p>说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> apt-<span class="preprocessor">get</span> install <span class="keyword">build-essential </span>devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts</span><br></pre></td></tr></table></figure></p>
+<p>这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)</p>
+<p>有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。</p>
+<p>我<strong>没有</strong>严格遵守 Debian 社区打包的步骤，这记录的是一个 quick and dirty way not the Debian way!这是大概的过程:</p>
+<ol>
+<li>创建 GPG: 用于给 deb 签名</li>
+<li>打包 DEB: 有点麻烦，规矩多，步骤多</li>
+<li>上传 Launchpad: 添加到 PPA，以后安装就方便了</li>
+</ol>
+<h2 id="u521B_u5EFA_GPG"><a href="#u521B_u5EFA_GPG" class="headerlink" title="创建 GPG"></a>创建 GPG</h2><p>阮一峰有一篇非常棒的 <a href="http://www.ruanyifeng.com/blog/2013/07/gpg.html">GPG入门教程</a>，里面涵盖了新手上手 GPG 所需的基本步骤。</p>
+<p>我在这补充一下，他的文章中上传公钥使用的是 <code>hkp://subkeys.pgp.net</code>，我这试了几次都出现了连接错误。所以，我推荐 <code>hkp://keyserver.ubuntu.com</code>，使用它，不仅是因为连得上，还因为在 Launchpad 创建 PPA 也要用它。</p>
+<h2 id="u521B_u5EFA_PPA"><a href="#u521B_u5EFA_PPA" class="headerlink" title="创建 PPA"></a>创建 PPA</h2><p>摘自 <a href="http://askubuntu.com/a/71516/436021">How do I create a PPA?</a></p>
+<blockquote>
+<p><a href="https://login.launchpad.net/+new_account">创建 Launchpad 帐号</a><br><a href="https://launchpad.net/people/+me/">激活 PPA</a><br>用 GPG 签约 <a href="https://launchpad.net/codeofconduct">the Ubuntu code of conduct</a></p>
+</blockquote>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/01/20/debian packaging-step-by-step/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -282,6 +325,10 @@
   
   
 
+  
+  
+  
+
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
@@ -293,6 +340,109 @@
             
             
               
+                
+                <a class="post-title-link" href="/2016/01/20/tbutton-mini-commands-launcher/" itemprop="url">
+                  TButton 命令行快捷按钮
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-01-20T12:02:36+08:00" content="2016-01-20">
+              2016-01-20
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/20/tbutton-mini-commands-launcher/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/20/tbutton-mini-commands-launcher/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入： </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall -s STOP vmware-vmx</span><br></pre></td></tr></table></figure>
+<p>过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall -s CONT vmware-vmx</span><br></pre></td></tr></table></figure>
+<p>如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。</p>
+<p>不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 <a href="https://github.com/overvenus/tbutton" target="_blank" rel="external"><strong>TButton</strong></a>.</p>
+<p><strong>TButton</strong> 是用 Python 写的，做做很快，没花多长时间。参考了 <a href="https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py" target="_blank" rel="external">goagent-gtk</a><br>开源在 <em><a href="https://github.com/overvenus/tbutton" target="_blank" rel="external">https://github.com/overvenus/tbutton</a></em><br>昨天我做了一个安装包，<a href="https://github.com/overvenus/tbutton/releases" target="_blank" rel="external">戳这下载</a>。或者从我的 PPA 安装：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:overvenus/ppa&#10;sudo apt-get update&#10;sudo apt-get install indicator-tbutton</span><br></pre></td></tr></table></figure>
+<p>目前的功能还很简单，就只有“点击 –&gt; 执行”，对应的命令要在配置文件中写好，配置文件在 <code>~/.config/Tbutton/</code></p>
+<p>下面是 TButton 在我电脑上的使用效果：</p>
+<p><img src="https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png" alt=""></p>
+<p>PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。</p>
+
+          
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/12/31/summary-2015/" itemprop="url">
                   2015年总结
                 </a>
@@ -303,7 +453,10 @@
 
         <div class="post-meta">
           <span class="post-time">
-            发表于
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
             <time itemprop="dateCreated" datetime="2015-12-31T11:12:58+08:00" content="2015-12-31">
               2015-12-31
             </time>
@@ -324,12 +477,14 @@
 
           
 
+          
+          
         </div>
       </header>
     
 
 
-    <div class="post-body">
+    <div class="post-body" itemprop="articleBody">
 
       
       
@@ -372,6 +527,10 @@
   
   
 
+  
+  
+  
+
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
@@ -383,6 +542,7 @@
             
             
               
+                
                 <a class="post-title-link" href="/2015/12/25/least-square-in-matrix/" itemprop="url">
                   最小二乘法的矩阵形式
                 </a>
@@ -393,7 +553,10 @@
 
         <div class="post-meta">
           <span class="post-time">
-            发表于
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
             <time itemprop="dateCreated" datetime="2015-12-25T10:10:28+08:00" content="2015-12-25">
               2015-12-25
             </time>
@@ -414,12 +577,14 @@
 
           
 
+          
+          
         </div>
       </header>
     
 
 
-    <div class="post-body">
+    <div class="post-body" itemprop="articleBody">
 
       
       
@@ -461,6 +626,10 @@
   
   
 
+  
+  
+  
+
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
@@ -472,6 +641,7 @@
             
             
               
+                
                 <a class="post-title-link" href="/2015/11/29/erya-no-pause/" itemprop="url">
                   解除尔雅公开课暂停
                 </a>
@@ -482,7 +652,10 @@
 
         <div class="post-meta">
           <span class="post-time">
-            发表于
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
             <time itemprop="dateCreated" datetime="2015-11-29T22:04:04+08:00" content="2015-11-29">
               2015-11-29
             </time>
@@ -503,12 +676,14 @@
 
           
 
+          
+          
         </div>
       </header>
     
 
 
-    <div class="post-body">
+    <div class="post-body" itemprop="articleBody">
 
       
       
@@ -540,100 +715,7 @@
 
 
     
-      
 
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/11/25/paxos_digest/" itemprop="url">
-                  paxos-digest
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-25T19:25:23+08:00" content="2015-11-25">
-              2015-11-25
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/11/25/paxos_digest/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/25/paxos_digest/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h2><p>Paxos is one of the most important algorithms in distributed system.[<a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf">1</a>]<br>Here are some notes about Basic Paxos.</p>
-<h2 id="Three_roles_in_Paxos"><a href="#Three_roles_in_Paxos" class="headerlink" title="Three roles in Paxos"></a>Three roles in Paxos</h2><ol>
-<li>Proposers</li>
-<li>Acceptor</li>
-<li>Learners</li>
-</ol>
-<p>General view:  <strong><em>Proposers</em></strong> send proposals to <strong><em>Acceptors</em></strong>, <strong><em>Acceptors</em></strong> accept a proposal and forward to <strong><em>Learners</em></strong>, <strong><em>Learners</em></strong> decided the proposal.<br>In real world, a single server acts <strong>two or more</strong> roles.</p>
-<h2 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h2><ol>
-<li>An acceptor must accept the first proposal that it receives.<br>1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.</li>
-<li>If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.<br>2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.<br>2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.<br>2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.</li>
-</ol>
-<p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/11/25/paxos_digest/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -642,15 +724,16 @@
   </nav>
 
 
- </div>
 
-        
+          </div>
+          
 
-        
-      </div>
 
-      
+          
+
+        </div>
         
+          
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -669,14 +752,16 @@
 
       <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/asset/image/avatar.jpg" alt="Neil Shen" itemprop="image"/>
+          <img class="site-author-image" itemprop="image"
+               src="/asset/image/avatar.jpg"
+               alt="Neil Shen" />
           <p class="site-author-name" itemprop="name">Neil Shen</p>
+          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -695,7 +780,7 @@
         
           <div class="feed-link motion-element">
             <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
+              <i class="fa fa-rss"></i>
               RSS
             </a>
           </div>
@@ -706,13 +791,17 @@
             
               <span class="links-of-author-item">
                 <a href="https://github.com/Overvenus" target="_blank">
-                  <i class="fa fa-github fa-fw"></i> GitHub
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/idstn" target="_blank">
-                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
                 </a>
               </span>
             
@@ -722,8 +811,8 @@
         
         
           <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by.svg" alt="Creative Commons" />
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
             </a>
           </div>
         
@@ -740,11 +829,13 @@
   </aside>
 
 
-      
+        
+      </div>
     </main>
 
     <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
+      <div class="footer-inner">
+        <div class="copyright" >
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2016</span>
@@ -761,23 +852,60 @@
 <div class="theme-info">
   主题 -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Mist
+    NexT.Muse
   </a>
 </div>
 
 
- </div>
+
+      </div>
     </footer>
 
     <div class="back-to-top"></div>
   </div>
 
+  
+
+
+  
+
+
+
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
 
   
   
+
   
-    
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
 
   
     
@@ -795,50 +923,14 @@
       || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
   </script>
-    
-     
 
-
+  
     
   
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
-
-
-  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
 
 
 
 
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  
-
-  <script type="text/javascript">
-    $(document).ready(function () {
-
-      isMobile() && FastClick.attach(document.body);
-
-      // Define Motion Sequence.
-      motionIntegrator
-        .add(motionMiddleWares.logo)
-        .add(motionMiddleWares.menu)
-        .add(motionMiddleWares.backToTop)
-        .add(motionMiddleWares.postList)
-        .add(motionMiddleWares.sidebar);
-
-      // Bootstrap Motion.
-      motionIntegrator.bootstrap();
-    });
-  </script>
 
   
   
@@ -870,15 +962,6 @@
   
   
 
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
+
 </body>
 </html>

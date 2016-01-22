@@ -1,0 +1,860 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Ubuntu," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="新手之痛说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：1sudo apt-get install build-essential devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilde">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Debian packaging 教程">
+<meta property="og:url" content="http://neilsh.me/2016/01/20/debian packaging-step-by-step/index.html">
+<meta property="og:site_name" content="Neil">
+<meta property="og:description" content="新手之痛说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：1sudo apt-get install build-essential devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilde">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/7f793092gw1f08c4vj25bj20hf0d141a.jpg">
+<meta property="og:updated_time" content="2016-01-22T09:53:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Debian packaging 教程">
+<meta name="twitter:description" content="新手之痛说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：1sudo apt-get install build-essential devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilde">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Debian packaging 教程 | Neil </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Neil</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Share something cool.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/me" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Debian packaging 教程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-01-20T14:22:58+08:00" content="2016-01-20">
+              2016-01-20
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/20/debian packaging-step-by-step/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/20/debian packaging-step-by-step/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="u65B0_u624B_u4E4B_u75DB"><a href="#u65B0_u624B_u4E4B_u75DB" class="headerlink" title="新手之痛"></a>新手之痛</h2><p>说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> apt-<span class="preprocessor">get</span> install <span class="keyword">build-essential </span>devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts</span><br></pre></td></tr></table></figure></p>
+<p>这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)</p>
+<p>有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。</p>
+<p>我<strong>没有</strong>严格遵守 Debian 社区打包的步骤，这记录的是一个 quick and dirty way not the Debian way!这是大概的过程:</p>
+<ol>
+<li>创建 GPG: 用于给 deb 签名</li>
+<li>打包 DEB: 有点麻烦，规矩多，步骤多</li>
+<li>上传 Launchpad: 添加到 PPA，以后安装就方便了</li>
+</ol>
+<h2 id="u521B_u5EFA_GPG"><a href="#u521B_u5EFA_GPG" class="headerlink" title="创建 GPG"></a>创建 GPG</h2><p>阮一峰有一篇非常棒的 <a href="http://www.ruanyifeng.com/blog/2013/07/gpg.html" target="_blank" rel="external">GPG入门教程</a>，里面涵盖了新手上手 GPG 所需的基本步骤。</p>
+<p>我在这补充一下，他的文章中上传公钥使用的是 <code>hkp://subkeys.pgp.net</code>，我这试了几次都出现了连接错误。所以，我推荐 <code>hkp://keyserver.ubuntu.com</code>，使用它，不仅是因为连得上，还因为在 Launchpad 创建 PPA 也要用它。</p>
+<h2 id="u521B_u5EFA_PPA"><a href="#u521B_u5EFA_PPA" class="headerlink" title="创建 PPA"></a>创建 PPA</h2><p>摘自 <a href="http://askubuntu.com/a/71516/436021" target="_blank" rel="external">How do I create a PPA?</a></p>
+<blockquote>
+<p><a href="https://login.launchpad.net/+new_account" target="_blank" rel="external">创建 Launchpad 帐号</a><br><a href="https://launchpad.net/people/+me/" target="_blank" rel="external">激活 PPA</a><br>用 GPG 签约 <a href="https://launchpad.net/codeofconduct" target="_blank" rel="external">the Ubuntu code of conduct</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="u6253_u5305_DEB"><a href="#u6253_u5305_DEB" class="headerlink" title="打包 DEB"></a>打包 DEB</h2><p>这儿以我的最近写的 <a href="/2016/01/20/tbutton-mini-commands-launcher/">TButton</a> 为例。TButton 关键就 3 个文件：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  indicator-tbutton-0.1  tree&#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton&#10;&#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;0 directories, 3 files</span><br></pre></td></tr></table></figure>
+<p>对上面命令的解释：</p>
+<blockquote>
+<p><code>➜</code> :一行新命令的开始标志</p>
+<p><code>indicator-tbutton-0.1</code> : 当前文件夹</p>
+<p><code>tree</code> : Linux 命令，列出当前目录的结构</p>
+</blockquote>
+<h3 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h3><p>在开始之前先把一些<strong>准备工作</strong>做好。</p>
+<h4 id="u5B89_u88C5_u5DE5_u5177"><a href="#u5B89_u88C5_u5DE5_u5177" class="headerlink" title="安装工具"></a>安装工具</h4><p>我没有安装上面提及的所以工具，这条命令会安装这篇教程中涉及到的工具。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get insatll build-essential debhelper fakeroot dh-make lintian dput python-bzrlib tree vim</span><br></pre></td></tr></table></figure>
+<h4 id="u7EF4_u62A4_u8005_u4FE1_u606F"><a href="#u7EF4_u62A4_u8005_u4FE1_u606F" class="headerlink" title="维护者信息"></a>维护者信息</h4><p>向控制台配置文件(一般为 <code>～/.bashrc</code> 或者 <code>~/.zshrc</code>)中添加：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> DEBEMAIL=&lt;YOUR EMAIL&gt;   <span class="comment"># 我们的电子邮件地址</span></span><br><span class="line"><span class="built_in">export</span> DEBFULLNAME=&lt;YOUR NAME&gt; <span class="comment"># 我们的真实姓名</span></span><br></pre></td></tr></table></figure>
+<p>这两个信息在生成 debian 配置文件，也就是下面 <em>第6步</em> 中会被用到。</p>
+<h3 id="u521B_u5EFA_debian__u6A21_u677F"><a href="#u521B_u5EFA_debian__u6A21_u677F" class="headerlink" title="创建 debian 模板"></a>创建 debian 模板</h3><p>创建步骤：</p>
+<ol>
+<li>在 Home 文件夹里创建个叫 sandbox 的文件夹</li>
+<li>把 indicator-tbutton-0.1 文件夹复制到 sandbox</li>
+<li>把 indicator-tbutton-0.1 文件夹整个打包成 indicator-tbutton-0.1.tar.gz</li>
+<li>把 indicator-tbutton-0.1.tar.gz 移动到 indicator-tbutton-0.1 文件夹中</li>
+<li>进入 indicator-tbutton-0.1 文件夹中</li>
+<li>运行 <code>dh_make</code>，参数： （完整文档可以运行<code>man dh_make</code>）<ul>
+<li><code>-c gpl3</code>: license 信息，我这儿用 GPLv3</li>
+<li><code>-f indicator-tbutton-0.1.tar.gz</code>: 指定<strong>原</strong>源代码压缩包</li>
+</ul>
+</li>
+<li>删除不必要的文件，具体可以参见 <a href="https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian" target="_blank" rel="external">TButton/debian</a></li>
+<li>编辑 debian 文件夹中的配置文件</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  ~  cp -R indicator-tbutton-0.1 sandbox&#10;&#10140;  ~  cd sandbox &#10;&#10140;  sandbox  tree&#10;.&#10;&#9492;&#9472;&#9472; indicator-tbutton-0.1&#10;    &#9500;&#9472;&#9472; indicator-tbutton&#10;    &#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;    &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;1 directory, 3 files&#10;&#10;&#10140;  sandbox  tar -cvzf indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1&#10;indicator-tbutton-0.1/&#10;indicator-tbutton-0.1/tbutton-icon.png&#10;indicator-tbutton-0.1/indicator-tbutton&#10;indicator-tbutton-0.1/indicator-tbutton.desktop&#10;&#10;&#10140;  sandbox  cp indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1/&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;&#10140;  indicator-tbutton-0.1  tree&#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;0 directories, 4 files&#10;&#10;&#10140;  indicator-tbutton-0.1  dh_make -c gpl3  -f indicator-tbutton-0.1.tar.gz&#10;&#10;Type of package: single binary, indep binary, multiple binary, library, kernel module, kernel patch?&#10; [s/i/m/l/k/n] s  # &#36825;&#37324;&#36755;&#20837; s&#10;&#10;Maintainer name  : Neil Shen&#10;Email-Address    : overvenus@gmail.com &#10;Date             : Thu, 21 Jan 2016 14:07:51 +0800&#10;Package Name     : indicator-tbutton&#10;Version          : 0.1&#10;License          : gpl3&#10;Type of Package  : Single&#10;Hit &#60;enter&#62; to confirm:   # &#36825;&#37324;&#25353;&#22238;&#36710;&#10;Currently there is no top level Makefile. This may require additional tuning.&#10;Done. Please edit the files in the debian/ subdirectory now. You should also&#10;check that the indicator-tbutton Makefiles install into $DESTDIR and not in / .&#10;&#10;&#10140;  indicator-tbutton-0.1  tree&#10;.&#10;&#9500;&#9472;&#9472; debian&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; changelog&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; compat&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; docs&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.cron.d.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.default.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.doc-base.EX&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; init.d.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; manpage.1.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; manpage.sgml.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; manpage.xml.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; menu.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; postinst.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; postrm.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; preinst.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; prerm.ex&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; README.Debian&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; README.source&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; rules&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; source&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; format&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; watch.ex&#10;&#9500;&#9472;&#9472; indicator-tbutton&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;2 directories, 26 files&#10;&#10;# &#21024;&#38500;&#25991;&#20214;ing...&#10;# &#26368;&#32456;&#30446;&#24405;&#32467;&#26500;&#10;&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  tree &#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; debian&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; changelog&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; compat&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; rules&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; source&#10;&#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; format&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#9492;&#9472;&#9472; indicator-tbutton_0.1.orig.tar.gz&#10;&#10;3 directories, 10 files</span><br></pre></td></tr></table></figure>
+<h3 id="u7F16_u8F91_debian__u914D_u7F6E_u6587_u4EF6"><a href="#u7F16_u8F91_debian__u914D_u7F6E_u6587_u4EF6" class="headerlink" title="编辑 debian 配置文件"></a>编辑 debian 配置文件</h3><p>配置文件指的是 <code>debian\</code> 文件夹下的那几个文件，每个都有不同的功能，有的一旦配置完以后都不用去改动，还有的每次发布都到改动。<br>对几个重要文件的说明：</p>
+<ul>
+<li>changelog: 记录每次发布的对软件的更改和控制发布的版本号</li>
+<li>rule: 控制如何安装软件, 语法于 Makefile 类似（可以参看我的 rule）</li>
+<li>copyright: 软件的版权与发布协议</li>
+<li>control: 维护者信息，软件简介，依赖</li>
+</ul>
+<p>上面四个文件是我们需要编辑的，具体内容怎么写可以参照 <a href="https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian" target="_blank" rel="external">TButton/debian</a>，详细信息请看 <a href="http://www.debian.org/doc/manuals/maint-guide/" target="_blank" rel="external">Debian New Maintainers’ Guide</a></p>
+<h3 id="u672C_u5730_u6253_u5305_u6D4B_u8BD5"><a href="#u672C_u5730_u6253_u5305_u6D4B_u8BD5" class="headerlink" title="本地打包测试"></a>本地打包测试</h3><p>到了这一步就简单了，就是一句命令的事儿 — <code>fakeroot dpkg-buildpackage -F</code> </p>
+<blockquote>
+<p><code>-F</code> : 以完全模式打包，创建 .deb 文件，打包源码，GPG 签名等等。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># &#25509;&#19978;&#38754;&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;&#10140;  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F &#10;dpkg-buildpackage: source package indicator-tbutton-0.1&#10;dpkg-buildpackage: source version 0.1-1&#10;dpkg-buildpackage: source distribution trusty&#10;dpkg-buildpackage: source changed by Neil Shen &#60;overvenus@gmail.com&#62;&#10;dpkg-buildpackage: host architecture amd64&#10; dpkg-source --before-build indicator-tbutton-0.1&#10; debian/rules clean&#10;dh_testdir&#10;dh_testroot&#10;rm -f build-stamp&#10;dh_clean&#10; dpkg-source -b indicator-tbutton-0.1&#10;dpkg-source: error: can&#39;t build with source format &#39;3.0 (quilt)&#39;: no upstream tarball found at ../indicator-tbutton-0.1_0.1.orig.tar.&#123;bz2,gz,lzma,xz&#125;&#10;dpkg-buildpackage: error: dpkg-source -b indicator-tbutton-0.1 gave error exit status 255</span><br></pre></td></tr></table></figure>
+<p>Oops，出错了！来看看是什么错误。。。<br>哦，原来是没有找到 <code>../indicator-tbutton-0.1_0.1.orig.tar.{bz2,gz,lzma,xz}</code>，我们在 sandbox 下有 <code>indicator-tbutton_0.1.orig.tar.gz</code> 但是，dpkg 要求我们提供 <code>indicator-tbutton-0.1_0.1.orig.tar.gz</code>。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1  indicator-tbutton_0.1.orig.tar.gz&#10;# &#37325;&#21629;&#21517;&#10;&#10140;  sandbox  mv indicator-tbutton_0.1.orig.tar.gz indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;# &#20877;&#26469;&#35797;&#19968;&#19979;&#10;&#10140;  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F &#10;dpkg-buildpackage: source package indicator-tbutton-0.1&#10;dpkg-buildpackage: source version 0.1-1&#10;dpkg-buildpackage: source distribution trusty&#10;dpkg-buildpackage: source changed by Neil Shen &#60;overvenus@gmail.com&#62;&#10;dpkg-buildpackage: host architecture amd64&#10; dpkg-source --before-build indicator-tbutton-0.1&#10; debian/rules clean&#10;dh_testdir&#10;dh_testroot&#10;rm -f build-stamp&#10;dh_clean&#10; dpkg-source -b indicator-tbutton-0.1&#10;dpkg-source: info: using source format `3.0 (quilt)&#39;&#10;dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc&#10; debian/rules build&#10;dh_testdir&#10;touch configure-stamp&#10;touch build-stamp&#10; debian/rules binary&#10;dh_testdir&#10;dh_testroot&#10;dh_prep&#10;dh_installdirs&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps&#10;mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart&#10;install -m 755 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin&#10;install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/tbutton-icon.png /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps&#10;install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications&#10;install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart&#10;dh_testdir&#10;dh_testroot&#10;dh_installchangelogs&#10;dh_installdocs&#10;dh_icons&#10;dh_installmenu&#10;# dh_python2&#10;# dh_pysupport&#10;dh_link&#10;dh_strip&#10;dh_compress&#10;dh_fixperms&#10;dh_installdeb&#10;dh_gencontrol&#10;dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable $&#123;python:Depends&#125;&#10;dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable $&#123;shlibs:Depends&#125;&#10;dh_md5sums&#10;dh_builddeb&#10;dpkg-deb: building package `indicator-tbutton&#39; in `../indicator-tbutton_0.1-1_amd64.deb&#39;.&#10; signfile indicator-tbutton-0.1_0.1-1.dsc&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-genchanges  &#62;../indicator-tbutton-0.1_0.1-1_amd64.changes&#10;dpkg-genchanges: including full source code in upload&#10; signfile indicator-tbutton-0.1_0.1-1_amd64.changes&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-source --after-build indicator-tbutton-0.1&#10;dpkg-buildpackage: full upload (original source is included)&#10;&#10;&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1&#10;indicator-tbutton-0.1_0.1-1_amd64.changes&#10;indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;indicator-tbutton-0.1_0.1-1.dsc&#10;indicator-tbutton-0.1_0.1.orig.tar.gz&#10;indicator-tbutton_0.1-1_amd64.deb&#10;&#10;# OK! &#22823;&#21151;&#21578;&#25104;</span><br></pre></td></tr></table></figure>
+<p>现在我们有了 .deb 文件，先把它解压，看看有没有打包进全部的文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  mkdir temp&#10;&#10140;  sandbox  dpkg -x indicator-tbutton_0.1-1_amd64.deb temp&#10;&#10140;  sandbox  tree&#10;.&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; build-stamp&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; configure-stamp&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; debian&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; changelog&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; compat&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; files&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; DEBIAN&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; conffiles&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; control&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; md5sums&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; etc&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; xdg&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; autostart&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; usr&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9500;&#9472;&#9472; bin&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; share&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9500;&#9472;&#9472; applications&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9500;&#9472;&#9472; doc&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160;     &#9500;&#9472;&#9472; changelog.Debian.gz&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9474;&#160;&#160;     &#9492;&#9472;&#9472; copyright&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;         &#9492;&#9472;&#9472; icons&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;             &#9492;&#9472;&#9472; hicolor&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;                 &#9492;&#9472;&#9472; 96x96&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;                     &#9492;&#9472;&#9472; apps&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9474;&#160;&#160;                         &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.debhelper.log&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.substvars&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9500;&#9472;&#9472; rules&#10;&#9474;&#160;&#160; &#9474;&#160;&#160; &#9492;&#9472;&#9472; source&#10;&#9474;&#160;&#160; &#9474;&#160;&#160;     &#9492;&#9472;&#9472; format&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton&#10;&#9474;&#160;&#160; &#9500;&#9472;&#9472; indicator-tbutton.desktop&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1-1_amd64.changes&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1-1.dsc&#10;&#9500;&#9472;&#9472; indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#9500;&#9472;&#9472; indicator-tbutton_0.1-1_amd64.deb&#10;&#9492;&#9472;&#9472; temp&#10;    &#9500;&#9472;&#9472; etc&#10;    &#9474;&#160;&#160; &#9492;&#9472;&#9472; xdg&#10;    &#9474;&#160;&#160;     &#9492;&#9472;&#9472; autostart&#10;    &#9474;&#160;&#160;         &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;    &#9492;&#9472;&#9472; usr&#10;        &#9500;&#9472;&#9472; bin&#10;        &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;        &#9492;&#9472;&#9472; share&#10;            &#9500;&#9472;&#9472; applications&#10;            &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton.desktop&#10;            &#9500;&#9472;&#9472; doc&#10;            &#9474;&#160;&#160; &#9492;&#9472;&#9472; indicator-tbutton&#10;            &#9474;&#160;&#160;     &#9500;&#9472;&#9472; changelog.Debian.gz&#10;            &#9474;&#160;&#160;     &#9492;&#9472;&#9472; copyright&#10;            &#9492;&#9472;&#9472; icons&#10;                &#9492;&#9472;&#9472; hicolor&#10;                    &#9492;&#9472;&#9472; 96x96&#10;                        &#9492;&#9472;&#9472; apps&#10;                            &#9492;&#9472;&#9472; tbutton-icon.png&#10;&#10;32 directories, 34 files</span><br></pre></td></tr></table></figure>
+<p>Perfect! 全部打包了！ ヽ(○´∀`)ﾉ♪ </p>
+<p>如果电脑中有装有 Ubuntu 的虚拟机的话，可以在里面安装，再次验证。</p>
+<p>如果我们还有耐心的话，可用 lintain 来检查 deb 包的其他问题。下面是我的 .deb 问题，两个警告，一个错误，但并无大碍。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  lintian indicator-tbutton_0.1-1_amd64.deb&#10;W: indicator-tbutton: new-package-should-close-itp-bug&#10;W: indicator-tbutton: binary-without-manpage usr/bin/indicator-tbutton&#10;E: indicator-tbutton: python-script-but-no-python-dep usr/bin/indicator-tbutton</span><br></pre></td></tr></table></figure>
+<h2 id="u4E0A_u4F20_Launchpad"><a href="#u4E0A_u4F20_Launchpad" class="headerlink" title="上传 Launchpad"></a>上传 Launchpad</h2><p>最后一部分，涉及的工具只有 <code>dput</code>。首先，先要对它配置一下。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  vim ~/.dput.cf</span><br></pre></td></tr></table></figure>
+<p>输入以下内容：<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[my-ppa]</span><br><span class="line">fqdn = ppa.launchpad.net</span><br><span class="line"><span class="keyword">method</span> = sftp               <span class="comment"># 确保我们已将 ssh-key 添加到 Launchpad!</span></span><br><span class="line">incoming = &lt;<span class="type">YOUR</span> <span class="type">PPA</span> <span class="type">PATH</span>&gt;  <span class="comment"># 这是我的： ~overvenus/ubuntu/ppa/</span></span><br><span class="line">login = &lt;<span class="type">YOUR</span> <span class="type">ACCONT</span> <span class="type">NAME</span>&gt;  <span class="comment"># 这是我的： overvenus</span></span><br><span class="line">allow_unsigned_uploads = <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<p>在上传之前，我们先要清理一下，然后换个模式 build， <code>fakeroot dpkg-buildpackage -S</code>。</p>
+<blockquote>
+<p><code>-S</code> : 只打包源码，GPG 签名。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10140;  sandbox  ls&#10;indicator-tbutton-0.1&#10;indicator-tbutton-0.1_0.1-1_amd64.changes&#10;indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;indicator-tbutton-0.1_0.1-1.dsc&#10;indicator-tbutton-0.1_0.1.orig.tar.gz&#10;indicator-tbutton_0.1-1_amd64.deb&#10;temp&#10;&#10;# &#21024;&#38500;&#25991;&#20214;ing&#10;&#10140;  sandbox  rm -r indicator-tbutton-0.1_0.1-1_amd64.changes indicator-tbutton-0.1_0.1-1.debian.tar.gz indicator-tbutton-0.1_0.1-1.dsc indicator-tbutton_0.1-1_amd64.deb temp&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz&#10;&#10;# &#28165;&#29702;&#10;&#10140;  sandbox  cd indicator-tbutton-0.1 &#10;&#10140;  indicator-tbutton-0.1  dh_clean&#10;#  &#25442;&#20010;&#27169;&#24335; build&#10;&#10140;  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -S &#10;dpkg-buildpackage: source package indicator-tbutton-0.1&#10;dpkg-buildpackage: source version 0.1-1&#10;dpkg-buildpackage: source distribution trusty&#10;dpkg-buildpackage: source changed by Neil Shen &#60;overvenus@gmail.com&#62;&#10; dpkg-source --before-build indicator-tbutton-0.1&#10; debian/rules clean&#10;dh_testdir&#10;dh_testroot&#10;rm -f build-stamp&#10;dh_clean&#10; dpkg-source -b indicator-tbutton-0.1&#10;dpkg-source: info: using source format `3.0 (quilt)&#39;&#10;dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc&#10; signfile indicator-tbutton-0.1_0.1-1.dsc&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-genchanges -S &#62;../indicator-tbutton-0.1_0.1-1_source.changes&#10;dpkg-genchanges: including full source code in upload&#10; signfile indicator-tbutton-0.1_0.1-1_source.changes&#10;&#10;You need a passphrase to unlock the secret key for&#10;user: &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;2048-bit RSA key, ID 90E9FAC7, created 2015-12-27&#10;&#10;&#10; dpkg-source --after-build indicator-tbutton-0.1&#10;dpkg-buildpackage: full upload (original source is included)&#10;&#10;# &#27880;&#24847;&#65292;&#27809;&#26377; deb&#65281;&#10;&#10140;  indicator-tbutton-0.1  cd ..&#10;&#10140;  sandbox  ls&#10;indicator-tbutton-0.1&#10;indicator-tbutton-0.1_0.1-1.debian.tar.gz&#10;indicator-tbutton-0.1_0.1-1.dsc&#10;indicator-tbutton-0.1_0.1-1_source.changes&#10;indicator-tbutton-0.1_0.1.orig.tar.gz&#10;# &#19978;&#20256;&#21040; PPA&#10;&#10140;  sandbox  dput my-ppa  indicator-tbutton-0.1_0.1-1_source.changes&#10;Checking signature on .changes&#10;gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7&#10;gpg: Good signature from &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1_source.changes.&#10;Checking signature on .dsc&#10;gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7&#10;gpg: Good signature from &#34;Neil Shen &#60;overvenus@gmail.com&#62;&#34;&#10;Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1.dsc.&#10;Uploading to my-ppa (via sftp to ppa.launchpad.net):&#10;  indicator-tbutton-0.1_0.1-1.dsc: Agent admitted failure to sign using the key.&#10;Enter passphrase for key &#39;/home/neil/.ssh/id_rsa&#39;: &#10;...&#10;...</span><br></pre></td></tr></table></figure>
+<p>等上传完毕后 Launchpad 会发一封邮件给我们，被接受，会有以下回复。被拒，也会把原因写在邮件中。</p>
+<p><img src="http://ww2.sinaimg.cn/large/7f793092gw1f08c4vj25bj20hf0d141a.jpg" alt=""></p>
+<p>如果一切正常，30 分钟后，我们就能从 PPA 中安装我们的软件。比如安装 TButton：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:overvenus/ppa&#10;sudo apt-get update&#10;sudo apt-get install indicator-tbutton</span><br></pre></td></tr></table></figure>
+<p>End.</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<p><a href="/2016/01/20/tbutton-mini-commands-launcher/">TButton</a></p>
+<p><a href="https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian" target="_blank" rel="external">TButton/debian</a></p>
+<p><a href="http://www.ruanyifeng.com/blog/2013/07/gpg.html" target="_blank" rel="external">GPG入门教程</a></p>
+<p><a href="http://askubuntu.com/a/71516/436021" target="_blank" rel="external">How do I create a PPA?</a></p>
+<p><a href="http://packaging.ubuntu.com/singlehtml/" target="_blank" rel="external">Ubuntu Packaging Guide</a></p>
+<p><a href="https://www.youtube.com/watch?v=nhoRyd2CEVs" target="_blank" rel="external">How to build a simple Debian package (*.Deb) - YouTube</a></p>
+<p><a href="http://www.debian.org/doc/manuals/maint-guide/" target="_blank" rel="external">Debian New Maintainers’ Guide</a></p>
+<p><a href="https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf" target="_blank" rel="external">Packaging tutorial</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Ubuntu/" rel="tag">#Ubuntu</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/20/tbutton-mini-commands-launcher/" rel="next" title="TButton 命令行快捷按钮">
+                <i class="fa fa-chevron-left"></i> TButton 命令行快捷按钮
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/01/20/debian packaging-step-by-step/"
+     data-title="Debian packaging 教程"
+     data-content=""
+     data-url="http://neilsh.me/2016/01/20/debian packaging-step-by-step/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/01/20/debian packaging-step-by-step/"
+           data-title="Debian packaging 教程" data-url="http://neilsh.me/2016/01/20/debian packaging-step-by-step/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/asset/image/avatar.jpg"
+               alt="Neil Shen" />
+          <p class="site-author-name" itemprop="name">Neil Shen</p>
+          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Overvenus" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/idstn" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u65B0_u624B_u4E4B_u75DB"><span class="nav-number">1.</span> <span class="nav-text">新手之痛</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u521B_u5EFA_GPG"><span class="nav-number">2.</span> <span class="nav-text">创建 GPG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u521B_u5EFA_PPA"><span class="nav-number">3.</span> <span class="nav-text">创建 PPA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6253_u5305_DEB"><span class="nav-number">4.</span> <span class="nav-text">打包 DEB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u51C6_u5907_u5DE5_u4F5C"><span class="nav-number">4.1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#u5B89_u88C5_u5DE5_u5177"><span class="nav-number">4.1.1.</span> <span class="nav-text">安装工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u7EF4_u62A4_u8005_u4FE1_u606F"><span class="nav-number">4.1.2.</span> <span class="nav-text">维护者信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u521B_u5EFA_debian__u6A21_u677F"><span class="nav-number">4.2.</span> <span class="nav-text">创建 debian 模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7F16_u8F91_debian__u914D_u7F6E_u6587_u4EF6"><span class="nav-number">4.3.</span> <span class="nav-text">编辑 debian 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u672C_u5730_u6253_u5305_u6D4B_u8BD5"><span class="nav-number">4.4.</span> <span class="nav-text">本地打包测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E0A_u4F20_Launchpad"><span class="nav-number">5.</span> <span class="nav-text">上传 Launchpad</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Neil Shen</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"neilsh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/MathJax.js"></script>
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/config/TeX-AMS-MML_HTMLorMML.js"></script>
+  
+
+
+  
+  
+
+
+</body>
+</html>
