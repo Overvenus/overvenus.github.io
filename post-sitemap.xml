@@ -7,15 +7,15 @@
     </url>
 
     <url>
-        <loc>http://neilsh.me/2016/01/20/debian-packaging-step-by-step/</loc>
-        <lastmod>2016-01-22T10:02:21.000Z</lastmod>
+        <loc>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</loc>
+        <lastmod>2016-01-22T10:04:20.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
 
     <url>
-        <loc>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</loc>
-        <lastmod>2016-01-22T10:02:01.000Z</lastmod>
+        <loc>http://neilsh.me/2016/01/20/debian-packaging-step-by-step/</loc>
+        <lastmod>2016-01-22T10:04:20.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>

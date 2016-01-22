@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Share something cool.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://neilsh.me/"/>
-  <updated>2016-01-22T10:02:21.000Z</updated>
+  <updated>2016-01-22T10:04:20.000Z</updated>
   <id>http://neilsh.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://neilsh.me/2016/01/20/debian-packaging-step-by-step/"/>
     <id>http://neilsh.me/2016/01/20/debian-packaging-step-by-step/</id>
     <published>2016-01-20T06:22:58.000Z</published>
-    <updated>2016-01-22T10:02:21.000Z</updated>
+    <updated>2016-01-22T10:04:20.000Z</updated>
     <content type="html"><![CDATA[<h2 id="u65B0_u624B_u4E4B_u75DB"><a href="#u65B0_u624B_u4E4B_u75DB" class="headerlink" title="新手之痛"></a>新手之痛</h2><p>说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> apt-<span class="preprocessor">get</span> install <span class="keyword">build-essential </span>devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts</span><br></pre></td></tr></table></figure></p>
 <p>这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)</p>
 <p>有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。</p>
@@ -139,7 +139,7 @@
     <link href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/"/>
     <id>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</id>
     <published>2016-01-20T04:02:36.000Z</published>
-    <updated>2016-01-22T10:02:01.000Z</updated>
+    <updated>2016-01-22T10:04:20.000Z</updated>
     <content type="html"><![CDATA[<p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。<br>比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入： </p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall -s STOP vmware-vmx</span><br></pre></td></tr></table></figure>
 <p>过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：</p>
