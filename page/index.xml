@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pages on Neil</title>
+    <link>http://neilsh.com/page/</link>
+    <description>Recent content in Pages on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Mon, 29 Jun 2015 14:13:25 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/page/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>About</title>
+      <link>http://neilsh.com/about/</link>
+      <pubDate>Mon, 29 Jun 2015 14:13:25 +0800</pubDate>
+      
+      <guid>http://neilsh.com/about/</guid>
+      <description>
+
+&lt;h2 id=&#34;关于我:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;关于我&lt;/h2&gt;
+
+&lt;p&gt;我，本科在读，热衷于计算机，平日闲暇时看看书，谈谈电影，跑跑步。&lt;/p&gt;
+
+&lt;h2 id=&#34;这博客:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;这博客&lt;/h2&gt;
+
+&lt;p&gt;这里主要记录计算机方面的文章，包括学习笔记，心得和一些想法。&lt;/p&gt;
+
+&lt;p&gt;感谢 &lt;a href=&#34;https://github.com&#34;&gt;Github&lt;/a&gt; 提供空间。
+本静态博客由 &lt;a href=&#34;https://gohugo.io&#34;&gt;hugo&lt;/a&gt; 生成。&lt;/p&gt;
+
+&lt;h2 id=&#34;联系我:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;联系我&lt;/h2&gt;
+
+&lt;p&gt;E-mail: overvenus&lt;i class=&#34;fa fa-at fa-fw&#34;&gt;&lt;/i&gt;gmail.com&lt;/p&gt;
+
+&lt;p&gt;Github: &lt;a href=&#34;https://github.com/Overvenus&#34;&gt;overvenus&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Bitbucket: &lt;a href=&#34;https://bitbucket.org/overvenus/&#34;&gt;overvenus&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Launchpad: &lt;a href=&#34;https://launchpad.net/~overvenus&#34;&gt;overvenus&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;StackOverflow: &lt;a href=&#34;https://stackoverflow.com/users/3920448/neilshen&#34;&gt;NeilShen&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Weibo: &lt;a href=&#34;http://weibo.com/idstn/home&#34;&gt;艾舍尔&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;gpg:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;GPG&lt;/h2&gt;
+
+&lt;p&gt;将于 2016-12-26 过期&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1
+
+mQENBFZ/uU0BCADnN3zImaDg4E0exrRN9UlCd4z1Umkaubg9AYczJrY7/B/4IyXZ
+GAls8TZ5JFMSOMlY/YhtuoqhzuP8SAQkFLvUj/XZXbhaVvZ5DC/VMQQz/7KUgdsJ
+GnlSVxOUIuDby/9gMqdQgyx/N3jI7/gfbtZf9m2Dlp0yRdDHXgp7AVAVzdqU74kD
+fsSYnhtEftywl0uprM2hg758bEStBocGB94rhXrJDJtm6yJPnLYMslpNtoXwFqrR
+/As56hfFRAEKTWMRBZRGOH78mDCyT127Muze2CEWczPlDLZslu7FNiFSsn+VCFWm
+6bNowOrPiGkydBWYVOkoHurAgAVVgxOJLNefABEBAAG0H05laWwgU2hlbiA8b3Zl
+cnZlbnVzQGdtYWlsLmNvbT6JAT4EEwECACgFAlZ/uU0CGwMFCQHhM4AGCwkIBwMC
+BhUIAgkKCwQWAgMBAh4BAheAAAoJEHl++tOQ6frHgdkIAIWs/w8nzDiyqlvlO97g
+458PdvnOvrB5UBCdxmZT1RFesDJxInn85RGsIHi+uCjHX23hhB4U+ZZNzVRXacpy
+iGFTGt9GXNuDskArGM/JEnmepcN/lLYhH91Hveswjqt17YIWpYXvfRfD7LKZWR65
+g3b1juARux/y7WdMRdAHAQHrAKSMsalpy1YEnOuTtlAKzWVvQYmUSM/+uUNhzKJE
+8juUIpjrBMhkyRXK8OudZNgiL/tK4OgaWtGZF6Y+UINXU75dTiswcnJev5w6M50C
+TNH/AoNANljuBu98qCPKexqcFOTZdwLYVnwoMq6RCF+n3t+7sRAnxpGPy6E6aqhC
+s+25AQ0EVn+5TQEIAKi3UNeCjet0S7qidW2W9wGbG8/WwieiMj099N+srLyNQFla
+Q0pdkFuninvAlPiqFAQI5xyiFdHh5lbHZImAp367XNPN3rq43jrKpHmr0LHzGR3H
+zviLtQVBsiFl3/BdOOeMTBPa6BqaItXI7TI+F/dorNE07oI67BD2LBLC2wcYpTBU
+cGZdpiZ2DoLNE+7fC8KwZbMXk+cdIEVwn+RykqKrBiRVU0ITv8A57rBCROdShNEm
+wL8tpMj27ZZrDJGg5s4LAMW5nCk8wze1Uxatp+rq6uu6h0GcAiIHFtvVINnRv7ey
++Hp5Ux8d42/Xzimfps6FZj2kRG+i8jxL8UTC7PMAEQEAAYkBJQQYAQIADwUCVn+5
+TQIbDAUJAeEzgAAKCRB5fvrTkOn6x0kMB/9GuyioS4jx7Gcr3S1czjhtJkUan4N1
+VMx88EgxrV5oHklgVsM92GpYCMFesB2XqUEJwX7iQ5N8iZtiYcWe17TYR8kCd0wr
+4luVD/j5NYqFrV1XC8de2NEUBBx9TO3tVI4gptQtsbSwzGJ3/5u/BCmMW0RV4aG0
+VkvNnFcKgigxu/mbFjHyMy0iNtR4T62Xf5LO0VBPcc0Oglo+rWzgxkhZlCP/4YQ5
+ZVPJAmvsbI1NgHVeNu97GEv7KdMlMueZTs0IIkh8QhapX/OhDEQwoVn2ZFrCtMXt
+3WyN6YeDr9TJHAywuIY8RWsnU7RYHkDLBkaq9xqdHtvq7Qvi4XFigL50
+=Ue1K
+-----END PGP PUBLIC KEY BLOCK-----
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;许可:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;许可&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png&#34; alt=&#34;&#34; /&gt;
+本博客所有文章和作品如未特别说明均采用知识共享署名 - 非商业性使用 - 相同方式共享4.0国际许可。(CC BY NC SA 4.0)进行许可。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;It&amp;rsquo;s NOW or NEVER.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

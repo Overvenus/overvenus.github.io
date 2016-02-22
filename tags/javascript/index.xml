@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javascript on Neil</title>
+    <link>http://neilsh.com/tags/javascript/</link>
+    <description>Recent content in Javascript on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Sun, 29 Nov 2015 22:04:04 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>解除尔雅公开课暂停</title>
+      <link>http://neilsh.com/2015/11/29/erya-no-pause/</link>
+      <pubDate>Sun, 29 Nov 2015 22:04:04 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/11/29/erya-no-pause/</guid>
+      <description>
+
+&lt;h2 id=&#34;恶心的暂停:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;恶心的暂停&lt;/h2&gt;
+
+&lt;p&gt;这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P&lt;/p&gt;
+
+&lt;h2 id=&#34;过程:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;过程&lt;/h2&gt;
+
+&lt;p&gt;对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[&lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;1&lt;/a&gt;]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：
+&lt;!-- more --&gt;
+&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg&#34; alt=&#34;&#34; /&gt;
+这个函数中的&lt;code&gt;pauseMovie()&lt;/code&gt;基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(&#39;#eryaPlayer&#39;).pauseMovie();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;视频就暂停了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;再输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;window.onblur = null
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面命令执行完之后，暂停的限制就解除了。 LOL&lt;/p&gt;
+
+&lt;h2 id=&#34;脚本:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;脚本&lt;/h2&gt;
+
+&lt;p&gt;我并没有学过 js，只能照葫芦画瓢，根据官方文档来写[&lt;a href=&#34;http://wiki.greasespot.net/Greasemonkey_Manual&#34;&gt;2&lt;/a&gt;]。如果哪里出错或写的不好，欢迎提出来。&lt;/p&gt;
+
+&lt;p&gt;Firefox + Greasemonkey[&lt;a href=&#34;https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/&#34;&gt;3&lt;/a&gt;]，把脚本拖入浏览器即使用。&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/Overvenus/c41a34f7e039b9207210.js&#34;&gt;&lt;/script&gt;
+
+&lt;h2 id=&#34;已知问题:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;已知问题&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;无法去除随机暂停及验证码暂停。&lt;/li&gt;
+&lt;li&gt;Chrome 无法使用。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;链接:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;链接&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1]: &lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;Event listeners popup, @media sidebar, Cubic bezier editor + more – Firefox Developer Tools Episode 33&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]: &lt;a href=&#34;http://wiki.greasespot.net/Greasemonkey_Manual&#34;&gt;Greasemonkey Manual - GreaseSpot Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]: &lt;a href=&#34;https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/&#34;&gt;Greasemonkey :: Add-ons for Firefox&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

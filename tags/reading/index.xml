@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Reading on Neil</title>
+    <link>http://neilsh.com/tags/reading/</link>
+    <description>Recent content in Reading on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Mon, 21 Sep 2015 19:44:01 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/reading/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>ReadingFragment Structured Computer Organization</title>
+      <link>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</link>
+      <pubDate>Mon, 21 Sep 2015 19:44:01 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</guid>
+      <description>
+
+&lt;h1 id=&#34;parallelism-in-computer-organization:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in Computer Organization&lt;/h1&gt;
+
+&lt;p&gt;Why we need parallel computing? Because we are close to the limit of physics &amp;ndash; the speed of light and memory becomes the bottleneck of computer.&lt;/p&gt;
+
+&lt;h2 id=&#34;parallelism-in-cpu:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in CPU&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Pipeline
+
+&lt;ul&gt;
+&lt;li&gt;Sinlge pipeline&lt;/li&gt;
+&lt;li&gt;Mutli-pipeline&lt;/li&gt;
+&lt;li&gt;Superscalar pipeline&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Array Computers, single control unit and a array of processor.&lt;/li&gt;
+&lt;li&gt;Multiprocessors, multiple CPUs shared with one common  main memory, and communicate through BUS.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;parallelism-in-memory:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in Memory&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Modern CPUs has it&amp;rsquo;s own private memory, cache.&lt;/li&gt;
+&lt;li&gt;Redundant Array of Inexpensive Disk(RAID), there are 5 level of RAID. I will be surprised if one system supports all 5 level RAID, especially level 2 and 3 ;-)
+
+&lt;ul&gt;
+&lt;li&gt;Level 0, strips data(typically, a sector) over disks in round robin fashion. No backups.&lt;/li&gt;
+&lt;li&gt;Level 1, make an additional redundant backup of level 0.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h1 id=&#34;ijvm:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;IJVM&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;IJVM&lt;/strong&gt; is short for &lt;em&gt;Integer instructions only Java Virtual Machine&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;ijvm-memory-model:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;IJVM Memory Model&lt;/h2&gt;
+
+&lt;p&gt;It looks like IJVM has a set of different stack operations compares with other machines. IJVM instructions can access memory only by indexing from some special registers. CPP, LV and SP point to word(4 bytes).&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The constant pool, addressing by CPP, it is loaded when the program is brought into memory and read-only afterward.&lt;/li&gt;
+&lt;li&gt;The Local variable frame, addressing by LV.&lt;/li&gt;
+&lt;li&gt;The operand stack, addressing by SP. Push and pop actions take place in this stack.&lt;/li&gt;
+&lt;li&gt;The method area, consider as the &amp;ldquo;TEXT&amp;rdquo; area in UNIX&amp;rsquo;s memory, addressing by PC. The first 2 byte indicating the number of parameters for the method, the second 2 bytes indicating the size of the local variables, opcode begins at the 5th byte.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;ijvm-method-invocation:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;IJVM method invocation&lt;/h2&gt;
+
+&lt;p&gt;Instead of using &lt;code&gt;CALL&lt;/code&gt; instraction, JVM use &lt;code&gt;INVOKEVIRTUAL&lt;/code&gt;. Below is a brief explanation of method invocation(highly recommad reading &lt;a href=&#34;http://users.cis.fiu.edu/~prabakar/cda4101/Common/notes/lecture20.html&#34;&gt;CDA-4101 Lecture 20 Notes&lt;/a&gt;)&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Push &lt;code&gt;PC&lt;/code&gt;, &lt;code&gt;LV&lt;/code&gt;, &lt;code&gt;OBJREF&lt;/code&gt;(reference of the method&amp;rsquo;s object) and parameters into Local variable frame.&lt;/li&gt;
+&lt;li&gt;Build a new Local variable frame, the size of the new frame are determined by the second 2 bytes reading from The method area, and stores the caller&amp;rsquo;s PC ans LV in the top of the new frame. Replace &lt;code&gt;OBJREF&lt;/code&gt; with &lt;code&gt;Link ptr&lt;/code&gt; which points to the caller&amp;rsquo;s PC. Now &lt;code&gt;LV&lt;/code&gt; points to &lt;code&gt;Link ptr&lt;/code&gt; and &lt;code&gt;SP&lt;/code&gt; points to caller&amp;rsquo;s LV.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;PC&lt;/code&gt; points to 5th byte in the method area.&lt;/li&gt;
+&lt;li&gt;Mark the new local variables frame as the current frame by seting &lt;code&gt;LV&lt;/code&gt; with the address of &lt;code&gt;OBJREF&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;After the method is done, the return value will be stored in &lt;code&gt;OBJREF&lt;/code&gt; (&lt;code&gt;Link ptr&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h2 id=&#34;some-qs-about-jvm:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Some Qs about JVM&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Give the Java statement that produced the following IJVM code:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code&gt;       ILOAD j
+       ILOAD n
+       ISUB
+       BIPUSH 7
+       ISUB
+       DUP
+       IADD
+       ISTORE i
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A: &lt;code&gt;i = (j - n - 7) x 2;&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The JVM &lt;code&gt;INVOKEVIRTUAL&lt;/code&gt; instruction needs to know how many parameters it has. Why?&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;A: Old &lt;code&gt;PC&lt;/code&gt; and &lt;code&gt;LV&lt;/code&gt; will be stored on address of the top of local variables which will be computed by adding the size of local variables and &lt;strong&gt;parameters&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;intel-core-i7:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Intel Core i7&lt;/h1&gt;
+
+&lt;p&gt;Core i7 is a CPU with CISC outside and RISC inside. In side the chip, there is a decoder which build a bridge between CISC instructions and RISC data path.&lt;/p&gt;
+
+&lt;h1 id=&#34;ref:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Ref.&lt;/h1&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Structured Computer Organization(6th Edition) by Andrew S. Tanenbaum
+&lt;a href=&#34;http://users.cis.fiu.edu/~prabakar/cda4101/Common/notes/lecture20.html&#34;&gt;CDA-4101 Lecture 20 Notes&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

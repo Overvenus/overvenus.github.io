@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Algorithms on Neil</title>
+    <link>http://neilsh.com/tags/algorithms/</link>
+    <description>Recent content in Algorithms on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 25 Nov 2015 19:25:23 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/algorithms/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>paxos digest</title>
+      <link>http://neilsh.com/2015/11/25/paxos-digest/</link>
+      <pubDate>Wed, 25 Nov 2015 19:25:23 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/11/25/paxos-digest/</guid>
+      <description>
+
+&lt;h2 id=&#34;paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Paxos&lt;/h2&gt;
+
+&lt;p&gt;Paxos is one of the most important algorithms in distributed system.[&lt;a href=&#34;http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf&#34;&gt;1&lt;/a&gt;]
+Here are some notes about Basic Paxos.&lt;/p&gt;
+
+&lt;h2 id=&#34;three-roles-in-paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Three roles in Paxos&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Proposers&lt;/li&gt;
+&lt;li&gt;Acceptor&lt;/li&gt;
+&lt;li&gt;Learners&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;General view:  &lt;strong&gt;&lt;em&gt;Proposers&lt;/em&gt;&lt;/strong&gt; send proposals to &lt;strong&gt;&lt;em&gt;Acceptors&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;Acceptors&lt;/em&gt;&lt;/strong&gt; accept a proposal and forward to &lt;strong&gt;&lt;em&gt;Learners&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;Learners&lt;/em&gt;&lt;/strong&gt; decided the proposal.
+In real world, a single server acts &lt;strong&gt;two or more&lt;/strong&gt; roles.&lt;/p&gt;
+
+&lt;h2 id=&#34;requirements:8aa297440e030e6ae04600c7109020a5&#34;&gt;Requirements&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;An acceptor must accept the first proposal that it receives.
+1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.&lt;/li&gt;
+&lt;li&gt;If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.
+2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.
+2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.
+2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;rpcs-and-phases:8aa297440e030e6ae04600c7109020a5&#34;&gt;RPCs and Phases&lt;/h2&gt;
+
+&lt;p&gt;Proposers send two kinds of RPC to &lt;strong&gt;majority&lt;/strong&gt; Acceptors.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;em&gt;Prepare&lt;/em&gt;, send with a uniqe proposal number n.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Accept&lt;/em&gt;, send with a uniqe proposal number n and proposal value v.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;There are two phases in Paxos.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Phase 1: broadcast &lt;em&gt;Prepare&lt;/em&gt; RPC&lt;/li&gt;
+&lt;li&gt;Phase 2: broadcast &lt;em&gt;Accept&lt;/em&gt; RPC&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Majority is the key to achieve consensus and correctness.&lt;/p&gt;
+
+&lt;h2 id=&#34;implementation:8aa297440e030e6ae04600c7109020a5&#34;&gt;Implementation&lt;/h2&gt;
+
+&lt;p&gt;Every server play all roles (proposer, acceptor, and learner) in every instance of the algorithm. For a normal operation, there will be a server being elected to act the &lt;strong&gt;leader&lt;/strong&gt;, which is the distinguished proposer (the &lt;strong&gt;only one&lt;/strong&gt; that tries to issue proposals) in all instances of the algorithm.&lt;/p&gt;
+
+&lt;h2 id=&#34;pseudo-code:8aa297440e030e6ae04600c7109020a5&#34;&gt;Pseudo code&lt;/h2&gt;
+
+&lt;p&gt;Handout of 6.824, Spring 2015 [&lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html&#34;&gt;2&lt;/a&gt;]&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;      --- Paxos Proposer ---
+
+      proposer(v):
+        while not decided:
+          choose n, unique and higher than any n seen so far
+          send prepare(n) to all servers including self
+          if prepare_ok(n, na, va) from majority:       --- na and nv is proposal number and value (if any) that acceptor has accepted.
+            v&#39; = va with highest na; choose own v otherwise   
+            send accept(n, v&#39;) to all
+            if accept_ok(n) from majority:              --- Paxos Learner ---
+              send decided(v&#39;) to all
+
+
+      --- Paxos Acceptor ---
+
+      acceptor state on each node (persistent):
+       np     --- highest prepare seen
+       na, va --- highest accept seen
+
+      acceptor&#39;s prepare(n) handler:
+       if n &amp;gt; np
+         np = n
+         reply prepare_ok(n, na, va)
+       else
+         reply prepare_reject
+
+
+      acceptor&#39;s accept(n, v) handler:
+       if n &amp;gt;= np
+         np = n
+         na = n
+         va = v
+         reply accept_ok(n)
+       else
+         reply accept_reject
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;examples:8aa297440e030e6ae04600c7109020a5&#34;&gt;Examples&lt;/h2&gt;
+
+&lt;p&gt;Servers and proposal vaule: S1(X)
+Prepare: P,1
+Accept: A,1,X&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-1:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 1&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2
+S3       P,1    A,1,X
+                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;X is chosen.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-2:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 2&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2       P,1    A,1,X    P,3    A,3,X
+S3(Y)                    P,3    A,3,X
+                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;X is chosen.
+S2 response &lt;code&gt;P,3&lt;/code&gt; with &lt;code&gt;1,X&lt;/code&gt;, S3 send proposal value X instead of Y.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-3:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 3&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2       P,1             P,3    A,3,Y    A,1,X(rej)
+S3(Y)                    P,3    A,3,Y
+                                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Y is chosen.
+&lt;code&gt;A,1,X&lt;/code&gt; is rejected, because 3 &amp;gt; 1.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-4:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 4&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X                                  A,3,Y(rej)
+S2       P,1             P,3             A,1,X(rej)    A,3,Y
+S3(Y)                    P,3    A,3,Y    A,1,X(rej)    
+                                                           ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Y is chosen.
+Later, Learner will find out Y is the chosen value, and then send decided(Y) to all servers.&lt;/p&gt;
+
+&lt;h2 id=&#34;links:8aa297440e030e6ae04600c7109020a5&#34;&gt;Links&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1]. &lt;a href=&#34;http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf&#34;&gt;Lamport, Leslie. &amp;ldquo;Paxos made simple.&amp;rdquo; ACM Sigact News 32, no. 4 (2001): 18-25.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]. &lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html&#34;&gt;Handout, LEC5, 6.824&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]. &lt;a href=&#34;https://www.youtube.com/watch?v=JEpsBg0AO6o&#34;&gt;Paxos lecture (Raft user study)&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;end.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Protocol and FSM</title>
+      <link>http://neilsh.com/2015/10/23/protocol-and-fsm/</link>
+      <pubDate>Fri, 23 Oct 2015 21:17:01 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/10/23/protocol-and-fsm/</guid>
+      <description>
+
+&lt;h2 id=&#34;protocol:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol&lt;/h2&gt;
+
+&lt;p&gt;本文中 Protocol 特指通讯协议。
+首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  &amp;ndash;&lt;a href=&#34;https://en.wikipedia.org/wiki/Protocol&#34;&gt;WIKI#Protocol&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;简单的来说，协议是规范数据传输的一套规则。&lt;/p&gt;
+
+&lt;h2 id=&#34;finite-state-machines-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Finite State Machines (FSM)&lt;/h2&gt;
+
+&lt;p&gt;下面是摘自 WIKI 的对有限状态机的说明：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;It is conceived as an abstract machine that can be in one of a finite number of states. The machine is in only one state at a time; the state it is in at any given time is called the current state. It can change from one state to another when initiated by a triggering event or condition; this is called a transition. A particular FSM is defined by a list of its states, and the triggering condition for each transition.    &amp;ndash;&lt;a href=&#34;https://en.wikipedia.org/wiki/Finite-state_machine&#34;&gt;WIKI#FSM&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。
+有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;protocol-and-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol and FSM&lt;/h2&gt;
+
+&lt;p&gt;把 Protocol 和 FSM 写在一起自然是因为它们有着紧密的联系。不准确的来说， Protocol 就是 FSM 的行为，遵循 Protocol 的实体（们）构成了这个 FSM 的抽象机器。&lt;/p&gt;
+
+&lt;h2 id=&#34;implement-a-protocol:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Implement a Protocol&lt;/h2&gt;
+
+&lt;p&gt;实现协议不简单，特别是复杂的，持续状态的协议，TCP 算其中一个😂。
+列一下实现协议的困难点：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;状态可能有多种。&lt;/li&gt;
+&lt;li&gt;条件可能有多种。&lt;/li&gt;
+&lt;li&gt;1, 2组合产生的情况更多！&lt;/li&gt;
+&lt;li&gt;因逻辑不清而产生的 BUG 难以排查。&lt;/li&gt;
+&lt;li&gt;复杂协议容易产生高耦合的代码。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;说了困难点，当然要题解决思路：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;编写代码前画出状态转移图，理清思路。&lt;/li&gt;
+&lt;li&gt;编写代码前定好各个函数的作用，及调用范围。&lt;/li&gt;
+&lt;li&gt;编写代码时避免过早的优化， premature optimization is the root of all evil， Knuth&lt;/li&gt;
+&lt;li&gt;有 Test case 那自然是极好的。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这四点，箭箭射中我膝盖。唉，人啊，为什么痛过之后才知道悔改！（严肃脸）&lt;/p&gt;
+
+&lt;h2 id=&#34;viewservice:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Viewservice&lt;/h2&gt;
+
+&lt;p&gt;6.824 的 lab2 Part A 让我们实现一个具体的协议。计算机有随时宕机的可能，一旦发生它提供的服务就不可得了。该协议引入主机（Primary）和从机（Backup）机制并及时检查两者的存活状态，使系统服务具有高可用性，下面称这个协议为 &lt;strong&gt;Viewservice&lt;/strong&gt;。
+Viewservice 在某些条件下会产生一个 &lt;strong&gt;View&lt;/strong&gt;。View 是一个数据结构，包含主机和从机的地址。
+下面说一下这个协议要关键的几个点：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;持续状态协议，当前状态会影响到下一状态。&lt;/li&gt;
+&lt;li&gt;每次更新 View， Primary 不能为空。&lt;/li&gt;
+&lt;li&gt;下一个 View 中的 Primary 必须为当前 View 的 Primary 或 Backup。&lt;/li&gt;
+&lt;li&gt;每个活动的服务器都保存在 viewserver 中，状态是 Primary, Backup, Idle 其中的一种。&lt;/li&gt;
+&lt;li&gt;当前 View 中的 Primary 和 Backup 同时出错时，服务结束。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;上面几点并没有完整地描述 Viewservice，但已足够用来阐述 Protocol 和 FSM 之前的关系，想看完整的协议请访问&lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html&#34;&gt;lab2#Part A&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;viewservice-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Viewservice FSM&lt;/h2&gt;
+
+&lt;p&gt;不难发现 View 就是状态，条件就是 Primary，Backup，Idle三者的存活状态。
+注意，为了便于理解，这里的 FSM 只是完整的 Viewservice 中的&lt;strong&gt;关键部分（错误处理）&lt;/strong&gt;，我去掉了一些无关痛痒的内容，并且我对 Idle 多了一个限制：每个时刻要没有 Idle，要么只有一个，不会有多个存在。但就算这个限制不存在也不会影响最后的正确性。这样做的好处是 Idle 只有两种状态，简化了条件的同时还便于表示（0 or 1） ;-)&lt;/p&gt;
+
+&lt;p&gt;由此设三位二进制数：XXX， 分别代表 Primary，Backup和Idle。1为存活，0为出错。&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Primary&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Backup&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Idle&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;XXX&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Alive&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;111&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;Dead&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;可能输出的状态有四种：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;100，只有 Primary 存活。&lt;/li&gt;
+&lt;li&gt;110，Primary 和 Backup 存活，没有 Idle。&lt;/li&gt;
+&lt;li&gt;111，Primary，Backup 和 Idle 都存活。&lt;/li&gt;
+&lt;li&gt;00X，Primary 和 Backup， 服务结束。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;注意： X 代表 0 和 1，00X 就是 000 和 001 的合集&lt;/p&gt;
+
+&lt;p&gt;所有可能的条件：&lt;/p&gt;
+
+&lt;p&gt;1.100
+ 2.101
+ 3.110
+ 4.111
+ 5.010
+ 6.011
+ 7.00X&lt;/p&gt;
+
+&lt;p&gt;两者产生的状态转移表： 竖为当前状态，横为条件，&lt;code&gt;\&lt;/code&gt; 为不会出现的情况&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;100&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;101&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;110&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;111&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;010&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;011&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;00X&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;111&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;111&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;111&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;根据上面的表可以画出状态转移图，更直观地说明这个 FSM&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1exdcpwse63j21kw15madn.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;清楚了这个 FSM，各种情况了然于心，设计数据结构，编写代码，实现协议 so easy。&lt;/p&gt;
+
+&lt;h2 id=&#34;后话:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;后话&lt;/h2&gt;
+
+&lt;p&gt;Part A部分我花了不少时间，主要还是当初没有理清协议，有多个 Test 通不过，代码结构推到了一遍又一遍。在机缘巧合下（debug下）发现协议和数电中的状态转移图有紧密的联系。然后尝试用状态转移图来表示协议，没想到还真可以。根据状态转移图改善了一下代码，通过各种 Test 快得飞起！这么好的方法不可能没有人比我先想到，查了 google 才知道有个概念叫*有限状态机*，有门课叫 *Protocol Engineering*，我的视野还太小。最后发一张 TCP 的状态转移图，感受下 TCP 的复杂性。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/f/f6/Tcp_state_diagram_fixed_new.svg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;ref:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Ref.&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html&#34;&gt;lab2#Part A&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Protocol&#34;&gt;WIKI#Protocol&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Finite-state_machine&#34;&gt;WIKI#FSM&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Transmission_Control_Protocol&#34;&gt;WIKI#TCP&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://pet.ece.iisc.ernet.in/course/E2223/ch.pdf&#34;&gt;Specification of Protocol Using FSM&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://cs.uccs.edu/~cs522/pe/pe.htm&#34;&gt;Protocol Specification using Sequence Chart or Message Flow DiagramApply Formal Method To Protocol Specification&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Goto 与拓扑排序</title>
+      <link>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</link>
+      <pubDate>Sat, 04 Jul 2015 20:24:15 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</guid>
+      <description>
+
+&lt;h2 id=&#34;goto-in-c:e47801faec949620d06a03161065dbeb&#34;&gt;goto in C&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt;在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。&lt;/p&gt;
+
+&lt;h3 id=&#34;goto-break-continue:e47801faec949620d06a03161065dbeb&#34;&gt;goto, break, continue&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt;,&lt;code&gt;break&lt;/code&gt;,&lt;code&gt;continue&lt;/code&gt; 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的&lt;code&gt;{}&lt;/code&gt;(scope)。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;continue&lt;/code&gt; 只能写在loop里，不然编译报：continue statement not within loop，&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;break&lt;/code&gt; 只能写在loop或者switch中，不然编译报：break statement not within loop or switch。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt; 则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过,用的好当然也可以增加效率的同时提高可读性。
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I think goto&amp;rsquo;s are fine, and they are often more readable than large
+amounts of indentation. That&amp;rsquo;s &lt;em&gt;especially&lt;/em&gt; true if the code flow isn&amp;rsquo;t
+actually naturally indented (in this case it is, so I don&amp;rsquo;t think using
+goto is in any way &lt;em&gt;clearer&lt;/em&gt; than not, but in general goto&amp;rsquo;s can be quite
+good for readability).
+&amp;mdash;Linus&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;拓扑排序:e47801faec949620d06a03161065dbeb&#34;&gt;拓扑排序&lt;/h2&gt;
+
+&lt;p&gt;《算法导论》中拓扑排序的例子，粉色的是各物件的依赖图，青色的是拓扑排序图。
+&lt;img src=&#34;http://ww4.sinaimg.cn/large/7f793092gw1ets46e3xppj20ok0kcq4d.jpg&#34; alt=&#34;&#34; /&gt;
+根据图，如果还没穿内裤，拿就必须要穿内裤那个节点开始走起；如果已经穿好内裤和裤子了，那从腰带开始走起便可。
+可以看出，拓扑排序图中的各物件的依赖关系与箭头相反，不管从哪点进入，最终的还是会到同一个节点。&lt;/p&gt;
+
+&lt;h2 id=&#34;内存管理引发的思考:e47801faec949620d06a03161065dbeb&#34;&gt;内存管理引发的思考&lt;/h2&gt;
+
+&lt;p&gt;在JOS的内存管理模块中，有一个&lt;code&gt;page_insert&lt;/code&gt;的函数，它负责记录&lt;code&gt;page&lt;/code&gt;的地址和权限，这个函数最终的结果只有一个，但输入有多种情况，为了处理这些情况，势必要写多个判断。
+插入的&lt;code&gt;pagetable&lt;/code&gt;中对应该&lt;code&gt;page&lt;/code&gt;的条目是否有旧纪录？如果没有直接插入，设置权限，结束；如果有，是否同一个&lt;code&gt;page&lt;/code&gt;，如果同一个，设置新权限，结束；如果不是同一个，删掉旧记录，插入该&lt;code&gt;page&lt;/code&gt;地址，设置权限，结束。
+大致的逻辑请看下图：
+&lt;img src=&#34;http://ww3.sinaimg.cn/large/7f793092gw1etufs6cjxnj20av0m1gmq.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从描述可知，只有条件跳转来处理这些情况会有许多重复的代码，而且不直观，难以理解。&lt;/p&gt;
+
+&lt;h3 id=&#34;不用-goto-的-page-insert:e47801faec949620d06a03161065dbeb&#34;&gt;不用&lt;code&gt;goto&lt;/code&gt;的&lt;code&gt;page_insert&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;无&lt;code&gt;goto&lt;/code&gt;，但代码重复，判断层级过多，不易理解。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm) {
+	pte_t *va_pte = pgdir_walk(pgdir, va, 1);
+	if (! va_pte)
+		// E_NO_MEM, if page table couldn&#39;t be allocated
+		return -E_NO_MEM;
+
+	physaddr_t pp_pa = page2pa(pp);
+
+	if ((*va_pte) &amp;amp; PTE_P) {
+		// There is something in this pte.
+		if (PTE_ADDR(*va_pte) == pp_pa) {
+			// Re-insert
+			*va_pte = pp_pa | perm | PTE_P;
+			if (perm | PTE_U)
+				// Changes to User Table
+				pgdir[PDX(va)] |= PTE_U;
+			return 0;
+		}
+		// Different page
+		page_remove(pgdir, va);
+	}
+
+	// Nothing in this PTE
+	*va_pte = pp_pa | perm | PTE_P;
+	if (perm | PTE_U)
+		// Changes to User Table
+		pgdir[PDX(va)] |= PTE_U;
+
+	pp-&amp;gt;pp_ref += 1;
+
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;使用-goto-的-page-insert:e47801faec949620d06a03161065dbeb&#34;&gt;使用&lt;code&gt;goto&lt;/code&gt;的&lt;code&gt;page_insert&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;有&lt;code&gt;goto&lt;/code&gt;，但代码不重复，跳转层级少，直观。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm) {
+	pte_t *va_pte = pgdir_walk(pgdir, va, 1);
+	if (! va_pte)
+		// E_NO_MEM, if page table couldn&#39;t be allocated
+		return -E_NO_MEM;
+
+	physaddr_t pp_pa = page2pa(pp);
+
+	if (! (*va_pte) &amp;amp; PTE_P)
+		// Nothing in this PTE
+		goto nonpresent;
+
+	// There is something in this pte.
+	if (PTE_ADDR(*va_pte) == pp_pa)
+		// Re-insert
+		goto present_same;
+	else
+		// Different page
+		goto present_different;
+
+	present_different:
+		page_remove(pgdir, va);
+
+	nonpresent:
+		*va_pte = pp_pa;
+		pp-&amp;gt;pp_ref += 1;
+		tlb_invalidate(pgdir, va);
+
+	present_same:
+		*va_pte = pp_pa | perm | PTE_P;
+		if (perm &amp;amp; PTE_U)
+			// Commits to User Table
+			pgdir[PDX(va)] |= PTE_U;
+		if (perm &amp;amp; PTE_W)
+			pgdir[PDX(va)] |= PTE_W;
+
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;总结:e47801faec949620d06a03161065dbeb&#34;&gt;总结&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;goto&lt;/code&gt;最好与判断写在一起，方便从语意理解此语句。&lt;/li&gt;
+&lt;li&gt;如果出口只有一个，进口有多个，可适当用&lt;code&gt;goto&lt;/code&gt;，符合DRY。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;another-fancy-case:e47801faec949620d06a03161065dbeb&#34;&gt;Another fancy case&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// error handler
+swith(i) {
+    case 1:
+        foo();
+        break;
+    case 2:
+        bar();
+        break;
+    case 3:
+        n = dosth_1();
+        if (n)
+            goto bad;
+        n = dosth_2();
+        if (n)
+            goto bad:
+        break;
+
+    default:
+    bad:
+        report();
+        end_this();
+        break;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;更多资料:e47801faec949620d06a03161065dbeb&#34;&gt;更多资料&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto&#34;&gt;https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto&lt;/a&gt;
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Topological_sorting&#34;&gt;https://en.wikipedia.org/wiki/Topological_sorting&lt;/a&gt;
+&lt;a href=&#34;https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131&#34;&gt;https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131&lt;/a&gt;
+Knuth, Donald E. &amp;ldquo;Structured Programming with go to Statements.&amp;rdquo; ACM Computing Surveys (CSUR) 6, no. 4 (1974): 261-301.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

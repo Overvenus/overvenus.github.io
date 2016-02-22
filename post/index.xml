@@ -1,0 +1,2772 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Neil</title>
+    <link>http://neilsh.com/post/</link>
+    <description>Recent content in Posts on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 20 Jan 2016 20:54:10 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Debian Packaging 教程</title>
+      <link>http://neilsh.com/2016/01/20/debian-packaging-step-by-step/</link>
+      <pubDate>Wed, 20 Jan 2016 20:54:10 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2016/01/20/debian-packaging-step-by-step/</guid>
+      <description>
+
+&lt;h2 id=&#34;新手之痛:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;新手之痛&lt;/h2&gt;
+
+&lt;p&gt;说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo apt-get install build-essential devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)&lt;/p&gt;
+
+&lt;p&gt;有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。&lt;/p&gt;
+
+&lt;p&gt;我&lt;strong&gt;没有&lt;/strong&gt;严格遵守 Debian 社区打包的步骤，这记录的是一个 quick and dirty way not the Debian way!这是大概的过程:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;创建 GPG: 用于给 deb 签名&lt;/li&gt;
+&lt;li&gt;打包 DEB: 有点麻烦，规矩多，步骤多&lt;/li&gt;
+&lt;li&gt;上传 Launchpad: 添加到 PPA，以后安装就方便了&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;创建-gpg:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;创建 GPG&lt;/h2&gt;
+
+&lt;p&gt;阮一峰有一篇非常棒的 &lt;a href=&#34;http://www.ruanyifeng.com/blog/2013/07/gpg.html&#34;&gt;GPG入门教程&lt;/a&gt;，里面涵盖了新手上手 GPG 所需的基本步骤。&lt;/p&gt;
+
+&lt;p&gt;我在这补充一下，他的文章中上传公钥使用的是 &lt;code&gt;hkp://subkeys.pgp.net&lt;/code&gt;，我这试了几次都出现了连接错误。所以，我推荐 &lt;code&gt;hkp://keyserver.ubuntu.com&lt;/code&gt;，使用它，不仅是因为连得上，还因为在 Launchpad 创建 PPA 也要用它。&lt;/p&gt;
+
+&lt;h2 id=&#34;创建-ppa:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;创建 PPA&lt;/h2&gt;
+
+&lt;p&gt;摘自 &lt;a href=&#34;http://askubuntu.com/a/71516/436021&#34;&gt;How do I create a PPA?&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://login.launchpad.net/+new_account&#34;&gt;创建 Launchpad 帐号&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://launchpad.net/people/+me/&#34;&gt;激活 PPA&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;用 GPG 签约 &lt;a href=&#34;https://launchpad.net/codeofconduct&#34;&gt;the Ubuntu code of conduct&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;打包-deb:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;打包 DEB&lt;/h2&gt;
+
+&lt;p&gt;这儿以我的最近写的 &lt;a href=&#34;http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt; 为例。TButton 关键就 3 个文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  indicator-tbutton-0.1  tree
+.
+├── indicator-tbutton
+├── indicator-tbutton.desktop
+└── tbutton-icon.png
+
+0 directories, 3 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;对上面命令的解释：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;➜&lt;/code&gt; :一行新命令的开始标志&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;indicator-tbutton-0.1&lt;/code&gt; : 当前文件夹&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;tree&lt;/code&gt; : Linux 命令，列出当前目录的结构&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;准备工作:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;准备工作&lt;/h3&gt;
+
+&lt;p&gt;在开始之前先把一些&lt;strong&gt;准备工作&lt;/strong&gt;做好。&lt;/p&gt;
+
+&lt;h4 id=&#34;安装工具:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;安装工具&lt;/h4&gt;
+
+&lt;p&gt;我没有安装上面提及的所以工具，这条命令会安装这篇教程中涉及到的工具。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo apt-get insatll build-essential debhelper fakeroot dh-make lintian dput python-bzrlib tree vim
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;维护者信息:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;维护者信息&lt;/h4&gt;
+
+&lt;p&gt;向控制台配置文件(一般为 &lt;code&gt;～/.bashrc&lt;/code&gt; 或者 &lt;code&gt;~/.zshrc&lt;/code&gt;)中添加：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;export DEBEMAIL=&amp;lt;YOUR EMAIL&amp;gt;   # 我们的电子邮件地址
+export DEBFULLNAME=&amp;lt;YOUR NAME&amp;gt; # 我们的真实姓名
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这两个信息在生成 debian 配置文件，也就是下面 &lt;em&gt;第6步&lt;/em&gt; 中会被用到。&lt;/p&gt;
+
+&lt;h3 id=&#34;创建-debian-模板:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;创建 debian 模板&lt;/h3&gt;
+
+&lt;p&gt;创建步骤：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;在 Home 文件夹里创建个叫 sandbox 的文件夹&lt;/li&gt;
+&lt;li&gt;把 indicator-tbutton-0.1 文件夹复制到 sandbox&lt;/li&gt;
+&lt;li&gt;把 indicator-tbutton-0.1 文件夹整个打包成 indicator-tbutton-0.1.tar.gz&lt;/li&gt;
+&lt;li&gt;把 indicator-tbutton-0.1.tar.gz 移动到 indicator-tbutton-0.1 文件夹中&lt;/li&gt;
+&lt;li&gt;进入 indicator-tbutton-0.1 文件夹中&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;dh_make&lt;/code&gt;，参数： （完整文档可以运行&lt;code&gt;man dh_make&lt;/code&gt;）
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-c gpl3&lt;/code&gt;: license 信息，我这儿用 GPLv3&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-f indicator-tbutton-0.1.tar.gz&lt;/code&gt;: 指定&lt;strong&gt;原&lt;/strong&gt;源代码压缩包&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;删除不必要的文件，具体可以参见 &lt;a href=&#34;https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian&#34;&gt;TButton/debian&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;编辑 debian 文件夹中的配置文件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  ~  cp -R indicator-tbutton-0.1 sandbox
+➜  ~  cd sandbox 
+➜  sandbox  tree
+.
+└── indicator-tbutton-0.1
+    ├── indicator-tbutton
+    ├── indicator-tbutton.desktop
+    └── tbutton-icon.png
+
+1 directory, 3 files
+
+➜  sandbox  tar -cvzf indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1
+indicator-tbutton-0.1/
+indicator-tbutton-0.1/tbutton-icon.png
+indicator-tbutton-0.1/indicator-tbutton
+indicator-tbutton-0.1/indicator-tbutton.desktop
+
+➜  sandbox  cp indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1/
+➜  sandbox  cd indicator-tbutton-0.1 
+➜  indicator-tbutton-0.1  tree
+.
+├── indicator-tbutton
+├── indicator-tbutton-0.1.tar.gz
+├── indicator-tbutton.desktop
+└── tbutton-icon.png
+
+0 directories, 4 files
+
+➜  indicator-tbutton-0.1  dh_make -c gpl3  -f indicator-tbutton-0.1.tar.gz
+
+Type of package: single binary, indep binary, multiple binary, library, kernel module, kernel patch?
+ [s/i/m/l/k/n] s  # 这里输入 s
+
+Maintainer name  : Neil Shen
+Email-Address    : overvenus@gmail.com 
+Date             : Thu, 21 Jan 2016 14:07:51 +0800
+Package Name     : indicator-tbutton
+Version          : 0.1
+License          : gpl3
+Type of Package  : Single
+Hit &amp;lt;enter&amp;gt; to confirm:   # 这里按回车
+Currently there is no top level Makefile. This may require additional tuning.
+Done. Please edit the files in the debian/ subdirectory now. You should also
+check that the indicator-tbutton Makefiles install into $DESTDIR and not in / .
+
+➜  indicator-tbutton-0.1  tree
+.
+├── debian
+│   ├── changelog
+│   ├── compat
+│   ├── control
+│   ├── copyright
+│   ├── docs
+│   ├── indicator-tbutton.cron.d.ex
+│   ├── indicator-tbutton.default.ex
+│   ├── indicator-tbutton.doc-base.EX
+│   ├── init.d.ex
+│   ├── manpage.1.ex
+│   ├── manpage.sgml.ex
+│   ├── manpage.xml.ex
+│   ├── menu.ex
+│   ├── postinst.ex
+│   ├── postrm.ex
+│   ├── preinst.ex
+│   ├── prerm.ex
+│   ├── README.Debian
+│   ├── README.source
+│   ├── rules
+│   ├── source
+│   │   └── format
+│   └── watch.ex
+├── indicator-tbutton
+├── indicator-tbutton-0.1.tar.gz
+├── indicator-tbutton.desktop
+└── tbutton-icon.png
+
+2 directories, 26 files
+
+# 删除文件ing...
+# 最终目录结构
+➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  tree 
+.
+├── indicator-tbutton-0.1
+│   ├── debian
+│   │   ├── changelog
+│   │   ├── compat
+│   │   ├── control
+│   │   ├── copyright
+│   │   ├── rules
+│   │   └── source
+│   │       └── format
+│   ├── indicator-tbutton
+│   ├── indicator-tbutton.desktop
+│   └── tbutton-icon.png
+└── indicator-tbutton_0.1.orig.tar.gz
+
+3 directories, 10 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;编辑-debian-配置文件:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;编辑 debian 配置文件&lt;/h3&gt;
+
+&lt;p&gt;配置文件指的是 &lt;code&gt;debian\&lt;/code&gt; 文件夹下的那几个文件，每个都有不同的功能，有的一旦配置完以后都不用去改动，还有的每次发布都到改动。
+对几个重要文件的说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;changelog: 记录每次发布的对软件的更改和控制发布的版本号&lt;/li&gt;
+&lt;li&gt;rule: 控制如何安装软件, 语法于 Makefile 类似（可以参看我的 rule）&lt;/li&gt;
+&lt;li&gt;copyright: 软件的版权与发布协议&lt;/li&gt;
+&lt;li&gt;control: 维护者信息，软件简介，依赖&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上面四个文件是我们需要编辑的，具体内容怎么写可以参照 &lt;a href=&#34;https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian&#34;&gt;TButton/debian&lt;/a&gt;，详细信息请看 &lt;a href=&#34;http://www.debian.org/doc/manuals/maint-guide/&#34;&gt;Debian New Maintainers’ Guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;本地打包测试:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;本地打包测试&lt;/h3&gt;
+
+&lt;p&gt;到了这一步就简单了，就是一句命令的事儿 &amp;mdash; &lt;code&gt;fakeroot dpkg-buildpackage -F&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;-F&lt;/code&gt; : 以完全模式打包，创建 .deb 文件，打包源码，GPG 签名等等。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;# 接上面
+➜  sandbox  cd indicator-tbutton-0.1 
+➜  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F 
+dpkg-buildpackage: source package indicator-tbutton-0.1
+dpkg-buildpackage: source version 0.1-1
+dpkg-buildpackage: source distribution trusty
+dpkg-buildpackage: source changed by Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;
+dpkg-buildpackage: host architecture amd64
+ dpkg-source --before-build indicator-tbutton-0.1
+ debian/rules clean
+dh_testdir
+dh_testroot
+rm -f build-stamp
+dh_clean
+ dpkg-source -b indicator-tbutton-0.1
+dpkg-source: error: can&#39;t build with source format &#39;3.0 (quilt)&#39;: no upstream tarball found at ../indicator-tbutton-0.1_0.1.orig.tar.{bz2,gz,lzma,xz}
+dpkg-buildpackage: error: dpkg-source -b indicator-tbutton-0.1 gave error exit status 255
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Oops，出错了！来看看是什么错误。。。
+哦，原来是没有找到 &lt;code&gt;../indicator-tbutton-0.1_0.1.orig.tar.{bz2,gz,lzma,xz}&lt;/code&gt;，我们在 sandbox 下有 &lt;code&gt;indicator-tbutton_0.1.orig.tar.gz&lt;/code&gt; 但是，dpkg 要求我们提供 &lt;code&gt;indicator-tbutton-0.1_0.1.orig.tar.gz&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  ls
+indicator-tbutton-0.1  indicator-tbutton_0.1.orig.tar.gz
+# 重命名
+➜  sandbox  mv indicator-tbutton_0.1.orig.tar.gz indicator-tbutton-0.1_0.1.orig.tar.gz
+➜  sandbox  ls
+indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz
+➜  sandbox  cd indicator-tbutton-0.1 
+# 再来试一下
+➜  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F 
+dpkg-buildpackage: source package indicator-tbutton-0.1
+dpkg-buildpackage: source version 0.1-1
+dpkg-buildpackage: source distribution trusty
+dpkg-buildpackage: source changed by Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;
+dpkg-buildpackage: host architecture amd64
+ dpkg-source --before-build indicator-tbutton-0.1
+ debian/rules clean
+dh_testdir
+dh_testroot
+rm -f build-stamp
+dh_clean
+ dpkg-source -b indicator-tbutton-0.1
+dpkg-source: info: using source format `3.0 (quilt)&#39;
+dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc
+ debian/rules build
+dh_testdir
+touch configure-stamp
+touch build-stamp
+ debian/rules binary
+dh_testdir
+dh_testroot
+dh_prep
+dh_installdirs
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart
+install -m 755 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin
+install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/tbutton-icon.png /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps
+install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications
+install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart
+dh_testdir
+dh_testroot
+dh_installchangelogs
+dh_installdocs
+dh_icons
+dh_installmenu
+# dh_python2
+# dh_pysupport
+dh_link
+dh_strip
+dh_compress
+dh_fixperms
+dh_installdeb
+dh_gencontrol
+dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable ${python:Depends}
+dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable ${shlibs:Depends}
+dh_md5sums
+dh_builddeb
+dpkg-deb: building package `indicator-tbutton&#39; in `../indicator-tbutton_0.1-1_amd64.deb&#39;.
+ signfile indicator-tbutton-0.1_0.1-1.dsc
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-genchanges  &amp;gt;../indicator-tbutton-0.1_0.1-1_amd64.changes
+dpkg-genchanges: including full source code in upload
+ signfile indicator-tbutton-0.1_0.1-1_amd64.changes
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-source --after-build indicator-tbutton-0.1
+dpkg-buildpackage: full upload (original source is included)
+
+➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  ls
+indicator-tbutton-0.1
+indicator-tbutton-0.1_0.1-1_amd64.changes
+indicator-tbutton-0.1_0.1-1.debian.tar.gz
+indicator-tbutton-0.1_0.1-1.dsc
+indicator-tbutton-0.1_0.1.orig.tar.gz
+indicator-tbutton_0.1-1_amd64.deb
+
+# OK! 大功告成
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在我们有了 .deb 文件，先把它解压，看看有没有打包进全部的文件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  mkdir temp
+➜  sandbox  dpkg -x indicator-tbutton_0.1-1_amd64.deb temp
+➜  sandbox  tree
+.
+├── indicator-tbutton-0.1
+│   ├── build-stamp
+│   ├── configure-stamp
+│   ├── debian
+│   │   ├── changelog
+│   │   ├── compat
+│   │   ├── control
+│   │   ├── copyright
+│   │   ├── files
+│   │   ├── indicator-tbutton
+│   │   │   ├── DEBIAN
+│   │   │   │   ├── conffiles
+│   │   │   │   ├── control
+│   │   │   │   └── md5sums
+│   │   │   ├── etc
+│   │   │   │   └── xdg
+│   │   │   │       └── autostart
+│   │   │   │           └── indicator-tbutton.desktop
+│   │   │   └── usr
+│   │   │       ├── bin
+│   │   │       │   └── indicator-tbutton
+│   │   │       └── share
+│   │   │           ├── applications
+│   │   │           │   └── indicator-tbutton.desktop
+│   │   │           ├── doc
+│   │   │           │   └── indicator-tbutton
+│   │   │           │       ├── changelog.Debian.gz
+│   │   │           │       └── copyright
+│   │   │           └── icons
+│   │   │               └── hicolor
+│   │   │                   └── 96x96
+│   │   │                       └── apps
+│   │   │                           └── tbutton-icon.png
+│   │   ├── indicator-tbutton.debhelper.log
+│   │   ├── indicator-tbutton.substvars
+│   │   ├── rules
+│   │   └── source
+│   │       └── format
+│   ├── indicator-tbutton
+│   ├── indicator-tbutton.desktop
+│   └── tbutton-icon.png
+├── indicator-tbutton-0.1_0.1-1_amd64.changes
+├── indicator-tbutton-0.1_0.1-1.debian.tar.gz
+├── indicator-tbutton-0.1_0.1-1.dsc
+├── indicator-tbutton-0.1_0.1.orig.tar.gz
+├── indicator-tbutton_0.1-1_amd64.deb
+└── temp
+    ├── etc
+    │   └── xdg
+    │       └── autostart
+    │           └── indicator-tbutton.desktop
+    └── usr
+        ├── bin
+        │   └── indicator-tbutton
+        └── share
+            ├── applications
+            │   └── indicator-tbutton.desktop
+            ├── doc
+            │   └── indicator-tbutton
+            │       ├── changelog.Debian.gz
+            │       └── copyright
+            └── icons
+                └── hicolor
+                    └── 96x96
+                        └── apps
+                            └── tbutton-icon.png
+
+32 directories, 34 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Perfect! 全部打包了！ ヽ(○´∀`)ﾉ♪&lt;/p&gt;
+
+&lt;p&gt;如果电脑中有装有 Ubuntu 的虚拟机的话，可以在里面安装，再次验证。&lt;/p&gt;
+
+&lt;p&gt;如果我们还有耐心的话，可用 lintain 来检查 deb 包的其他问题。下面是我的 .deb 问题，两个警告，一个错误，但并无大碍。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  lintian indicator-tbutton_0.1-1_amd64.deb
+W: indicator-tbutton: new-package-should-close-itp-bug
+W: indicator-tbutton: binary-without-manpage usr/bin/indicator-tbutton
+E: indicator-tbutton: python-script-but-no-python-dep usr/bin/indicator-tbutton
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;上传-launchpad:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;上传 Launchpad&lt;/h2&gt;
+
+&lt;p&gt;最后一部分，涉及的工具只有 &lt;code&gt;dput&lt;/code&gt;。首先，先要对它配置一下。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  vim ~/.dput.cf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;输入以下内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[my-ppa]
+fqdn = ppa.launchpad.net
+method = sftp               # 确保我们已将 ssh-key 添加到 Launchpad!
+incoming = &amp;lt;YOUR PPA PATH&amp;gt;  # 这是我的： ~overvenus/ubuntu/ppa/
+login = &amp;lt;YOUR ACCONT NAME&amp;gt;  # 这是我的： overvenus
+allow_unsigned_uploads = 0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在上传之前，我们先要清理一下，然后换个模式 build， &lt;code&gt;fakeroot dpkg-buildpackage -S&lt;/code&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;-S&lt;/code&gt; : 只打包源码，GPG 签名。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  ls
+indicator-tbutton-0.1
+indicator-tbutton-0.1_0.1-1_amd64.changes
+indicator-tbutton-0.1_0.1-1.debian.tar.gz
+indicator-tbutton-0.1_0.1-1.dsc
+indicator-tbutton-0.1_0.1.orig.tar.gz
+indicator-tbutton_0.1-1_amd64.deb
+temp
+
+# 删除文件ing
+➜  sandbox  rm -r indicator-tbutton-0.1_0.1-1_amd64.changes indicator-tbutton-0.1_0.1-1.debian.tar.gz indicator-tbutton-0.1_0.1-1.dsc indicator-tbutton_0.1-1_amd64.deb temp
+➜  sandbox  ls
+indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz
+
+# 清理
+➜  sandbox  cd indicator-tbutton-0.1 
+➜  indicator-tbutton-0.1  dh_clean
+#  换个模式 build
+➜  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -S 
+dpkg-buildpackage: source package indicator-tbutton-0.1
+dpkg-buildpackage: source version 0.1-1
+dpkg-buildpackage: source distribution trusty
+dpkg-buildpackage: source changed by Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;
+ dpkg-source --before-build indicator-tbutton-0.1
+ debian/rules clean
+dh_testdir
+dh_testroot
+rm -f build-stamp
+dh_clean
+ dpkg-source -b indicator-tbutton-0.1
+dpkg-source: info: using source format `3.0 (quilt)&#39;
+dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc
+ signfile indicator-tbutton-0.1_0.1-1.dsc
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-genchanges -S &amp;gt;../indicator-tbutton-0.1_0.1-1_source.changes
+dpkg-genchanges: including full source code in upload
+ signfile indicator-tbutton-0.1_0.1-1_source.changes
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-source --after-build indicator-tbutton-0.1
+dpkg-buildpackage: full upload (original source is included)
+
+# 注意，没有 deb！
+➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  ls
+indicator-tbutton-0.1
+indicator-tbutton-0.1_0.1-1.debian.tar.gz
+indicator-tbutton-0.1_0.1-1.dsc
+indicator-tbutton-0.1_0.1-1_source.changes
+indicator-tbutton-0.1_0.1.orig.tar.gz
+# 上传到 PPA
+➜  sandbox  dput my-ppa  indicator-tbutton-0.1_0.1-1_source.changes
+Checking signature on .changes
+gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7
+gpg: Good signature from &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1_source.changes.
+Checking signature on .dsc
+gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7
+gpg: Good signature from &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1.dsc.
+Uploading to my-ppa (via sftp to ppa.launchpad.net):
+  indicator-tbutton-0.1_0.1-1.dsc: Agent admitted failure to sign using the key.
+Enter passphrase for key &#39;/home/neil/.ssh/id_rsa&#39;: 
+...
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;等上传完毕后 Launchpad 会发一封邮件给我们，被接受，会有以下回复。被拒，也会把原因写在邮件中。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1f08c4vj25bj20hf0d141a.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如果一切正常，30 分钟后，我们就能从 PPA 中安装我们的软件。比如安装 TButton：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo add-apt-repository ppa:overvenus/ppa
+sudo apt-get update
+sudo apt-get install indicator-tbutton
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;参考链接:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;参考链接&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian&#34;&gt;TButton/debian&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.ruanyifeng.com/blog/2013/07/gpg.html&#34;&gt;GPG入门教程&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://askubuntu.com/a/71516/436021&#34;&gt;How do I create a PPA?&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://packaging.ubuntu.com/singlehtml/&#34;&gt;Ubuntu Packaging Guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=nhoRyd2CEVs&#34;&gt;How to build a simple Debian package (*.Deb) - YouTube&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.debian.org/doc/manuals/maint-guide/&#34;&gt;Debian New Maintainers’ Guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf&#34;&gt;Packaging tutorial&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>TButton 命令行快捷按钮</title>
+      <link>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</link>
+      <pubDate>Wed, 20 Jan 2016 12:02:36 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</guid>
+      <description>&lt;p&gt;众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。
+比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;killall -s STOP vmware-vmx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;killall -s CONT vmware-vmx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。&lt;/p&gt;
+
+&lt;p&gt;不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 &lt;a href=&#34;https://github.com/overvenus/tbutton&#34;&gt;&lt;strong&gt;TButton&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TButton&lt;/strong&gt; 是用 Python 写的，做做很快，没花多长时间。参考了 &lt;a href=&#34;https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py&#34;&gt;goagent-gtk&lt;/a&gt;
+开源在 &lt;em&gt;&lt;a href=&#34;https://github.com/overvenus/tbutton&#34;&gt;https://github.com/overvenus/tbutton&lt;/a&gt;&lt;/em&gt;
+昨天我做了一个安装包，&lt;a href=&#34;https://github.com/overvenus/tbutton/releases&#34;&gt;戳这下载&lt;/a&gt;。或者从我的 PPA 安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo add-apt-repository ppa:overvenus/ppa
+sudo apt-get update
+sudo apt-get install indicator-tbutton
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;目前的功能还很简单，就只有“点击 &amp;ndash;&amp;gt; 执行”，对应的命令要在配置文件中写好，配置文件在 &lt;code&gt;~/.config/Tbutton/&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;下面是 TButton 在我电脑上的使用效果：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>2015年总结</title>
+      <link>http://neilsh.com/2015/12/31/summary-2015/</link>
+      <pubDate>Thu, 31 Dec 2015 11:12:58 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/12/31/summary-2015/</guid>
+      <description>
+
+&lt;h2 id=&#34;公开课:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;公开课&lt;/h2&gt;
+
+&lt;p&gt;2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。
+等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。
+论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。&lt;/p&gt;
+
+&lt;h2 id=&#34;项目:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;项目&lt;/h2&gt;
+
+&lt;p&gt;JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中&lt;a href=&#34;http://neilsh.com/2015/08/30/few_words_about_6_828/&#34;&gt;学到了很多&lt;/a&gt;。
+其他的几个小项目倒更像是玩具，不在这显摆了。&lt;/p&gt;
+
+&lt;h2 id=&#34;阅读:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;阅读&lt;/h2&gt;
+
+&lt;p&gt;在 2015 一年里，书看得不是很多。我很难想象别人是怎么看完那长长的书单的。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;《C和指针》 Kenneth A. Reek&lt;/li&gt;
+&lt;li&gt;《算法导论》前四章 Thomas H.Cormen, Charles E.Leiserson, Ronald L.Rivest, Clifford Stein&lt;/li&gt;
+&lt;li&gt;《计算机系统设计原理》 Jerome H. Saltzer, M. Frans Kaashoek&lt;/li&gt;
+&lt;li&gt;《现代操作系统》 Andrew S. Tanenbaum&lt;/li&gt;
+&lt;li&gt;《Structured Computer Organization》 Andrew S. Tanenbaum&lt;/li&gt;
+&lt;li&gt;《深入理解计算机系统》 Randal E.Bryant, David R.O&amp;rsquo;Hallaron&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr/&gt;
+
+&lt;ul&gt;
+&lt;li&gt;《如何阅读一本书》 莫提默·J. 艾德勒 查尔斯·范多伦&lt;/li&gt;
+&lt;li&gt;《民主的细节》 刘瑜&lt;/li&gt;
+&lt;li&gt;《黑客与画家》 Paul Graham&lt;/li&gt;
+&lt;li&gt;《三体》 刘慈欣&lt;/li&gt;
+&lt;li&gt;《百年孤独》 加西亚·马尔克斯 著 范晔 译&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;论文：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. &lt;a href=&#34;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf&#34;&gt;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Belay, Adam, George Prekas, Ana Klimovic, Samuel Grossman, Christos Kozyrakis, and Edouard Bugnion. 2014. “IX: A Protected Dataplane Operating System for High Throughput and Low Latency.” Proceedings of the 11th USENIX Conference on Operating Systems Design and Implementation, 49–65. &lt;a href=&#34;http://dl.acm.org/citation.cfm?id=2685048.2685053&#34;&gt;http://dl.acm.org/citation.cfm?id=2685048.2685053&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Boyd-wickizer, Silas, M Frans Kaashoek, Robert Morris, and Nickolai Zeldovich. 2012. “Non-Scalable Locks Are Dangerous.” Proceedings of the Linux Symposium. &lt;a href=&#34;http://ns1.fs.net/papers/linux:lock.pdf&#34;&gt;http://ns1.fs.net/papers/linux:lock.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Clements, Austin T, M Frans Kaashoek, and Nickolai Zeldovich. 2013. “RadixVM : Scalable Address Spaces for Multithreaded Applications.” EuroSys, 211–24. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2465351&lt;/sub&gt;.2465373.&lt;/li&gt;
+&lt;li&gt;Engler, D R, M F Kaaspoek, and J O’Toole. 1995. “ExoKernel: An Operating System Architecture for Application Level Resource Management.” Proceedings of the 15th ACM Symposium on Operating System Principles 1 (212): 256–66. doi:&lt;a href=&#34;http://doi.acm.org/10.1145/224056.224076&#34;&gt;http://doi.acm.org/10.1145/224056.224076&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Hunt, Galen C, and James R Larus. 2007. “Singularity: Rethinking the Software Stack.” Contract 41 (2): 37–49. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1243418&lt;/sub&gt;.1243424.&lt;/li&gt;
+&lt;li&gt;Kivity, Avi, Uri Lublin, Anthony Liguori, Yaniv Kamay, and Dor Laor. 2007. “Kvm: The Linux Virtual Machine Monitor.” Proceedings of the Linux Symposium 1: 225–30. &lt;a href=&#34;https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225&#34;&gt;https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Ritchie, D M, and K Thompson. 1974. “The UNIX Time-Sharing System.” Communications of the ACM 17 (7): 365–75.&lt;/li&gt;
+&lt;li&gt;Ritchie, Dm. 1984. “The Evolution of the Unix Time-Sharing System.” AT&amp;amp;T Bell Laboratories Technical Journal 63 (6): 1577–93. doi:10.&lt;sup&gt;1007&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt;-540-09745-7_2.&lt;/li&gt;
+&lt;li&gt;Simon, Herbert A, Philosophical Society, and No Dec. 2007. “The Architecture of Complexity” 106 (6): 467–82. doi:10.&lt;sup&gt;2307&lt;/sup&gt;&amp;frasl;&lt;sub&gt;985254&lt;/sub&gt;.&lt;/li&gt;
+&lt;li&gt;Tang, Shuo, Haohui Mai, and S.T. King. 2010. “Trust and Protection in the Illinois Browser Operating System.” Proceedings of the 9th USENIX Symposium on Operating Systems Design and Implementation (OSDI ’10), no. October: 17–31. &lt;a href=&#34;http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf&#34;&gt;http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Bolosky, William J, Dexter Bradshaw, Randolph B Haagens, Norbert P Kusters, and Peng Li. 2011. “Paxos Replicated State Machines as the Basis of a High-Performance Data Store 2 . Paxos Replicated State Ma- Chines.” System, 11.&lt;/li&gt;
+&lt;li&gt;Cao, P, E Felten, and K Li. 1994. “Implementation and Performance of Application-Controlled File Caching.” Proceedings of the First Symposium on Operating Systems Design and Implementation, 165–78. citeseer.ifi.unizh.ch/cao94implementation.html.&lt;/li&gt;
+&lt;li&gt;Chandra, Tushar, Robert Griesemer, and Joshua Redstone. 2007a. “Paxos Made Live - An Engineering Perspective ( 2006 Invited Talk ).” Perspective 7: 398–407. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1281100&lt;/sub&gt;.1281103.&lt;/li&gt;
+&lt;li&gt;Tushar Chandra, Robert Griesemer, and Joshua Redstone. 2007b. “Paxos Made Live: An Engineering Perspective.” Proceedings of the Twenty-Sixth Annual ACM Symposium on Principles of Distributed Computing, 398–407. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1281100&lt;/sub&gt;.1281103.&lt;/li&gt;
+&lt;li&gt;Corbett, James C, Jeffrey Dean, Michael Epstein, Andrew Fikes, Christopher Frost, J J Furman, Sanjay Ghemawat, et al. 2012. “Spanner : Google ’ S Globally-Distributed Database.” Proceedings of OSDI 2012, 1–14. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2491245&lt;/sub&gt;.&lt;/li&gt;
+&lt;li&gt;Cully, Brendan, Geoffrey Lefebvre, and Dutch Meyer. 2008. “Remus: High Availability via Asynchronous Virtual Machine Replication.” Proceedings of the 5th … vi: 161–74. &lt;a href=&#34;http://portal.acm.org/citation.cfm?id=1387589.1387601nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/&#34;&gt;http://portal.acm.org/citation.cfm?id=1387589.1387601nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Dean, Jeffrey, and Sanjay Ghemawat. n.d. “MapReduce : Simplified Data Processing on Large Clusters,” 137–49.&lt;/li&gt;
+&lt;li&gt;Fischer, Michael J., Nancy A. Lynch, and Michael S. Paterson. 1985. “Impossibility of Distributed Consensus with One Faulty Process.” Journal of the ACM 32 (2): 374–82. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3149&lt;/sub&gt;.214121.&lt;/li&gt;
+&lt;li&gt;Hunt, Patrick, Mahadev Konar, Fp Junqueira, and Benjamin Reed. 2010. “ZooKeeper: Wait-Free Coordination for Internet-Scale Systems.” USENIX Annual Technical … 8: 11–11. &lt;a href=&#34;http://portal.acm.org/citation.cfm?id=1855851nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf&#34;&gt;http://portal.acm.org/citation.cfm?id=1855851nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Lamport, Leslie. 2001. “Paxos Made Simple.” ACM SIGACT News 32 (4): 51–58. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;568425&lt;/sub&gt;.568433.&lt;/li&gt;
+&lt;li&gt;Liskov, Barbara, and James Cowling. 2012. “Viewstamped Replication Revisited,” no. MIT-CSAIL-TR-2012-021: 1–14.&lt;/li&gt;
+&lt;li&gt;Liskov, Barbara, Sanjay Ghemawat, Robert Gruber, Paul Johnson, and Liuba Shrira. 1991. “Replication in the Harp File System.” ACM SIGOPS Operating Systems Review 25: 226–38. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;121133&lt;/sub&gt;.121169.&lt;/li&gt;
+&lt;li&gt;Nightingale, Edmund B., Jeremy Elson, and Jinliang Fan. 2012. “Flat Datacenter Storage.” OSDI’12 Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 1–15. &lt;a href=&#34;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf&#34;&gt;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Drepper, Ulrich. 2007. “What Every Programmer Should Know about Memory.” Red Hat, Inc 3: 114. doi:10.1.1.91.957.&lt;/li&gt;
+&lt;li&gt;Fähndrich, Manuel, Mark Aiken, Chris Hawblitzel, Orion Hodson, Galen Hunt, James R. Larus, and Steven Levi. 2006. “Language Support for Fast and Reliable Message-Based Communication in Singularity OS.” ACM SIGOPS Operating Systems Review 40 (4): 177. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1218063&lt;/sub&gt;.1217953.&lt;/li&gt;
+&lt;li&gt;Mellor-crummey, John M, and Michael L Scott. 1991. “Calable Synchronization on.” Computer 9 (1): 21–65. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;103727&lt;/sub&gt;.103729.&lt;/li&gt;
+&lt;li&gt;Patterson, David a., Garth Gibson, and Randy H. Katz. 1988. “A Case for Redundant Arrays of Inexpensive Disks (RAID).” ACM SIGMOD Record 17 (3): 109–16. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;971701&lt;/sub&gt;.50214.&lt;/li&gt;
+&lt;li&gt;Saltzer, J. H., D. P. Reed, and D. D. Clark. 1984. “End-to-End Arguments in System Design.” ACM Transactions on Computer Systems 2 (4): 277–88. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;357401&lt;/sub&gt;.357402.&lt;/li&gt;
+&lt;li&gt;Savage, Stefan, Michael Burrows, Greg Nelson, Patrick Sobalvarro, and Thomas Anderson. 1997. “Eraser: A Dynamic Data Race Detector for Multithreaded Programs.” ACM Transactions on Computer Systems 15 (4): 391–411. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;265924&lt;/sub&gt;.265927.&lt;/li&gt;
+&lt;li&gt;Tweedie, SC. 1998. “Journaling the Linux ext2fs Filesystem.” The Fourth Annual Linux Expo, 1–8. &lt;a href=&#34;http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf&#34;&gt;http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Uhlig, Rich, Gil Neiger, Dion Rodgers, Amy L. Santoni, Fernando C M Martins, Andrew V. Anderson, Steven M. Bennett, Alain Kägi, Felix H. Leung, and Larry Smith. 2005. “Intel Virtualization Technology.” Computer 38 (5): 48–56. doi:10.1109/MC.2005.163.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;值得一提:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;值得一提&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在 StackOverflow 回答了第一个问题，并被接受！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww3.sinaimg.cn/large/7f793092gw1ezitciklpaj20gf0cqjv1.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Github 第一个 Pull Requset，并被合并。我为科学计算界做出了贡献！ (΄◞ิ౪◟ิ‵)&lt;/li&gt;
+&lt;li&gt;第一份实习，简历有点料了！&lt;/li&gt;
+&lt;li&gt;建立了这个博客！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;总结与展望:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;总结与展望&lt;/h2&gt;
+
+&lt;p&gt;总的来说，我在 2015 年过得很充实，对自己的表现也很满意。有得必有失，这一年我长期呆在实验室里，闷头看书学习，户外活动急剧减少，2014 年坚持的跑步也在今年放弃了，起初安慰自己没时间，有雾霾，但真的是这样吗？时间就像海绵里的水，只要你愿意挤，总还是有的。雾霾天跑步诚然不利于健康，但也不会天天都是。
+2016 年，我希望自己在保持这股子学习劲儿的同时还要恢复户外锻炼的习惯，就酱。&lt;/p&gt;
+
+&lt;p&gt;完。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>最小二乘法的矩阵形式</title>
+      <link>http://neilsh.com/2015/12/25/least-square-in-matrix/</link>
+      <pubDate>Fri, 25 Dec 2015 10:10:28 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/12/25/least-square-in-matrix/</guid>
+      <description>
+
+&lt;h2 id=&#34;拟合曲线与最小二乘法:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;拟合曲线与最小二乘法&lt;/h2&gt;
+
+&lt;p&gt;曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。&lt;/p&gt;
+
+&lt;p&gt;最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{align}
+\hat{y} &amp;amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\
+y &amp;amp;= \hat{y} + \delta
+\end{align}
+$$&lt;/p&gt;
+
+&lt;p&gt;$\delta$ 是残差，这是回归方程与真实值存在出入的原因[1]。&lt;/p&gt;
+
+&lt;p&gt;根据 m 个数据点 $(x_i, y_i),i=1,2,3⋯,m$ 可以定义一个代表偏离程度的函数:&lt;/p&gt;
+
+&lt;p&gt;$$
+S(\beta_0, \beta_1, \dots, \beta_n) = \sum_{j = 1}^m [y_i - f(x; \beta_0, \beta_1, \dots,\beta_n)]^2 = \sum \delta
+$$&lt;/p&gt;
+
+&lt;p&gt;当 $S(\beta_0, \beta_1, \dots,\beta_n)$ 取得最小值时，此时的 $\beta_0, \beta_1, \dots,\beta_n$ 即为回归方程的回归系数，也是最小二乘解。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;最小二乘矩阵形式:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;最小二乘矩阵形式&lt;/h2&gt;
+
+&lt;p&gt;多组测量数据 $(x_i,y_i),i=1,2,3⋯,m$ 可以构成两个行列式[2]：&lt;/p&gt;
+
+&lt;p&gt;$$ X=\begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_m \end{bmatrix}, Y=\begin{bmatrix} y_1 \\ y_2 \\ y_3 \\ \vdots \\ y_m \end{bmatrix} $$&lt;/p&gt;
+
+&lt;p&gt;将多组数据代入到回归方程 $f$ 后，可得：&lt;/p&gt;
+
+&lt;p&gt;$$
+Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \dots + \beta_n X^n + \Delta
+$$&lt;/p&gt;
+
+&lt;p&gt;$$
+\Delta = \begin{bmatrix}
+\delta_1 \\ \delta_2 \\ \delta_3 \\ \vdots \\ \delta_m
+\end{bmatrix} , \beta=\begin{bmatrix}
+\beta_0 \\ \beta_1 \\ \vdots \\ \beta_n
+\end{bmatrix}
+$$&lt;/p&gt;
+
+&lt;p&gt;再将 X 的转化为范德蒙德行列式：&lt;/p&gt;
+
+&lt;p&gt;$$
+V=\begin{bmatrix}
+1 &amp;amp; x_1 &amp;amp; x_1^2 &amp;amp; \dots &amp;amp; x_1^{n} \\
+1 &amp;amp; x_2 &amp;amp; x_2^2 &amp;amp; \dots &amp;amp; x_2^{n} \\
+1 &amp;amp; x_3 &amp;amp; x_3^2 &amp;amp; \dots &amp;amp; x_3^{n} \\
+\vdots &amp;amp; \vdots &amp;amp; \vdots &amp;amp; \ddots &amp;amp;\vdots \\
+1 &amp;amp; x_m &amp;amp; x_m^2 &amp;amp; \dots &amp;amp; x_m^{n}
+\end{bmatrix}
+$$&lt;/p&gt;
+
+&lt;p&gt;综上，可得：
+$$
+V\beta \approx Y \Rightarrow \Delta = \hat{Y} - Y = V\beta - Y
+$$&lt;/p&gt;
+
+&lt;p&gt;$\hat{Y}$ 为 $\hat{y_i}$构成的列向量。&lt;/p&gt;
+
+&lt;p&gt;因为 $\Delta$ 的范数: $\Vert \Delta \Vert = \left( \sum_{i = 1}^m \delta_i^2 \right)^\frac{1}2$，所以求最小二乘解即可转化为如何使 $\Delta$ 的范数最小。&lt;/p&gt;
+
+&lt;p&gt;$$
+\Vert \Delta \Vert^2  = \sum{\delta_i^2}
+                      = \begin{bmatrix}
+                         \delta_1 \delta_2 \dots \delta_n
+                        \end{bmatrix} \begin{bmatrix}\delta_1 \\
+                                                     \delta_2 \\
+                                                     \vdots \\
+                                                     \delta_n
+                                      \end{bmatrix}
+                      = \delta^T \delta
+$$&lt;/p&gt;
+
+&lt;p&gt;$$
+\Vert \Delta \Vert^2 = \Vert Y - V\beta \Vert^2 = \left( Y - V\beta \right)^T\left( Y - V\beta \right)
+$$&lt;/p&gt;
+
+&lt;h2 id=&#34;最小二乘矩阵算法:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;最小二乘矩阵算法&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Let the scalar $\alpha$ be defined by
+$$\alpha = Y^T X$$
+where Y is n × 1, X is n × 1, and both Y and X are functions of the vector z. Then
+$$\frac{d(\alpha)}{d(z)} = X^T\frac{d(Y)}{d(z)}+Y^T\frac{d(X)}{d(z)}$$&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;根据上面定理，可得：
+$$
+\frac{d\Delta}{d\beta} = \frac{d}{d\beta}\left(\left( Y - V\beta \right)^T\left( Y - V\beta \right)\right) = -2V^T\left(Y-V\beta\right)
+$$&lt;/p&gt;
+
+&lt;p&gt;为使 $\Delta$ 最小，可使 $\frac{d\Delta}{d\beta} = 0 \Rightarrow -2V^T\left(Y-V\beta\right) = 0$。&lt;/p&gt;
+
+&lt;p&gt;目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。&lt;/p&gt;
+
+&lt;!--
+这三个算法应用在计算机中时，有几点需要注意：
+ 1. 计算机中，浮点数的精度有限，当数过小时，就成0.
+ 2. 
+--&gt;
+
+&lt;!--
+TOOD: 
+ 0. 是否可逆，奇异矩阵
+ 1. 计算机精度问题
+ 2. 算法稳定问题
+--&gt;
+
+&lt;h3 id=&#34;normal-equations:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;Normal equations&lt;/h3&gt;
+
+&lt;p&gt;$$
+\begin{align}
+-2V^T\left(Y-V\beta\right) &amp;amp;= 0\\
+V^T V\beta &amp;amp;= V^TY \\
+\beta &amp;amp;= \left(V^T V\right)^{-1}V^T Y
+\end{align}
+$$
+这个算法的时间复杂度最小，计算 $\beta$ 速度最快。但是在计算机中，浮点数的精度有限，当某些矩阵中的数过小时，就算该矩阵是满秩的非奇异的，但在计算机中，该矩阵就是奇异矩阵。
+这个问题在 Normal equations 尤为严重[2]。比如下面矩阵 D：
+$$
+\begin{align}
+D &amp;amp;= \begin{bmatrix}
+1 &amp;amp; 1 \\
+0 &amp;amp; \delta \\
+\delta &amp;amp; 0 \\
+\end{bmatrix}, |\delta| = 1 \times \text{Minimum precision} \\
+D^T D &amp;amp;= \begin{bmatrix}
+1+\delta^2 &amp;amp; 1 \\
+1 &amp;amp; 1+\delta^2
+\end{bmatrix}
+\end{align}
+$$
+这个算法出现了 $\delta^2$，容易出现奇异矩阵，所以不稳定。&lt;/p&gt;
+
+&lt;h3 id=&#34;qr-factorization:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;QR-Factorization&lt;/h3&gt;
+
+&lt;p&gt;QR-Factorization 要比 Normal equations 稳定。
+这个算法先把 $V$ 进行 QR 分解[&lt;a href=&#34;https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems&#34;&gt;3&lt;/a&gt;]: $QR = V$
+$$
+\begin{align}
+V^T V \beta &amp;amp;= V^T Y \\
+(QR)^T Q R \beta &amp;amp;= (Q R)^T Y \\
+R^T Q^T Q R \beta &amp;amp;= R^T Q^T Y \\
+R^T R \beta &amp;amp;= R^T Q^T Y \\
+R\beta &amp;amp;= Q^T Y \\
+\beta &amp;amp;= R^{-1} Q^T Y
+\end{align}
+$$
+由于 R 是一个上三角矩阵，所以求解很方便。这个也是 Matlab 中&lt;code&gt;polyfit&lt;/code&gt;合的算法[2]。&lt;/p&gt;
+
+&lt;h2 id=&#34;参考文献:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;参考文献&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1] Chatterjee, Samprit, Ali S. Hadi, and Bertram Price. 2000. Regression analysis by example. New York: Wiley.&lt;/p&gt;
+
+&lt;p&gt;[2] Moler, Cleve B. Numerical Computing with MATLAB: Revised Reprint. Siam, 2008.&lt;/p&gt;
+
+&lt;p&gt;[3] Wikipedia contributors, &amp;ldquo;QR decomposition,&amp;rdquo; Wikipedia, The Free Encyclopedia, &lt;a href=&#34;https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems&#34;&gt;https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems&lt;/a&gt; (accessed November 23, 2015).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- Links --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>解除尔雅公开课暂停</title>
+      <link>http://neilsh.com/2015/11/29/erya-no-pause/</link>
+      <pubDate>Sun, 29 Nov 2015 22:04:04 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/11/29/erya-no-pause/</guid>
+      <description>
+
+&lt;h2 id=&#34;恶心的暂停:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;恶心的暂停&lt;/h2&gt;
+
+&lt;p&gt;这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P&lt;/p&gt;
+
+&lt;h2 id=&#34;过程:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;过程&lt;/h2&gt;
+
+&lt;p&gt;对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[&lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;1&lt;/a&gt;]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：
+&lt;!-- more --&gt;
+&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg&#34; alt=&#34;&#34; /&gt;
+这个函数中的&lt;code&gt;pauseMovie()&lt;/code&gt;基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(&#39;#eryaPlayer&#39;).pauseMovie();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;视频就暂停了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;再输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;window.onblur = null
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面命令执行完之后，暂停的限制就解除了。 LOL&lt;/p&gt;
+
+&lt;h2 id=&#34;脚本:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;脚本&lt;/h2&gt;
+
+&lt;p&gt;我并没有学过 js，只能照葫芦画瓢，根据官方文档来写[&lt;a href=&#34;http://wiki.greasespot.net/Greasemonkey_Manual&#34;&gt;2&lt;/a&gt;]。如果哪里出错或写的不好，欢迎提出来。&lt;/p&gt;
+
+&lt;p&gt;Firefox + Greasemonkey[&lt;a href=&#34;https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/&#34;&gt;3&lt;/a&gt;]，把脚本拖入浏览器即使用。&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/Overvenus/c41a34f7e039b9207210.js&#34;&gt;&lt;/script&gt;
+
+&lt;h2 id=&#34;已知问题:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;已知问题&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;无法去除随机暂停及验证码暂停。&lt;/li&gt;
+&lt;li&gt;Chrome 无法使用。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;链接:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;链接&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1]: &lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;Event listeners popup, @media sidebar, Cubic bezier editor + more – Firefox Developer Tools Episode 33&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]: &lt;a href=&#34;http://wiki.greasespot.net/Greasemonkey_Manual&#34;&gt;Greasemonkey Manual - GreaseSpot Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]: &lt;a href=&#34;https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/&#34;&gt;Greasemonkey :: Add-ons for Firefox&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>paxos digest</title>
+      <link>http://neilsh.com/2015/11/25/paxos-digest/</link>
+      <pubDate>Wed, 25 Nov 2015 19:25:23 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/11/25/paxos-digest/</guid>
+      <description>
+
+&lt;h2 id=&#34;paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Paxos&lt;/h2&gt;
+
+&lt;p&gt;Paxos is one of the most important algorithms in distributed system.[&lt;a href=&#34;http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf&#34;&gt;1&lt;/a&gt;]
+Here are some notes about Basic Paxos.&lt;/p&gt;
+
+&lt;h2 id=&#34;three-roles-in-paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Three roles in Paxos&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Proposers&lt;/li&gt;
+&lt;li&gt;Acceptor&lt;/li&gt;
+&lt;li&gt;Learners&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;General view:  &lt;strong&gt;&lt;em&gt;Proposers&lt;/em&gt;&lt;/strong&gt; send proposals to &lt;strong&gt;&lt;em&gt;Acceptors&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;Acceptors&lt;/em&gt;&lt;/strong&gt; accept a proposal and forward to &lt;strong&gt;&lt;em&gt;Learners&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;Learners&lt;/em&gt;&lt;/strong&gt; decided the proposal.
+In real world, a single server acts &lt;strong&gt;two or more&lt;/strong&gt; roles.&lt;/p&gt;
+
+&lt;h2 id=&#34;requirements:8aa297440e030e6ae04600c7109020a5&#34;&gt;Requirements&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;An acceptor must accept the first proposal that it receives.
+1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.&lt;/li&gt;
+&lt;li&gt;If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.
+2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.
+2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.
+2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;rpcs-and-phases:8aa297440e030e6ae04600c7109020a5&#34;&gt;RPCs and Phases&lt;/h2&gt;
+
+&lt;p&gt;Proposers send two kinds of RPC to &lt;strong&gt;majority&lt;/strong&gt; Acceptors.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;em&gt;Prepare&lt;/em&gt;, send with a uniqe proposal number n.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Accept&lt;/em&gt;, send with a uniqe proposal number n and proposal value v.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;There are two phases in Paxos.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Phase 1: broadcast &lt;em&gt;Prepare&lt;/em&gt; RPC&lt;/li&gt;
+&lt;li&gt;Phase 2: broadcast &lt;em&gt;Accept&lt;/em&gt; RPC&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Majority is the key to achieve consensus and correctness.&lt;/p&gt;
+
+&lt;h2 id=&#34;implementation:8aa297440e030e6ae04600c7109020a5&#34;&gt;Implementation&lt;/h2&gt;
+
+&lt;p&gt;Every server play all roles (proposer, acceptor, and learner) in every instance of the algorithm. For a normal operation, there will be a server being elected to act the &lt;strong&gt;leader&lt;/strong&gt;, which is the distinguished proposer (the &lt;strong&gt;only one&lt;/strong&gt; that tries to issue proposals) in all instances of the algorithm.&lt;/p&gt;
+
+&lt;h2 id=&#34;pseudo-code:8aa297440e030e6ae04600c7109020a5&#34;&gt;Pseudo code&lt;/h2&gt;
+
+&lt;p&gt;Handout of 6.824, Spring 2015 [&lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html&#34;&gt;2&lt;/a&gt;]&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;      --- Paxos Proposer ---
+
+      proposer(v):
+        while not decided:
+          choose n, unique and higher than any n seen so far
+          send prepare(n) to all servers including self
+          if prepare_ok(n, na, va) from majority:       --- na and nv is proposal number and value (if any) that acceptor has accepted.
+            v&#39; = va with highest na; choose own v otherwise   
+            send accept(n, v&#39;) to all
+            if accept_ok(n) from majority:              --- Paxos Learner ---
+              send decided(v&#39;) to all
+
+
+      --- Paxos Acceptor ---
+
+      acceptor state on each node (persistent):
+       np     --- highest prepare seen
+       na, va --- highest accept seen
+
+      acceptor&#39;s prepare(n) handler:
+       if n &amp;gt; np
+         np = n
+         reply prepare_ok(n, na, va)
+       else
+         reply prepare_reject
+
+
+      acceptor&#39;s accept(n, v) handler:
+       if n &amp;gt;= np
+         np = n
+         na = n
+         va = v
+         reply accept_ok(n)
+       else
+         reply accept_reject
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;examples:8aa297440e030e6ae04600c7109020a5&#34;&gt;Examples&lt;/h2&gt;
+
+&lt;p&gt;Servers and proposal vaule: S1(X)
+Prepare: P,1
+Accept: A,1,X&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-1:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 1&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2
+S3       P,1    A,1,X
+                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;X is chosen.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-2:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 2&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2       P,1    A,1,X    P,3    A,3,X
+S3(Y)                    P,3    A,3,X
+                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;X is chosen.
+S2 response &lt;code&gt;P,3&lt;/code&gt; with &lt;code&gt;1,X&lt;/code&gt;, S3 send proposal value X instead of Y.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-3:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 3&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2       P,1             P,3    A,3,Y    A,1,X(rej)
+S3(Y)                    P,3    A,3,Y
+                                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Y is chosen.
+&lt;code&gt;A,1,X&lt;/code&gt; is rejected, because 3 &amp;gt; 1.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-4:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 4&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X                                  A,3,Y(rej)
+S2       P,1             P,3             A,1,X(rej)    A,3,Y
+S3(Y)                    P,3    A,3,Y    A,1,X(rej)    
+                                                           ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Y is chosen.
+Later, Learner will find out Y is the chosen value, and then send decided(Y) to all servers.&lt;/p&gt;
+
+&lt;h2 id=&#34;links:8aa297440e030e6ae04600c7109020a5&#34;&gt;Links&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1]. &lt;a href=&#34;http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf&#34;&gt;Lamport, Leslie. &amp;ldquo;Paxos made simple.&amp;rdquo; ACM Sigact News 32, no. 4 (2001): 18-25.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]. &lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html&#34;&gt;Handout, LEC5, 6.824&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]. &lt;a href=&#34;https://www.youtube.com/watch?v=JEpsBg0AO6o&#34;&gt;Paxos lecture (Raft user study)&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;end.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>make slice map channel</title>
+      <link>http://neilsh.com/2015/11/09/make-slice-map-channel/</link>
+      <pubDate>Mon, 09 Nov 2015 15:16:55 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/11/09/make-slice-map-channel/</guid>
+      <description>
+
+&lt;h2 id=&#34;where-is-the-make-implemention:f54eeb4205b24658133f3791bb00140a&#34;&gt;Where is the make implemention?&lt;/h2&gt;
+
+&lt;p&gt;package &lt;strong&gt;runtime&lt;/strong&gt;
+By the way, &lt;em&gt;new&lt;/em&gt;, &lt;em&gt;map&lt;/em&gt;, &lt;em&gt;slice&lt;/em&gt;, &lt;em&gt;channel&lt;/em&gt;, &lt;em&gt;goroutine&lt;/em&gt; and &lt;em&gt;garbage collector&lt;/em&gt;[&lt;a href=&#34;https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8&#34;&gt;1&lt;/a&gt;] are also implemented in this package.&lt;/p&gt;
+
+&lt;h2 id=&#34;slices:f54eeb4205b24658133f3791bb00140a&#34;&gt;Slices&lt;/h2&gt;
+
+&lt;p&gt;Source file: go/src/runtime/slice.go&lt;/p&gt;
+
+&lt;h3 id=&#34;data-structure:f54eeb4205b24658133f3791bb00140a&#34;&gt;Data structure&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type slice struct {
+    array unsafe.Pointer
+    len   int
+    cap   int
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Underlying data structure of &lt;strong&gt;slice&lt;/strong&gt; is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of &lt;code&gt;unsafe.Pointer&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;// Pointer represents a pointer to an arbitrary type.  There are four special operations
+// available for type Pointer that are not available for other types.
+//  1) A pointer value of any type can be converted to a Pointer.
+//  2) A Pointer can be converted to a pointer value of any type.  &amp;lt;&amp;ndash; here!
+//  3) A uintptr can be converted to a Pointer.
+//  4) A Pointer can be converted to a uintptr.
+// Pointer therefore allows a program to defeat the type system and read and write
+// arbitrary memory. It should be used with extreme care.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In my opinion, &lt;strong&gt;Pointer&lt;/strong&gt; in Go and &lt;strong&gt;*void&lt;/strong&gt; in C are very like. &lt;em&gt;Pointer&lt;/em&gt; anesthetizes the type system and read and write arbitrary memory in Go. &lt;em&gt;*void&lt;/em&gt; can be converted to any type without warning in C.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h3 id=&#34;make-slices:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make slices&lt;/h3&gt;
+
+&lt;p&gt;Make slices is trival.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// TODO: take uintptrs instead of int64s?
+func makeslice(t *slicetype, len64, cap64 int64) slice {
+    // NOTE: The len &amp;gt; MaxMem/elemsize check here is not strictly necessary,
+    // but it produces a &#39;len out of range&#39; error instead of a &#39;cap out of range&#39; error
+    // when someone does make([]T, bignumber). &#39;cap out of range&#39; is true too,
+    // but since the cap is only being supplied implicitly, saying len is clearer.
+    // See issue 4085.
+    len := int(len64)
+    if len64 &amp;lt; 0 || int64(len) != len64 || t.elem.size &amp;gt; 0 &amp;amp;&amp;amp; uintptr(len) &amp;gt; _MaxMem/uintptr(t.elem.size) {
+        panic(errorString(&amp;quot;makeslice: len out of range&amp;quot;))
+    }
+    cap := int(cap64)
+    if cap &amp;lt; len || int64(cap) != cap64 || t.elem.size &amp;gt; 0 &amp;amp;&amp;amp; uintptr(cap) &amp;gt; _MaxMem/uintptr(t.elem.size) {
+        panic(errorString(&amp;quot;makeslice: cap out of range&amp;quot;))
+    }
+    p := newarray(t.elem, uintptr(cap))
+    return slice{p, len, cap}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, a slice is always 24 bytes(amd64, ubuntu 14.04 LTS), no matter how many elements it has or how much capacity it is. The actual data that a slice represents locate in other place, not in the slice itself. More details about slice can be found in [&lt;a href=&#34;https://gist.github.com/Overvenus/f6cf225ec33cc98d6b8c&#34;&gt;3&lt;/a&gt;] and [&lt;a href=&#34;https://blog.golang.org/go-slices-usage-and-internals&#34;&gt;4&lt;/a&gt;].&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;newarray&lt;/strong&gt; eventually calls &lt;strong&gt;mallocgc&lt;/strong&gt;, which will allocate memory in heap(for big array) or per-thread cache (for small array) [&lt;a href=&#34;http://goog-perftools.sourceforge.net/doc/tcmalloc.html&#34;&gt;2&lt;/a&gt;].&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// implementation of make builtin for slices
+func newarray(typ *_type, n uintptr) unsafe.Pointer {
+    flags := uint32(0)
+    if typ.kind&amp;amp;kindNoPointers != 0 {
+        flags |= flagNoScan
+    }
+    if int(n) &amp;lt; 0 || (typ.size &amp;gt; 0 &amp;amp;&amp;amp; n &amp;gt; _MaxMem/uintptr(typ.size)) {
+        panic(&amp;quot;runtime: allocation size out of range&amp;quot;)
+    }
+    return mallocgc(uintptr(typ.size)*n, typ, flags)
+    /*                               ^^  multiply size by n  */
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;maps:f54eeb4205b24658133f3791bb00140a&#34;&gt;Maps&lt;/h2&gt;
+
+&lt;p&gt;Source file: go/src/runtime/hashmap.go&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;// A map is just a hash table.  The data is arranged
+// into an array of buckets.  Each bucket contains up to
+// 8 key/value pairs.  The low-order bits of the hash are
+// used to select a bucket.  Each bucket contains a few
+// high-order bits of each hash to distinguish the entries
+// within a single bucket.
+//
+// If more than 8 keys hash to a bucket, we chain on
+// extra buckets.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;data-structure-1:f54eeb4205b24658133f3791bb00140a&#34;&gt;Data structure&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// A header for a Go map.
+type hmap struct {
+    // Note: the format of the Hmap is encoded in ../../cmd/internal/gc/reflect.go and
+    // ../reflect/type.go.  Don&#39;t change this structure without also changing that code!
+    count int // # live cells == size of map.  Must be first (used by len() builtin)
+    flags uint8
+    B     uint8  // log_2 of # of buckets (can hold up to loadFactor * 2^B items)
+    hash0 uint32 // hash seed
+
+    buckets    unsafe.Pointer // array of 2^B Buckets. may be nil if count==0.
+    oldbuckets unsafe.Pointer // previous bucket array of half the size, non-nil only when growing
+    nevacuate  uintptr        // progress counter for evacuation (buckets less than this have been evacuated)
+
+    // If both key and value do not contain pointers and are inline, then we mark bucket
+    // type as containing no pointers. This avoids scanning such maps.
+    // However, bmap.overflow is a pointer. In order to keep overflow buckets
+    // alive, we store pointers to all overflow buckets in hmap.overflow.
+    // Overflow is used only if key and value do not contain pointers.
+    // overflow[0] contains overflow buckets for hmap.buckets.
+    // overflow[1] contains overflow buckets for hmap.oldbuckets.
+    // The first indirection allows us to reduce static size of hmap.
+    // The second indirection allows to store a pointer to the slice in hiter.
+    overflow *[2]*[]*bmap
+}
+
+// A bucket for a Go map.
+type bmap struct {
+    tophash [bucketCnt]uint8
+    // Followed by bucketCnt keys and then bucketCnt values.
+    // NOTE: packing all the keys together and then all the values together makes the
+    // code a bit more complicated than alternating key/value/key/value/... but it allows
+    // us to eliminate padding which would be needed for, e.g., map[int64]int8.
+    // Followed by an overflow pointer.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;make-maps:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make maps&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// makemap implements a Go map creation make(map[k]v, hint)
+// If the compiler has determined that the map or the first bucket
+// can be created on the stack, h and/or bucket may be non-nil.
+// If h != nil, the map can be created directly in h.
+// If bucket != nil, bucket can be used as the first bucket.
+func makemap(t *maptype, hint int64, h *hmap, bucket unsafe.Pointer) *hmap {
+    if !ismapkey(t.key) {                             /* pointer --&amp;gt; ^^^^^ */
+        throw(&amp;quot;runtime.makemap: unsupported map key type&amp;quot;)
+    }
+
+    /* I delete some checks */
+
+    // make sure zeroptr is large enough
+    mapzero(t.elem)
+
+    // find size parameter which will hold the requested # of elements
+    B := uint8(0)
+    for ; hint &amp;gt; bucketCnt &amp;amp;&amp;amp; float32(hint) &amp;gt; loadFactor*float32(uintptr(1)&amp;lt;&amp;lt;B); B++ {
+    }
+
+    // allocate initial hash table
+    // if B == 0, the buckets field is allocated lazily later (in mapassign)
+    // If hint is large zeroing this memory could take a while.
+    buckets := bucket
+    if B != 0 {
+        buckets = newarray(t.bucket, uintptr(1)&amp;lt;&amp;lt;B)
+    }
+
+    // initialize Hmap
+    if h == nil {
+        h = (*hmap)(newobject(t.hmap))  /*  */
+    }
+    h.count = 0
+    h.B = B
+    h.flags = 0
+    h.hash0 = fastrand1()
+    h.buckets = buckets
+    h.oldbuckets = nil
+    h.nevacuate = 0
+
+    return h
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A map is always 8 bytes(amd64, ubuntu 14.04 LTS), because &lt;code&gt;makemap&lt;/code&gt; returns a poniter, ponites to hmap, the underlying data sturcture is allocated in heap.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// implementation of new builtin
+func newobject(typ *_type) unsafe.Pointer {
+    flags := uint32(0)
+    if typ.kind&amp;amp;kindNoPointers != 0 {
+        flags |= flagNoScan
+    }
+    return mallocgc(uintptr(typ.size), typ, flags)
+    /* compares with newarray, no multiplication */
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is worth nothing that &lt;code&gt;v, ok := map[k]&lt;/code&gt; and &lt;code&gt;v := map[k]&lt;/code&gt; are also implemented in this file.&lt;/p&gt;
+
+&lt;h2 id=&#34;channel:f54eeb4205b24658133f3791bb00140a&#34;&gt;Channel&lt;/h2&gt;
+
+&lt;p&gt;source file: go/src/runtime/channel.go&lt;/p&gt;
+
+&lt;h3 id=&#34;data-structure-2:f54eeb4205b24658133f3791bb00140a&#34;&gt;Data structure&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;type hchan struct {
+    qcount   uint           // total data in the queue
+    dataqsiz uint           // size of the circular queue
+    buf      unsafe.Pointer // points to an array of dataqsiz elements
+    elemsize uint16
+    closed   uint32
+    elemtype *_type // element type
+    sendx    uint   // send index
+    recvx    uint   // receive index
+    recvq    waitq  // list of recv waiters
+    sendq    waitq  // list of send waiters
+    lock     mutex
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;make-chan:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make chan&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;func makechan(t *chantype, size int64) *hchan {
+    elem := t.elem
+
+    /* I delete some checks */
+
+    var c *hchan
+    if elem.kind&amp;amp;kindNoPointers != 0 || size == 0 {
+        // Allocate memory in one call.
+        // Hchan does not contain pointers interesting for GC in this case:
+        // buf points into the same allocation, elemtype is persistent.
+        // SudoG&#39;s are referenced from their owning thread so they can&#39;t be collected.
+        // TODO(dvyukov,rlh): Rethink when collector can move allocated objects.
+        c = (*hchan)(mallocgc(hchanSize+uintptr(size)*uintptr(elem.size), nil, flagNoScan))
+        if size &amp;gt; 0 &amp;amp;&amp;amp; elem.size != 0 {
+            c.buf = add(unsafe.Pointer(c), hchanSize)
+        } else {
+            // race detector uses this location for synchronization
+            // Also prevents us from pointing beyond the allocation (see issue 9401).
+            c.buf = unsafe.Pointer(c)
+        }
+    } else {
+        c = new(hchan)
+        c.buf = newarray(elem, uintptr(size))
+    }
+    c.elemsize = uint16(elem.size)
+    c.elemtype = elem
+    c.dataqsiz = uint(size)
+
+    if debugChan {
+        print(&amp;quot;makechan: chan=&amp;quot;, c, &amp;quot;; elemsize=&amp;quot;, elem.size, &amp;quot;; elemalg=&amp;quot;, elem.alg, &amp;quot;; dataqsiz=&amp;quot;, size, &amp;quot;\n&amp;quot;)
+    }
+    return c
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A channel variable at runtime(not package) is very much like a map variable, they are both pointers, pointes to heap.&lt;/p&gt;
+
+&lt;h2 id=&#34;make-gist:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make gist&lt;/h2&gt;
+
+&lt;p&gt;I wrote a gist to uncover slice, map and channel at runtime(not package)&lt;a href=&#34;http://goog-perftools.sourceforge.net/doc/tcmalloc.html&#34;&gt;2&lt;/a&gt;.&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/Overvenus/f6cf225ec33cc98d6b8c.js&#34;&gt;&lt;/script&gt;
+
+&lt;h3 id=&#34;outputs-in-my-laptop:f54eeb4205b24658133f3791bb00140a&#34;&gt;Outputs in my laptop&lt;/h3&gt;
+
+&lt;p&gt;Env: Ubuntu 14.04 LTS, amd64&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ go run make.go
+GOOS linux
+GOARCH amd64
+--- array &amp;amp; slice ---
+si: type: [100]int
+si: sizeof: 800
+si: address 1st ele.: 0xc820062380
+---
+asi:    type: *[100]int
+asi:    sizeof: 8
+asi:    address: 0xc820062380
+asi:    address 1st ele.: 0xc820062380
+---
+si[:20]:    type: []int
+si[:20]:    sizeof: 24
+si[:20]:    address 1st ele.: 0xc820062380
+---
+si[:80]:    type: []int
+si[:80]:    sizeof: 24
+si[:80]:    address 1st ele.: 0xc820062380
+---
+assi:   type: *[]int
+assi:   sizeof: 8
+assi:   address: 0xc8200105e0
+--- map ---
+m:  type: map[int]int
+m:  sizeof: 8
+---
+am: type: *map[int]int
+am: sizeof: 8
+--- channel ---
+ci: type: chan int
+ci: sizeof: 8
+---
+aci:    type: *chan int
+aci:    sizeof: 8
+---
+ci: type: chan int
+ci: sizeof: 8
+---
+abci:   type: *chan int
+abci:   sizeof: 8
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;links:f54eeb4205b24658133f3791bb00140a&#34;&gt;Links&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1], &lt;a href=&#34;https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8&#34;&gt;Go 1.3+ Compiler Overhaul&lt;/a&gt;
+[2], &lt;a href=&#34;http://goog-perftools.sourceforge.net/doc/tcmalloc.html&#34;&gt;TCMalloc : Thread-Caching Malloc&lt;/a&gt;
+[3], &lt;a href=&#34;https://gist.github.com/Overvenus/f6cf225ec33cc98d6b8c&#34;&gt;slice, map and channel at runtime&lt;/a&gt;
+[4], &lt;a href=&#34;https://blog.golang.org/go-slices-usage-and-internals&#34;&gt;Go Slices: usage and internals&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Protocol and FSM</title>
+      <link>http://neilsh.com/2015/10/23/protocol-and-fsm/</link>
+      <pubDate>Fri, 23 Oct 2015 21:17:01 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/10/23/protocol-and-fsm/</guid>
+      <description>
+
+&lt;h2 id=&#34;protocol:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol&lt;/h2&gt;
+
+&lt;p&gt;本文中 Protocol 特指通讯协议。
+首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  &amp;ndash;&lt;a href=&#34;https://en.wikipedia.org/wiki/Protocol&#34;&gt;WIKI#Protocol&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;简单的来说，协议是规范数据传输的一套规则。&lt;/p&gt;
+
+&lt;h2 id=&#34;finite-state-machines-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Finite State Machines (FSM)&lt;/h2&gt;
+
+&lt;p&gt;下面是摘自 WIKI 的对有限状态机的说明：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;It is conceived as an abstract machine that can be in one of a finite number of states. The machine is in only one state at a time; the state it is in at any given time is called the current state. It can change from one state to another when initiated by a triggering event or condition; this is called a transition. A particular FSM is defined by a list of its states, and the triggering condition for each transition.    &amp;ndash;&lt;a href=&#34;https://en.wikipedia.org/wiki/Finite-state_machine&#34;&gt;WIKI#FSM&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。
+有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;protocol-and-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol and FSM&lt;/h2&gt;
+
+&lt;p&gt;把 Protocol 和 FSM 写在一起自然是因为它们有着紧密的联系。不准确的来说， Protocol 就是 FSM 的行为，遵循 Protocol 的实体（们）构成了这个 FSM 的抽象机器。&lt;/p&gt;
+
+&lt;h2 id=&#34;implement-a-protocol:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Implement a Protocol&lt;/h2&gt;
+
+&lt;p&gt;实现协议不简单，特别是复杂的，持续状态的协议，TCP 算其中一个😂。
+列一下实现协议的困难点：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;状态可能有多种。&lt;/li&gt;
+&lt;li&gt;条件可能有多种。&lt;/li&gt;
+&lt;li&gt;1, 2组合产生的情况更多！&lt;/li&gt;
+&lt;li&gt;因逻辑不清而产生的 BUG 难以排查。&lt;/li&gt;
+&lt;li&gt;复杂协议容易产生高耦合的代码。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;说了困难点，当然要题解决思路：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;编写代码前画出状态转移图，理清思路。&lt;/li&gt;
+&lt;li&gt;编写代码前定好各个函数的作用，及调用范围。&lt;/li&gt;
+&lt;li&gt;编写代码时避免过早的优化， premature optimization is the root of all evil， Knuth&lt;/li&gt;
+&lt;li&gt;有 Test case 那自然是极好的。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这四点，箭箭射中我膝盖。唉，人啊，为什么痛过之后才知道悔改！（严肃脸）&lt;/p&gt;
+
+&lt;h2 id=&#34;viewservice:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Viewservice&lt;/h2&gt;
+
+&lt;p&gt;6.824 的 lab2 Part A 让我们实现一个具体的协议。计算机有随时宕机的可能，一旦发生它提供的服务就不可得了。该协议引入主机（Primary）和从机（Backup）机制并及时检查两者的存活状态，使系统服务具有高可用性，下面称这个协议为 &lt;strong&gt;Viewservice&lt;/strong&gt;。
+Viewservice 在某些条件下会产生一个 &lt;strong&gt;View&lt;/strong&gt;。View 是一个数据结构，包含主机和从机的地址。
+下面说一下这个协议要关键的几个点：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;持续状态协议，当前状态会影响到下一状态。&lt;/li&gt;
+&lt;li&gt;每次更新 View， Primary 不能为空。&lt;/li&gt;
+&lt;li&gt;下一个 View 中的 Primary 必须为当前 View 的 Primary 或 Backup。&lt;/li&gt;
+&lt;li&gt;每个活动的服务器都保存在 viewserver 中，状态是 Primary, Backup, Idle 其中的一种。&lt;/li&gt;
+&lt;li&gt;当前 View 中的 Primary 和 Backup 同时出错时，服务结束。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;上面几点并没有完整地描述 Viewservice，但已足够用来阐述 Protocol 和 FSM 之前的关系，想看完整的协议请访问&lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html&#34;&gt;lab2#Part A&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;viewservice-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Viewservice FSM&lt;/h2&gt;
+
+&lt;p&gt;不难发现 View 就是状态，条件就是 Primary，Backup，Idle三者的存活状态。
+注意，为了便于理解，这里的 FSM 只是完整的 Viewservice 中的&lt;strong&gt;关键部分（错误处理）&lt;/strong&gt;，我去掉了一些无关痛痒的内容，并且我对 Idle 多了一个限制：每个时刻要没有 Idle，要么只有一个，不会有多个存在。但就算这个限制不存在也不会影响最后的正确性。这样做的好处是 Idle 只有两种状态，简化了条件的同时还便于表示（0 or 1） ;-)&lt;/p&gt;
+
+&lt;p&gt;由此设三位二进制数：XXX， 分别代表 Primary，Backup和Idle。1为存活，0为出错。&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Primary&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Backup&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Idle&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;XXX&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Alive&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;111&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;Dead&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;可能输出的状态有四种：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;100，只有 Primary 存活。&lt;/li&gt;
+&lt;li&gt;110，Primary 和 Backup 存活，没有 Idle。&lt;/li&gt;
+&lt;li&gt;111，Primary，Backup 和 Idle 都存活。&lt;/li&gt;
+&lt;li&gt;00X，Primary 和 Backup， 服务结束。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;注意： X 代表 0 和 1，00X 就是 000 和 001 的合集&lt;/p&gt;
+
+&lt;p&gt;所有可能的条件：&lt;/p&gt;
+
+&lt;p&gt;1.100
+ 2.101
+ 3.110
+ 4.111
+ 5.010
+ 6.011
+ 7.00X&lt;/p&gt;
+
+&lt;p&gt;两者产生的状态转移表： 竖为当前状态，横为条件，&lt;code&gt;\&lt;/code&gt; 为不会出现的情况&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;100&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;101&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;110&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;111&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;010&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;011&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;00X&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;111&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;111&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;111&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;110&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;00X&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;根据上面的表可以画出状态转移图，更直观地说明这个 FSM&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1exdcpwse63j21kw15madn.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;清楚了这个 FSM，各种情况了然于心，设计数据结构，编写代码，实现协议 so easy。&lt;/p&gt;
+
+&lt;h2 id=&#34;后话:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;后话&lt;/h2&gt;
+
+&lt;p&gt;Part A部分我花了不少时间，主要还是当初没有理清协议，有多个 Test 通不过，代码结构推到了一遍又一遍。在机缘巧合下（debug下）发现协议和数电中的状态转移图有紧密的联系。然后尝试用状态转移图来表示协议，没想到还真可以。根据状态转移图改善了一下代码，通过各种 Test 快得飞起！这么好的方法不可能没有人比我先想到，查了 google 才知道有个概念叫*有限状态机*，有门课叫 *Protocol Engineering*，我的视野还太小。最后发一张 TCP 的状态转移图，感受下 TCP 的复杂性。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/f/f6/Tcp_state_diagram_fixed_new.svg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;ref:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Ref.&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html&#34;&gt;lab2#Part A&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Protocol&#34;&gt;WIKI#Protocol&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Finite-state_machine&#34;&gt;WIKI#FSM&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Transmission_Control_Protocol&#34;&gt;WIKI#TCP&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://pet.ece.iisc.ernet.in/course/E2223/ch.pdf&#34;&gt;Specification of Protocol Using FSM&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://cs.uccs.edu/~cs522/pe/pe.htm&#34;&gt;Protocol Specification using Sequence Chart or Message Flow DiagramApply Formal Method To Protocol Specification&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Go Note</title>
+      <link>http://neilsh.com/2015/10/08/golang-note/</link>
+      <pubDate>Thu, 08 Oct 2015 22:03:01 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/10/08/golang-note/</guid>
+      <description>
+
+&lt;!--
+TODO:
+   - ...
+--&gt;
+
+&lt;h2 id=&#34;new-make-and-local-variable:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;&lt;code&gt;new&lt;/code&gt;, &lt;code&gt;make&lt;/code&gt; and Local variable&lt;/h2&gt;
+
+&lt;p&gt;In short: new allocates memory; make initializes the slice, map, and channel types; local variable may be not &lt;em&gt;local&lt;/em&gt; at all.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;new&lt;/code&gt;: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;make&lt;/code&gt;: creates slices, maps, and channels only, and it returns an &lt;em&gt;initialized (not zeroed)&lt;/em&gt; value of type T (not *T).&lt;/p&gt;
+
+&lt;p&gt;Local variable: unlike in C, it&amp;rsquo;s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., &lt;code&gt;return &amp;amp;File{fd: fd, name: name}&lt;/code&gt;)
+ &amp;ndash; &lt;a href=&#34;https://golang.org/doc/effective_go.html#allocation_new&#34;&gt;Effective GO#allocation_new&lt;/a&gt;
+&lt;!-- more --&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;stack-or-heap:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Stack or Heap?&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://golang.org/doc/faq#stack_or_heap&#34;&gt;Golang FAQ#stackheap&lt;/a&gt;
+&lt;strong&gt;How do I know whether a variable is allocated on the heap or the stack?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;From a correctness standpoint, you don&amp;rsquo;t need to know. Each variable in Go exists as long as there are &lt;em&gt;references&lt;/em&gt; to it. The storage location chosen by the implementation is irrelevant to the semantics of the language.&lt;/p&gt;
+
+&lt;p&gt;The storage location does have an effect on writing efficient programs. When possible, the Go compilers will allocate variables that are local to a function in that function&amp;rsquo;s stack frame. However, if the compiler cannot prove that the variable is not referenced after the function returns, then the compiler must allocate the variable on the garbage-collected heap to avoid dangling pointer errors. Also, if a local variable is very large, it might make more sense to store it on the heap rather than the stack.&lt;/p&gt;
+
+&lt;p&gt;In the current compilers, if a variable has its address taken, that variable is a candidate for allocation on the heap. However, a basic escape analysis recognizes some cases when such variables will not live past the return from the function and can reside on the stack.&lt;/p&gt;
+
+&lt;p&gt;An excellent talk about stack and heap of Go. &lt;a href=&#34;http://dave.cheney.net/2014/06/07/five-things-that-make-go-fast&#34;&gt;Five things that make Go fast&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;happen-before-and-channel:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Happen before and Channel&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://golang.org/ref/mem#tmp_7&#34;&gt;Golang Memory Model#channel&lt;/a&gt;
+&amp;gt; A send on a channel happens before the corresponding receive from that channel completes.&lt;/p&gt;
+
+&lt;p&gt;An interesting case where &lt;em&gt;Happen Before&lt;/em&gt; will take place.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;var c = make(chan int)
+var a string
+
+func f() {
+    a = &amp;quot;hello, world&amp;quot;
+    &amp;lt;-c
+}
+func main() {
+    go f()
+    c &amp;lt;- 0
+    print(a)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This snippet guarantes to print &amp;ldquo;hello, world&amp;rdquo;. The write to a happens before the receive on c, which happens before the corresponding send on c completes, which happens before the print.
+If the channel were buffered (e.g., &lt;code&gt;c = make(chan int, 1)&lt;/code&gt;) then the program would not be guaranteed to print &amp;ldquo;hello, world&amp;rdquo;. (It might print the empty string, crash, or do something else.)&lt;/p&gt;
+
+&lt;h2 id=&#34;concurrency:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Concurrency&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://talks.golang.org/2012/concurrency.slide&#34;&gt;Go Concurrency Patterns&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;main-exits:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;&lt;code&gt;main&lt;/code&gt; exits&lt;/h3&gt;
+
+&lt;p&gt;What happens to goroutines that running background when main function returns?&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;When the main returns, the programm goes away.
+       &amp;ndash; &lt;a href=&#34;https://youtu.be/f6kdp27TYZs?t=7m46s&#34;&gt;Rob Pike#main_exit&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It confused me for a long time, now I get a concrete answer.&lt;/p&gt;
+
+&lt;h3 id=&#34;generator-in-go:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Generator in Go&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Generator: function that returns a channel.
+Channels are first-class values, just like strings or integers.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import &amp;quot;fmt&amp;quot;
+import &amp;quot;time&amp;quot;
+import &amp;quot;math/rand&amp;quot;
+
+func main() {
+    // Python-like usage
+    for s := range boring(&amp;quot;generator&amp;quot;) {
+        fmt.Println(s)
+    }
+
+    fmt.Println(&amp;quot;func main exits&amp;quot;)
+}
+
+// ### Generator ###
+func boring(msg string) &amp;lt;-chan string { // Returns receive-only channel of strings.
+    c := make(chan string)
+    go func() { // We launch the goroutine from inside the function.
+        for i := 0; i &amp;lt; 10; i++ {
+            c &amp;lt;- fmt.Sprintf(&amp;quot;%s %d&amp;quot;, msg, i)
+            time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
+        }
+        close(c) // close channel c, otherwise for-range will be blocked.
+    }()
+    return c // Return the channel to the caller.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unlike &lt;strong&gt;Generator&lt;/strong&gt; in Python, the concept in Go is simple: &lt;em&gt;Generator: function that returns a channel&lt;/em&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Python Generator: generates data in time.&lt;/li&gt;
+&lt;li&gt;Go Generator: return a channel, reveives data in time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;tricky-keyword-select:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Tricky Keyword, &lt;code&gt;select&lt;/code&gt;&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Select&lt;/p&gt;
+
+&lt;p&gt;The select statement provides another way to handle multiple channels.
+It&amp;rsquo;s like a switch, but each case is a communication:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;All channels are evaluated.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Selection blocks until one communication can proceed, which then does.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;If multiple can proceed, select chooses pseudo-randomly.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;A default clause, if present, executes immediately if no channel is ready.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;select {
+    case v1 := &amp;lt;-c1:
+        fmt.Printf(&amp;quot;received %v from c1\n&amp;quot;, v1)
+    case v2 := &amp;lt;-c2:
+        fmt.Printf(&amp;quot;received %v from c2\n&amp;quot;, v1)
+    case c3 &amp;lt;- 23:
+        fmt.Printf(&amp;quot;sent %v to c3\n&amp;quot;, 23)
+    default:
+        fmt.Printf(&amp;quot;no one was ready to communicate\n&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Select with &lt;strong&gt;default&lt;/strong&gt; is a non-blocking statement, even if no other case can be processed. Without &lt;strong&gt;default&lt;/strong&gt;, select block forever if no other case can be processed.&lt;/p&gt;
+
+&lt;p&gt;END.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ReadingFragment Structured Computer Organization</title>
+      <link>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</link>
+      <pubDate>Mon, 21 Sep 2015 19:44:01 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</guid>
+      <description>
+
+&lt;h1 id=&#34;parallelism-in-computer-organization:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in Computer Organization&lt;/h1&gt;
+
+&lt;p&gt;Why we need parallel computing? Because we are close to the limit of physics &amp;ndash; the speed of light and memory becomes the bottleneck of computer.&lt;/p&gt;
+
+&lt;h2 id=&#34;parallelism-in-cpu:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in CPU&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Pipeline
+
+&lt;ul&gt;
+&lt;li&gt;Sinlge pipeline&lt;/li&gt;
+&lt;li&gt;Mutli-pipeline&lt;/li&gt;
+&lt;li&gt;Superscalar pipeline&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Array Computers, single control unit and a array of processor.&lt;/li&gt;
+&lt;li&gt;Multiprocessors, multiple CPUs shared with one common  main memory, and communicate through BUS.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;parallelism-in-memory:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in Memory&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Modern CPUs has it&amp;rsquo;s own private memory, cache.&lt;/li&gt;
+&lt;li&gt;Redundant Array of Inexpensive Disk(RAID), there are 5 level of RAID. I will be surprised if one system supports all 5 level RAID, especially level 2 and 3 ;-)
+
+&lt;ul&gt;
+&lt;li&gt;Level 0, strips data(typically, a sector) over disks in round robin fashion. No backups.&lt;/li&gt;
+&lt;li&gt;Level 1, make an additional redundant backup of level 0.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h1 id=&#34;ijvm:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;IJVM&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;IJVM&lt;/strong&gt; is short for &lt;em&gt;Integer instructions only Java Virtual Machine&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;ijvm-memory-model:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;IJVM Memory Model&lt;/h2&gt;
+
+&lt;p&gt;It looks like IJVM has a set of different stack operations compares with other machines. IJVM instructions can access memory only by indexing from some special registers. CPP, LV and SP point to word(4 bytes).&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The constant pool, addressing by CPP, it is loaded when the program is brought into memory and read-only afterward.&lt;/li&gt;
+&lt;li&gt;The Local variable frame, addressing by LV.&lt;/li&gt;
+&lt;li&gt;The operand stack, addressing by SP. Push and pop actions take place in this stack.&lt;/li&gt;
+&lt;li&gt;The method area, consider as the &amp;ldquo;TEXT&amp;rdquo; area in UNIX&amp;rsquo;s memory, addressing by PC. The first 2 byte indicating the number of parameters for the method, the second 2 bytes indicating the size of the local variables, opcode begins at the 5th byte.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;ijvm-method-invocation:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;IJVM method invocation&lt;/h2&gt;
+
+&lt;p&gt;Instead of using &lt;code&gt;CALL&lt;/code&gt; instraction, JVM use &lt;code&gt;INVOKEVIRTUAL&lt;/code&gt;. Below is a brief explanation of method invocation(highly recommad reading &lt;a href=&#34;http://users.cis.fiu.edu/~prabakar/cda4101/Common/notes/lecture20.html&#34;&gt;CDA-4101 Lecture 20 Notes&lt;/a&gt;)&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Push &lt;code&gt;PC&lt;/code&gt;, &lt;code&gt;LV&lt;/code&gt;, &lt;code&gt;OBJREF&lt;/code&gt;(reference of the method&amp;rsquo;s object) and parameters into Local variable frame.&lt;/li&gt;
+&lt;li&gt;Build a new Local variable frame, the size of the new frame are determined by the second 2 bytes reading from The method area, and stores the caller&amp;rsquo;s PC ans LV in the top of the new frame. Replace &lt;code&gt;OBJREF&lt;/code&gt; with &lt;code&gt;Link ptr&lt;/code&gt; which points to the caller&amp;rsquo;s PC. Now &lt;code&gt;LV&lt;/code&gt; points to &lt;code&gt;Link ptr&lt;/code&gt; and &lt;code&gt;SP&lt;/code&gt; points to caller&amp;rsquo;s LV.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;PC&lt;/code&gt; points to 5th byte in the method area.&lt;/li&gt;
+&lt;li&gt;Mark the new local variables frame as the current frame by seting &lt;code&gt;LV&lt;/code&gt; with the address of &lt;code&gt;OBJREF&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;After the method is done, the return value will be stored in &lt;code&gt;OBJREF&lt;/code&gt; (&lt;code&gt;Link ptr&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h2 id=&#34;some-qs-about-jvm:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Some Qs about JVM&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Give the Java statement that produced the following IJVM code:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code&gt;       ILOAD j
+       ILOAD n
+       ISUB
+       BIPUSH 7
+       ISUB
+       DUP
+       IADD
+       ISTORE i
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A: &lt;code&gt;i = (j - n - 7) x 2;&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The JVM &lt;code&gt;INVOKEVIRTUAL&lt;/code&gt; instruction needs to know how many parameters it has. Why?&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;A: Old &lt;code&gt;PC&lt;/code&gt; and &lt;code&gt;LV&lt;/code&gt; will be stored on address of the top of local variables which will be computed by adding the size of local variables and &lt;strong&gt;parameters&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;intel-core-i7:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Intel Core i7&lt;/h1&gt;
+
+&lt;p&gt;Core i7 is a CPU with CISC outside and RISC inside. In side the chip, there is a decoder which build a bridge between CISC instructions and RISC data path.&lt;/p&gt;
+
+&lt;h1 id=&#34;ref:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Ref.&lt;/h1&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Structured Computer Organization(6th Edition) by Andrew S. Tanenbaum
+&lt;a href=&#34;http://users.cis.fiu.edu/~prabakar/cda4101/Common/notes/lecture20.html&#34;&gt;CDA-4101 Lecture 20 Notes&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>jupyter-core 4.0.6 的发布</title>
+      <link>http://neilsh.com/2015/09/18/jupyter-core-406/</link>
+      <pubDate>Fri, 18 Sep 2015 20:39:01 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/09/18/jupyter-core-406/</guid>
+      <description>
+
+&lt;h1 id=&#34;jupyter-与-ipython:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Jupyter 与 IPython&lt;/h1&gt;
+
+&lt;p&gt;Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。&lt;/p&gt;
+
+&lt;h1 id=&#34;bug:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;BUG？&lt;/h1&gt;
+
+&lt;p&gt;IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 &lt;a href=&#34;https://jupyter.readthedocs.org/en/latest/install.html&#34;&gt;Installation&lt;/a&gt; ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://ipython.org/&#34;&gt;Jupyter and the future of IPython - IPython&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)
+&lt;!-- more --&gt;
+按照教程，&lt;code&gt;pip install jupyter&lt;/code&gt;，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。&lt;/p&gt;
+
+&lt;p&gt;果不其然，安装完之后，一运行 &lt;code&gt;jupter notebook&lt;/code&gt; 就报错了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;$ jupyter notebook
+
+Traceback (most recent call last):
+  File &amp;quot;/usr/local/bin/jupyter-notebook&amp;quot;, line 11, in &amp;lt;module&amp;gt;
+    sys.exit(main())
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py&amp;quot;, line 267, in launch_instance
+    return super(JupyterApp, cls).launch_instance(argv=argv, **kwargs)
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py&amp;quot;, line 591, in launch_instance
+    app.initialize(argv) File &amp;quot;&amp;lt;string&amp;gt;&amp;quot;, line 2, in initialize
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py&amp;quot;, line 75, in catch_config_error
+    return method(app, *args, **kwargs)
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/notebook/notebookapp.py&amp;quot;, line 1001, in initialize
+    super(NotebookApp, self).initialize(argv) File &amp;quot;&amp;lt;string&amp;gt;&amp;quot;, line 2, in initialize
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py&amp;quot;, line 75, in catch_config_error
+    return method(app, *args, **kwargs)
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py&amp;quot;, line 243, in initialize
+    self.migrate_config()
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py&amp;quot;, line 169, in migrate_config
+    migrate() 
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py&amp;quot;, line 232, in migrate
+    if migrate_static_custom(custom_src, custom_dst): 
+  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py&amp;quot;, line 160, in migrate_static_custom
+    if custom_css_empty:
+UnboundLocalError: local variable &#39;custom_css_empty&#39; referenced before assignment
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;一看有 css，直觉告诉我，可能是 Jinjia2 之类关于网页处理的模块出错了，于是卸载再重装，还是有此错误。pip 试了几遍不行，apt-get 试了几遍也不行。谷歌来谷歌去都找不到答案，项目的 issus 也翻了一遍，同样没结果，前前后后花了一个多小时，挺沮丧的。&lt;/p&gt;
+
+&lt;h1 id=&#34;bug-fix:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;BUG fix&lt;/h1&gt;
+
+&lt;p&gt;连重装大法都不行，这该不会是 BUG 吧？细细看了一边 traceback，再配合源码一看，立刻就知道哪里可能出错了。&lt;/p&gt;
+
+&lt;p&gt;原来 Jupyter 在第一次运行时会检测之前是否用过 IPython，如果用过，那就把旧的配置转换成新的。把旧版 IPython 配置文件夹删了之后，再运行&lt;code&gt;jupyter notebook&lt;/code&gt;，一切正常。顺手修了这个 BUG。&lt;/p&gt;
+
+&lt;h1 id=&#34;create-a-pull-request:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Create a Pull Request&lt;/h1&gt;
+
+&lt;p&gt;既然修了 BUG，那肯定要向项目开发者反馈啊，要为开源世界做贡献！ Github 主页也能好看点。 (΄◞ิ౪◟ิ‵)
+过程也很简单：
+ 1. 创建该 BUG 的 issus（可选，建议创建）
+ 2. fork &lt;a href=&#34;https://github.com/jupyter/jupyter_core&#34;&gt;jupyter-core&lt;/a&gt;
+ 3. clone 自己的项目到本地
+ 4. 修补 BUG
+ 5. git push origin
+ 6. 点击项目右侧的 pull request ，创建 pull request&lt;/p&gt;
+
+&lt;p&gt;这成了我的第一个 Pull Request。现在 jupyter-core 最新的版本是 4.0.6， 感觉这就是为我发布的。我也成了 jupyter 核心模块的贡献者，呵呵。&lt;/p&gt;
+
+&lt;h1 id=&#34;ref:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Ref.&lt;/h1&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://ipython.org/&#34;&gt;https://ipython.org/&lt;/a&gt;
+&lt;a href=&#34;https://jupyter.org/index.html&#34;&gt;https://jupyter.org/index.html&lt;/a&gt;
+&lt;a href=&#34;https://jupyter.readthedocs.org/en/latest/install.html&#34;&gt;https://jupyter.readthedocs.org/en/latest/install.html&lt;/a&gt;
+&lt;a href=&#34;https://yangsu.github.io/pull-request-tutorial/&#34;&gt;Pull Request Tutorial - A Visual Guide to Pull Requests&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Few words about 6.828</title>
+      <link>http://neilsh.com/2015/08/30/about-6828/</link>
+      <pubDate>Sun, 30 Aug 2015 15:39:38 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/08/30/about-6828/</guid>
+      <description>
+
+&lt;p&gt;Recently I&amp;rsquo;ve been working on JOS, which is part of &lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;6.828: Operating System Engineering&lt;/a&gt;. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;6-828简介:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;6.828简介&lt;/h2&gt;
+
+&lt;p&gt;好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。&lt;/p&gt;
+
+&lt;h2 id=&#34;知新:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;知新&lt;/h2&gt;
+
+&lt;h3 id=&#34;寻找资料的正确姿势:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;寻找资料的正确姿势&lt;/h3&gt;
+
+&lt;p&gt;课程实验中有许多地方并没有说得很仔细，只有大概的意图，实现的细节需要你自己去查阅资料。比如说汇编里面的 &lt;code&gt;call&lt;/code&gt; &lt;code&gt;ret&lt;/code&gt; 对 &lt;code&gt;ESP&lt;/code&gt;&lt;code&gt;EBP&lt;/code&gt;&lt;code&gt;EIP&lt;/code&gt;三个寄存器的影响，它指出了这两个指令于函数调用上、传递参数有关，然后它让你写一个栈回溯函数。
+Google &lt;code&gt;ret call&lt;/code&gt; 的第一个结果：&lt;a href=&#34;http://www.c-jump.com/CIS77/ASM/Procedures/P77_0010_call_ret.htm&#34;&gt;CALL and RET Instructions&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;CALL pushes the return address onto the stack and transfers control to a procedure.
+RET pops the return address off the stack and returns control to that location.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;嗯，很好，把 &lt;code&gt;call&lt;/code&gt; 和 &lt;code&gt;ret&lt;/code&gt; 所干的事说了一下，但是太模糊了，比如说 return address 指向哪里，怎样来 transfers control ， pops the return address 到哪里？这些都没有说清楚。对于初学者来说，这个结果只能做参考，并不能直接拿来用。
+后来经过一番查找后找到了图文并茂的资料。&lt;a href=&#34;http://unixwiz.net/techtips/win32-callconv-asm.html&#34;&gt;Intel x86 Function-call Conventions - Assembly View&lt;/a&gt; 其中 Calling a __cdecl function 那一节讲得很清楚:
+&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1evo1wpue9bg20770cm3yd.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;16(%ebp) - third function parameter
+12(%ebp) - second function parameter
+8(%ebp)  - first function parameter&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;一图胜千言，函数调用，参数传递，&lt;code&gt;ESP&lt;/code&gt;&lt;code&gt;EBP&lt;/code&gt;&lt;code&gt;EIP&lt;/code&gt;都给说明白了。对比一下前面引用的资料，完全符合。现在我们可以理解，为什么栈要从高向低生长，C 语言中参数为什么从右向左压入栈，函数内的本地变量占用的内存为什么不需要手动管理，这一切都是紧密相关的。&lt;/p&gt;
+
+&lt;h3 id=&#34;c-的黑魔法:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;C 的黑魔法&lt;/h3&gt;
+
+&lt;p&gt;C 语言作为入门课在大一上学期时就学了，教材是谭浩强的，他的书在网上被喷的狗血淋头，我也觉得这不是本好教材，借了本 B&amp;amp;D 的 《The C Programming Language》，囫囵吞枣地看了一遍，指针、结构体、联合体、枚举等概念倒背如流，期末的时候拿了高分，自以为 C 学得还不错。现在想来，那时还是太年轻，操作系统里漫天的指针，结构体、联合体互相的嵌套更是少不了，各种神奇的写法见都没见过。下面来几个简单的例子：&lt;/p&gt;
+
+&lt;h4 id=&#34;给结构体初始化时给指定成员赋值:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;给结构体初始化时给指定成员赋值：&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;struct foo {
+    int i;
+    unsigned u;
+    char *str;
+};
+
+int bar(void) {
+    char *s = &amp;quot;Hello!&amp;quot;;
+    struct foo f = {
+        .str = s;
+    };
+    return 0; 
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;跨源文件调用匿名结构体变量:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;跨源文件调用匿名结构体变量：&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// 定义在 a.c 中
+struct {
+    int i;
+    unsigned us[99];
+} foo;
+
+// 在 b.c 中
+extern struct {
+    int i;
+    unsigned us[99];
+} foo;
+
+int bar(void) {
+    printf(&amp;quot;%d\n&amp;quot;, foo.i);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;关键字-volatile:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;关键字 volatile&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;the volatile keyword indicates that a value may change between different accesses, even if it does not appear to be modified. This keyword prevents an optimizing compiler from optimizing away subsequent reads or writes and thus incorrectly reusing a stale value or omitting writes.    &amp;ndash; &lt;a href=&#34;https://en.wikipedia.org/wiki/Volatile_(computer_programming)&#34;&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;引用指出 volatile 是为了防止编译“优化”对该变量的一系列读写操作。上面抛出一大段结论，还是挺令人疑惑的。什么叫 may change between different accesses， 什么叫 optimizing away subsequent reads or writes？这一切用“底层“的汇编来解释反而容易。
+&lt;a href=&#34;http://neilsh.com/assets/code/v_int.c&#34;&gt;带有 volatile&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// volatile_int.c
+volatile int foo;
+
+// 总计4次对 foo 的操作
+void main(void) {
+    foo = 0xff;
+    printf(&amp;quot;%d\n&amp;quot;, foo);
+    foo = 0xff;
+    printf(&amp;quot;%d\n&amp;quot;, foo);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;# 编译
+$ gcc -O1 volatile_int.c -o volatile_int
+# 查看汇编
+$ objdump -S volatile_int &amp;gt; v.asm
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-asm&#34;&gt;000000000040055d &amp;lt;main&amp;gt;:
+  40055d:	48 83 ec 08          	sub    $0x8,%rsp
+  400561:	c7 05 d9 0a 20 00 ff 	movl   $0xff,0x200ad9(%rip)        # 601044 &amp;lt;foo&amp;gt;
+  400568:	00 00 00 
+  40056b:	8b 15 d3 0a 20 00    	mov    0x200ad3(%rip),%edx        # 601044 &amp;lt;foo&amp;gt;
+  400571:	be 34 06 40 00       	mov    $0x400634,%esi
+  400576:	bf 01 00 00 00       	mov    $0x1,%edi
+  40057b:	b8 00 00 00 00       	mov    $0x0,%eax
+  400580:	e8 db fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
+  400585:	c7 05 b5 0a 20 00 ff 	movl   $0xff,0x200ab5(%rip)        # 601044 &amp;lt;foo&amp;gt;
+  40058c:	00 00 00 
+  40058f:	8b 15 af 0a 20 00    	mov    0x200aaf(%rip),%edx        # 601044 &amp;lt;foo&amp;gt;
+  400595:	be 34 06 40 00       	mov    $0x400634,%esi
+  40059a:	bf 01 00 00 00       	mov    $0x1,%edi
+  40059f:	b8 00 00 00 00       	mov    $0x0,%eax
+  4005a4:	e8 b7 fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
+  4005a9:	48 83 c4 08          	add    $0x8,%rsp
+  4005ad:	c3                   	retq   
+  4005ae:	66 90                	xchg   %ax,%ax
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://neilsh.com/assets/code/nv_int.c&#34;&gt;不带 volatile&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-asm&#34;&gt;000000000040055d &amp;lt;main&amp;gt;:
+  40055d:	48 83 ec 08          	sub    $0x8,%rsp
+  400561:	c7 05 d9 0a 20 00 ff 	movl   $0xff,0x200ad9(%rip)        # 601044 &amp;lt;foo&amp;gt;
+  400568:	00 00 00 
+  40056b:	ba ff 00 00 00       	mov    $0xff,%edx
+  400570:	be 34 06 40 00       	mov    $0x400634,%esi
+  400575:	bf 01 00 00 00       	mov    $0x1,%edi
+  40057a:	b8 00 00 00 00       	mov    $0x0,%eax
+  40057f:	e8 dc fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
+  400584:	c7 05 b6 0a 20 00 ff 	movl   $0xff,0x200ab6(%rip)        # 601044 &amp;lt;foo&amp;gt;
+  40058b:	00 00 00 
+  40058e:	ba ff 00 00 00       	mov    $0xff,%edx
+  400593:	be 34 06 40 00       	mov    $0x400634,%esi
+  400598:	bf 01 00 00 00       	mov    $0x1,%edi
+  40059d:	b8 00 00 00 00       	mov    $0x0,%eax
+  4005a2:	e8 b9 fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
+  4005a7:	48 83 c4 08          	add    $0x8,%rsp
+  4005ab:	c3                   	retq   
+  4005ac:	0f 1f 40 00          	nopl   0x0(%rax)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;对比可见，带有 volatile 的对 foo 有四次操作，而不带的只有 2 次，从这个例子可以看出一些端倪， volatile 确保了 C 源码中每次对 foo 的操作都是直接对 foo 内存地址的操作。&lt;/p&gt;
+
+&lt;h4 id=&#34;指针与数组:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;指针与数组&lt;/h4&gt;
+
+&lt;p&gt;用伪码来简述一下两者的关系。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;char *pc = 0；
+int *pi = 0;
+int ai[5] = {0, 1, 2, 3, 4};
+
+(pc += 1) == 1 is true;
+
+if (sizeof(int) == 4)
+    then pi + 1 == 4 is true; ((int *)pc) + 1 == 5 is true;
+
+*ai == 0 is true
+
+pi = ai
+    then *pi == 0, pi[1] == 1, pi[4] == 4 are true;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;自从学了6.828后，指针再也不是洪水猛兽，自以为余已达收发自如的境界。&lt;/p&gt;
+
+&lt;h3 id=&#34;杂项:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;杂项&lt;/h3&gt;
+
+&lt;p&gt;对各种计算机术语有了新的认识：process、thread、stub、trap、caller、callee、coroutine等等。
+各种命令：man、git、make、gcc、objdump等等。特别是man，我还是第一次知道，man还能当编程手册，查看函数的用法。
+理论与实践之间的差异，工程上的权衡于妥协。&lt;/p&gt;
+
+&lt;h2 id=&#34;一些资源:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;一些资源&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;官方网站&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/playlist?list=PLfciLKR3SgqNJKKIKUliWoNBBH1VHL3AP&#34;&gt;课程视频&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://bitbucket.org/overvenus/jos/&#34;&gt;我的 JOS (已完成lab1～6)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;最后，再次感谢 MIT 的教师职员们，并以一张 JOS 靓照结尾。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1evohw0nih7j20k00bw75r.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>第一份实习</title>
+      <link>http://neilsh.com/2015/08/29/my-frist-internship/</link>
+      <pubDate>Sat, 29 Aug 2015 20:54:10 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/08/29/my-frist-internship/</guid>
+      <description>&lt;p&gt;两个月一晃而过，暑假结束了，第一份实习也结束了。&lt;/p&gt;
+
+&lt;p&gt;这段时间，我在 EasyLinking 实习，得到了 FULL TIME 的安卓开发工作经历，真真切切地认识到&lt;strong&gt;文档和注释&lt;/strong&gt;重要性，同时还结识了一帮前辈：重视人才的纪总，平和的游总，自学成才的 iOS 大牛老王，后台开发大牛老邹和小胡，开发资历第一丁老师，全栈的北大高材生超哥，等等。&lt;/p&gt;
+
+&lt;p&gt;实习中给我印象最深的还是团队协作。不得不说，这个技术团队成员之间协助效率非常高，一个问题发现之后，马上就能得到反馈，我想这应该得利于扁平化的管理模式。&lt;/p&gt;
+
+&lt;p&gt;既然我实习的是安卓开发，那就说一下关于安卓的事吧。广播是一个安卓应用的重要组成部分，之前没有开发过业务逻辑复杂的应用，对本地广播的理解也就停留在 &lt;a href=&#34;https://developer.android.com/reference/android/support/v4/content/LocalBroadcastManager.html&#34;&gt;文档&lt;/a&gt; 上面，经过这次实习，我已经 understand from practice ，它很强大，也很危险，不愧被称为安卓中的 &lt;code&gt;goto&lt;/code&gt;(泪目，掉过坑)。对安卓的触屏事件也有了&lt;a href=&#34;http://neilsh.com/2015/08/13/dispatch_and_handle_motionevent_in_android/&#34;&gt;进一步的认识&lt;/a&gt;。我还成功地劝服了安卓开发组，把 IDE 从 Eclipse 迁移到 AndroidStudio。:-)&lt;/p&gt;
+
+&lt;p&gt;在工作之余，我实现了一个小型的操作系统 &lt;a href=&#34;https://bitbucket.org/overvenus/jos/&#34;&gt;JOS&lt;/a&gt;。由于白天没有空，JOS 的代码大部分是在晚上写的，每天都写到凌晨，导致 Work-life balance 很糟糕，脸上冒出了一些痘痘。&lt;/p&gt;
+
+&lt;p&gt;总的来说，这是一个有意义的暑假。&lt;/p&gt;
+
+&lt;p&gt;END.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Android 触屏事件处理分发--以 SwipeRefreshLayout 为例</title>
+      <link>http://neilsh.com/2015/08/13/dispatch-and-handle-motionevent-in-android/</link>
+      <pubDate>Thu, 13 Aug 2015 20:40:00 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/08/13/dispatch-and-handle-motionevent-in-android/</guid>
+      <description>
+
+&lt;h2 id=&#34;pulltorefresh-与-swiperefreshlayout:123fe8e46418ce87f36f17756a395264&#34;&gt;PullToRefresh 与 SwipeRefreshLayout&lt;/h2&gt;
+
+&lt;p&gt;这段时间我在 Easyinking 公司实习， 做安卓开发。之前的 App 中大量使用 &lt;a href=&#34;https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh&#34;&gt;Android-PullToRefresh&lt;/a&gt;。这个轮子很经典，在较久版本的安卓上面也很好使，不过作者已经放弃维护了，在我们的 App 上也发现了一个诡异的BUG：与WebView配合使用时，在网络环境差的情况下会出现一次下拉多次刷新的情况，症状就是整个网页在那上下抽搐。在官方支持库 support-v4:22 中自带了一个类似的 SwipeRefreshLayout，效果也是一级棒。由于两者的 API 设计差不多，使用的情景也几乎一样，所以可以无痛地从 &lt;a href=&#34;https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh&#34;&gt;PullToRefresh&lt;/a&gt; 转移过来。&lt;/p&gt;
+
+&lt;h2 id=&#34;敏感的-swiperefreshlayout:123fe8e46418ce87f36f17756a395264&#34;&gt;敏感的 SwipeRefreshLayout&lt;/h2&gt;
+
+&lt;p&gt;从 PullToRefresh 转移到 SwipeRefreshLayout 大概花了十来分钟，初步测试出来的效果也令人满意。但是，实际使用中总会有意想不到的问题。我们把一个WebView放在了 SwipeRefreshLayout 中， 该 WebView 呈现的网页中有一个图片轮播，可左右滑动，下面的问题是 SwipeRefreshLayout 过于敏感，它把稍有下拉倾向的左右滑动全部拦截掉，并把他们当作下拉的手势，典型的 False Positive ， 处理的思路也很简单，既然是误报，过滤之即可。&lt;/p&gt;
+
+&lt;h3 id=&#34;误报的手势:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;误报的手势&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1xydoiwoj20u01hcwoe.jpg&#34; alt=&#34;&#34; /&gt;&lt;img src=&#34;http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev1ys28bm4j20u01hc12q.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;理想中的手势:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;理想中的手势&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1ytgovwpj20u01hcgve.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;swiperefreshlayout-刷新的细节:123fe8e46418ce87f36f17756a395264&#34;&gt;SwipeRefreshLayout 刷新的细节&lt;/h2&gt;
+
+&lt;p&gt;SwipeRefreshLayout 有个自定义接口 SwipeRefreshLayout.OnRefreshListener，里面的函数&lt;code&gt;onRefresh()&lt;/code&gt;会在下拉刷新时执行。SwipeRefreshLayout 把 OnRefreshListener 包装进了&lt;code&gt;AnimationListener mRefreshListener&lt;/code&gt;，并且&lt;code&gt;onRefresh()&lt;/code&gt;方法只会在&lt;code&gt;onAnimationEnd()&lt;/code&gt;中执行。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
+    @Override
+    public void onAnimationStart(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        if (mRefreshing) {
+            // Make sure the progress view is fully visible
+            mProgress.setAlpha(MAX_ALPHA);
+            mProgress.start();
+            if (mNotify) {
+                if (mListener != null) {
+                    mListener.onRefresh();
+                }
+            }
+        } else {
+            mProgress.stop();
+            mCircleView.setVisibility(View.GONE);
+            setColorViewAlpha(MAX_ALPHA);
+            // Return the circle to its start position
+            if (mScale) {
+                setAnimationProgress(0 /* animation complete and view is hidden */);
+            } else {
+                setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop,
+                        true /* requires update */);
+            }
+        }
+        mCurrentTargetOffsetTop = mCircleView.getTop();
+    }
+};
+    
+// 创建刷新指示图标    
+private void createProgressView() {
+    mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER/2);
+    mProgress = new MaterialProgressDrawable(getContext(), this);
+    mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
+    mCircleView.setImageDrawable(mProgress);
+    mCircleView.setVisibility(View.GONE);
+    addView(mCircleView);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个 listener 注册在&lt;code&gt;mCircleView&lt;/code&gt;，负责了&lt;strong&gt;两个动画&lt;/strong&gt;，一个是下拉回弹的动画，另一个是刷新转圈的动画。下拉回弹动画的完成，代表触发了刷新，接下来就执行&lt;code&gt;onRefresh()&lt;/code&gt;。刷新转圈的动画完成时，代表了&lt;code&gt;onRefresh()&lt;/code&gt;的完成，之后就让刷新图标消失。&lt;/p&gt;
+
+&lt;p&gt;下拉回弹的动画是由&lt;code&gt;animateOffsetToCorrectPosition()&lt;/code&gt;开始的，也就是说刷新也是由这个方法触发的。经过简单分析后不难发现触发刷新的是&lt;code&gt;onTouchEvent()&lt;/code&gt;方法。&lt;/p&gt;
+
+&lt;h2 id=&#34;onintercepttouchevent-v-s-ontouchevent:123fe8e46418ce87f36f17756a395264&#34;&gt;onInterceptTouchEvent() V.S. onTouchEvent()&lt;/h2&gt;
+
+&lt;p&gt;在安卓触屏事件分发处理过程中这两个是关键方法。在覆写这两个方法时需要遵守一定的规则，否则会有奇怪的事情发生，具体如下：&lt;/p&gt;
+
+&lt;h3 id=&#34;viewgroup-onintercepttouchevent:123fe8e46418ce87f36f17756a395264&#34;&gt;ViewGroup.onInterceptTouchEvent()&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Implement this method to intercept all touch screen motion events. This allows you to watch events as they are dispatched to your children, and take ownership of the current gesture at any point.&lt;/p&gt;
+
+&lt;p&gt;Using this function takes some care, as it has a fairly complicated interaction with View.onTouchEvent(MotionEvent), and using it requires implementing that method as well as this one in the correct way. Events will be received in the following order:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;You will receive the down event here.&lt;/li&gt;
+&lt;li&gt;The down event will be handled either by a child of this view group, or given to your own onTouchEvent() method to handle; this means you should implement onTouchEvent() to return true, so you will continue to see the rest of the gesture (instead of looking for a parent view to handle it). Also, by returning true from onTouchEvent(), you will not receive any following events in onInterceptTouchEvent() and all touch processing must happen in onTouchEvent() like normal.&lt;/li&gt;
+&lt;li&gt;For as long as you return false from this function, each following event (up to and including the final up) will be delivered first here and then to the target&amp;rsquo;s onTouchEvent().&lt;/li&gt;
+&lt;li&gt;If you return true from here, you will not receive any following events: the target view will receive the same event but with the action ACTION_CANCEL, and all further events will be delivered to your onTouchEvent() method and no longer appear here.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;view-ontouchevent:123fe8e46418ce87f36f17756a395264&#34;&gt;View.onTouchEvent()&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Implement this method to handle touch screen motion events.&lt;/p&gt;
+
+&lt;p&gt;If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling performClick(). This will ensure consistent system behavior, including:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;obeying click sound preferences&lt;/li&gt;
+&lt;li&gt;dispatching OnClickListener calls&lt;/li&gt;
+&lt;li&gt;handling ACTION_CLICK when accessibility features are enabled&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;从文档上来看，当一个触屏事件发生时，安卓框架会先把事件发送到&lt;code&gt;ViewGroup.onInterceptTouchEvent()&lt;/code&gt;，再根据其返回的结果来决定该事件该份配给自己的&lt;code&gt;ViewGroup.onTouchEvent()&lt;/code&gt;，还是 target view 的&lt;code&gt;View.onTouchEvent()&lt;/code&gt;。（注意 target view 指的是 layout.xml 中嵌套在SwipeRefreshLayout里的View，或是处于SwipeRefreshLayout之下的View。）那么SwipeRefreshLayout在处理触屏事件的流程也应如此。&lt;/p&gt;
+
+&lt;h2 id=&#34;swiperefreshlayout-对触屏事件的反应:123fe8e46418ce87f36f17756a395264&#34;&gt;SwipeRefreshLayout 对触屏事件的反应&lt;/h2&gt;
+
+&lt;p&gt;在修改SwipeRefreshLayout前，就算不清楚它的代码，那至少也要了解它对触屏事件的反馈。最直观的方法是创建一个子类，覆写那两个方法，算是曲线救国吧。具体的代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class SSwipeRefreshLayout extends SwipeRefreshLayout {
+    private static final String TAG = &amp;quot;SSwipe&amp;quot;;
+
+    public SSwipeRefreshLayout(Context context) {
+        super(context);
+    }
+    public SSwipeRefreshLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean b = super.onTouchEvent(ev);
+        Log.d(TAG + &amp;quot;BT&amp;quot;, String.valueOf(b));
+        return b;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        boolean b = super.onInterceptTouchEvent(ev);
+        Log.d(TAG + &amp;quot;BI&amp;quot;, String.valueOf(b));
+        return b;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;触发刷新:123fe8e46418ce87f36f17756a395264&#34;&gt;触发刷新&lt;/h3&gt;
+
+&lt;h4 id=&#34;向左下滑:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向左下滑&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/bmiddle/7f793092gw1ev34kpb2ldj20u01hc7an.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;08-15 10:03:52.650  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:03:52.679  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:04:06.657  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:04:06.790  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ true
+08-15 10:04:06.808  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true  &amp;lt;--- onTouchEvent
+08-15 10:04:06.811  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
+08-15 10:04:06.831  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;向右下滑:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向右下滑&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww4.sinaimg.cn/bmiddle/7f793092gw1ev34lnjl05j20u01hcn3v.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;08-15 10:25:27.546  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.700  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.717  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.726  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.743  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.760  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.777  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.794  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:25:27.812  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ true
+08-15 10:25:27.829  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true  &amp;lt;--- onTouchEvent
+08-15 10:25:27.845  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
+08-15 10:04:06.868  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
+08-15 10:04:06.893  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;笔直向下滑:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;笔直向下滑&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev34m7lgjxj20u01hcdmi.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;08-15 10:29:13.798  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:29:14.115  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 10:29:14.132  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ true
+08-15 10:29:14.150  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true  &amp;lt;--- onTouchEvent
+08-15 10:29:14.166  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
+08-15 10:29:14.183  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;不触发刷新:123fe8e46418ce87f36f17756a395264&#34;&gt;不触发刷新&lt;/h3&gt;
+
+&lt;p&gt;注意查看&lt;strong&gt;滚动条&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;向左下滑-1:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向左下滑&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/bmiddle/7f793092gw1ev34y348moj20u01hc454.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;08-15 11:24:54.169  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.249  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.273  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.290  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.307  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.324  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.341  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.358  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.375  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:54.392  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+...                                                                                           &amp;lt;-- onTouchEvent() Never Called!
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;向右下滑-1:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向右下滑&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/bmiddle/7f793092gw1ev34xmt6cjj20u01hcn3w.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;08-15 11:24:01.868  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:02.028  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:02.050  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:02.067  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:02.084  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:02.102  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:02.119  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:24:02.136  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+...                                                                                           &amp;lt;-- onTouchEvent() Never Called!
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;笔直向下滑-1:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;笔直向下滑&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww4.sinaimg.cn/bmiddle/7f793092gw1ev34x7oe5fj20u01hcdm9.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;08-15 11:21:47.059  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:21:47.185  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:21:47.203  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:21:47.222  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:21:47.237  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:21:47.247  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+08-15 11:21:47.265  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
+...                                                                                           &amp;lt;-- onTouchEvent() Never Called!
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;swiperefreshlayout-行为总结:123fe8e46418ce87f36f17756a395264&#34;&gt;SwipeRefreshLayout 行为总结&lt;/h3&gt;
+
+&lt;p&gt;从上面两类大情况，六种小情况来看，它的行为和文档写明的一致：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;触发刷新&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;当触屏发生时，事件先到达&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;收到事件后，返回&lt;code&gt;false&lt;/code&gt;，则此事件会向下传递到 &lt;strong&gt;target view&lt;/strong&gt; ,同时使得下一次事件也是也&lt;strong&gt;先经过此方法&lt;/strong&gt;。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;经过几次事件后&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;返回&lt;code&gt;true&lt;/code&gt;，之后的事件都&lt;strong&gt;不再经过此方法&lt;/strong&gt;，也不会传给 target view，&lt;strong&gt;直接传给&lt;/strong&gt;&lt;code&gt;SwipeRefreshLayout.onTouchEvent()&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;SwipeRefreshLayout.onTouchEvent()&lt;/code&gt;接手事件， &lt;strong&gt;target view&lt;/strong&gt; 不再收到任何事件，下拉刷新的指示图标开始出现。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;不触发刷新&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;当触屏发生时，事件先到达&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;收到事件后，判读为此次手势没有刷新的意图，一直返回&lt;code&gt;false&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;返回的结果就是我们要的循环不变量，分析到此差不多就结束了，根据它的行为，可以很轻松的降低它的敏感度。&lt;/p&gt;
+
+&lt;h2 id=&#34;降低-swiperefreshlayout-的敏感度:123fe8e46418ce87f36f17756a395264&#34;&gt;降低 SwipeRefreshLayout 的敏感度&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;此小节部分内容有关 &lt;code&gt;MotionEvent&lt;/code&gt;, 由于篇幅原因不再赘述。详见参考资料。&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;返回我们碰到问题中来，现在有个 WebView 嵌在 SwipeRefreshLayout 中，该 WebView 呈现的网页中有个图片轮播，但我们想切换图片时经常会被 SwipeRefreshLayout 打断，使切换图片的动作成为下来刷新的动作，造成使用体验上的缺陷。&lt;/p&gt;
+
+&lt;p&gt;既然 SwipeRefreshLayout 真正接手触屏事件是从 &lt;code&gt;onInterceptTouchEvent()&lt;/code&gt; 返回 &lt;code&gt;true&lt;/code&gt; 开始的。那我们只要触屏事件开始时判断用户是想刷新还是像切换图片。解决的思路清晰了，接下来是判断的策略&lt;/p&gt;
+
+&lt;p&gt;如何判断用户的意图？我们可以简单一点，取从 &lt;code&gt;ACTION_DOWN&lt;/code&gt; 开始的两次 &lt;code&gt;ACTION_MOVE&lt;/code&gt;,并计算两点所构成的直线同屏幕 &lt;code&gt;X&lt;/code&gt; 轴所呈的角度：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;O                 X
+  +----------------+
+  |                |
+  |        M1 +    |
+  |         /      |
+  |       /ang     |
+  |  M2 + ----- X  |
+  |                |
+  |                |
+  |                |
+  |                |
+  |                |
+  |                |
+  |                |
+  |                |
+Y +----------------+
+  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当用户手势的头两次 &lt;code&gt;ACTION_MOVE&lt;/code&gt; 构成角度小于 &lt;code&gt;ang&lt;/code&gt; 时就让 &lt;code&gt;onInterceptTouchEvent()&lt;/code&gt; 一直返回 &lt;code&gt;false&lt;/code&gt; 直到 &lt;code&gt;ACTION_UP&lt;/code&gt; 为止。这样保证了 SwipeRefreshLayout 不会轻易地截断触屏事件，让 &lt;strong&gt;target view&lt;/strong&gt; 有机会处理该事件，同时也保证了循环不变式的成立，不会影响 SwipeRefreshLayout 的正常工作。&lt;/p&gt;
+
+&lt;h2 id=&#34;show-me-the-code:123fe8e46418ce87f36f17756a395264&#34;&gt;SHOW ME THE CODE&lt;/h2&gt;
+
+&lt;script src=&#34;https://gist.github.com/Overvenus/dc0ec5c4de5c27585c91.js&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;欢迎到我的&lt;a href=&#34;https://gist.github.com/Overvenus/dc0ec5c4de5c27585c91#file-numbswiperefreshlayout-java&#34;&gt;Gist&lt;/a&gt;查看代码。&lt;/p&gt;
+
+&lt;h3 id=&#34;numbswiperefreshlayout-效果:123fe8e46418ce87f36f17756a395264&#34;&gt;NumbSwipeRefreshLayout 效果&lt;/h3&gt;
+
+&lt;p&gt;注意查看&lt;strong&gt;上方阴影&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev3c6eyty8j20u01hc0zi.jpg&#34; alt=&#34;&#34; /&gt;&lt;img src=&#34;http://ww4.sinaimg.cn/bmiddle/7f793092gw1ev3c6qlmwhj20u01hcwl4.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;参考资料:123fe8e46418ce87f36f17756a395264&#34;&gt;参考资料&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://android.googlesource.com/platform/frameworks/support/+/d9df810a8e9ac28148c853249f0951329053c784/v4/java/android/support/v4/widget/SwipeRefreshLayout.java&#34;&gt;SwipeRefreshLayout 源码&lt;/a&gt;
+&lt;a href=&#34;https://developer.android.com/reference/android/support/v4/widget/SwipeRefreshLayout.html&#34;&gt;SwipeRefreshLayout 文档&lt;/a&gt;
+&lt;a href=&#34;https://developer.android.com/training/gestures/viewgroup.html&#34;&gt;Managing Touch Events in a ViewGroup&lt;/a&gt;
+[ViewGroup.onInterceptTouchEvent(MotionEvent)](&lt;a href=&#34;https://developer.android.com/reference/android/view/ViewGroup.html#onInterceptTouchEvent(android.view.MotionEvent&#34;&gt;https://developer.android.com/reference/android/view/ViewGroup.html#onInterceptTouchEvent(android.view.MotionEvent&lt;/a&gt;)
+[View.onTouchEvent(MotionEvent)](&lt;a href=&#34;https://developer.android.com/reference/android/view/View.html#onTouchEvent(android.view.MotionEvent&#34;&gt;https://developer.android.com/reference/android/view/View.html#onTouchEvent(android.view.MotionEvent&lt;/a&gt;)
+&lt;a href=&#34;https://developer.android.com/reference/android/view/MotionEvent.html&#34;&gt;MotionEvent&lt;/a&gt;
+&lt;a href=&#34;http://stackoverflow.com/a/12559204/3920448&#34;&gt;Calculate gesture distance in Android &amp;ndash; Stack Overflow&lt;/a&gt;
+&lt;a href=&#34;http://android-developers.blogspot.com/2010/06/making-sense-of-multitouch.html&#34;&gt;Making Sense of Multitouch&lt;/a&gt;
+&lt;a href=&#34;https://en.wikipedia.org/wiki/False_positives_and_false_negatives&#34;&gt;False positives and false negatives&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Goto 与拓扑排序</title>
+      <link>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</link>
+      <pubDate>Sat, 04 Jul 2015 20:24:15 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</guid>
+      <description>
+
+&lt;h2 id=&#34;goto-in-c:e47801faec949620d06a03161065dbeb&#34;&gt;goto in C&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt;在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。&lt;/p&gt;
+
+&lt;h3 id=&#34;goto-break-continue:e47801faec949620d06a03161065dbeb&#34;&gt;goto, break, continue&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt;,&lt;code&gt;break&lt;/code&gt;,&lt;code&gt;continue&lt;/code&gt; 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的&lt;code&gt;{}&lt;/code&gt;(scope)。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;continue&lt;/code&gt; 只能写在loop里，不然编译报：continue statement not within loop，&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;break&lt;/code&gt; 只能写在loop或者switch中，不然编译报：break statement not within loop or switch。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt; 则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过,用的好当然也可以增加效率的同时提高可读性。
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I think goto&amp;rsquo;s are fine, and they are often more readable than large
+amounts of indentation. That&amp;rsquo;s &lt;em&gt;especially&lt;/em&gt; true if the code flow isn&amp;rsquo;t
+actually naturally indented (in this case it is, so I don&amp;rsquo;t think using
+goto is in any way &lt;em&gt;clearer&lt;/em&gt; than not, but in general goto&amp;rsquo;s can be quite
+good for readability).
+&amp;mdash;Linus&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;拓扑排序:e47801faec949620d06a03161065dbeb&#34;&gt;拓扑排序&lt;/h2&gt;
+
+&lt;p&gt;《算法导论》中拓扑排序的例子，粉色的是各物件的依赖图，青色的是拓扑排序图。
+&lt;img src=&#34;http://ww4.sinaimg.cn/large/7f793092gw1ets46e3xppj20ok0kcq4d.jpg&#34; alt=&#34;&#34; /&gt;
+根据图，如果还没穿内裤，拿就必须要穿内裤那个节点开始走起；如果已经穿好内裤和裤子了，那从腰带开始走起便可。
+可以看出，拓扑排序图中的各物件的依赖关系与箭头相反，不管从哪点进入，最终的还是会到同一个节点。&lt;/p&gt;
+
+&lt;h2 id=&#34;内存管理引发的思考:e47801faec949620d06a03161065dbeb&#34;&gt;内存管理引发的思考&lt;/h2&gt;
+
+&lt;p&gt;在JOS的内存管理模块中，有一个&lt;code&gt;page_insert&lt;/code&gt;的函数，它负责记录&lt;code&gt;page&lt;/code&gt;的地址和权限，这个函数最终的结果只有一个，但输入有多种情况，为了处理这些情况，势必要写多个判断。
+插入的&lt;code&gt;pagetable&lt;/code&gt;中对应该&lt;code&gt;page&lt;/code&gt;的条目是否有旧纪录？如果没有直接插入，设置权限，结束；如果有，是否同一个&lt;code&gt;page&lt;/code&gt;，如果同一个，设置新权限，结束；如果不是同一个，删掉旧记录，插入该&lt;code&gt;page&lt;/code&gt;地址，设置权限，结束。
+大致的逻辑请看下图：
+&lt;img src=&#34;http://ww3.sinaimg.cn/large/7f793092gw1etufs6cjxnj20av0m1gmq.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从描述可知，只有条件跳转来处理这些情况会有许多重复的代码，而且不直观，难以理解。&lt;/p&gt;
+
+&lt;h3 id=&#34;不用-goto-的-page-insert:e47801faec949620d06a03161065dbeb&#34;&gt;不用&lt;code&gt;goto&lt;/code&gt;的&lt;code&gt;page_insert&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;无&lt;code&gt;goto&lt;/code&gt;，但代码重复，判断层级过多，不易理解。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm) {
+	pte_t *va_pte = pgdir_walk(pgdir, va, 1);
+	if (! va_pte)
+		// E_NO_MEM, if page table couldn&#39;t be allocated
+		return -E_NO_MEM;
+
+	physaddr_t pp_pa = page2pa(pp);
+
+	if ((*va_pte) &amp;amp; PTE_P) {
+		// There is something in this pte.
+		if (PTE_ADDR(*va_pte) == pp_pa) {
+			// Re-insert
+			*va_pte = pp_pa | perm | PTE_P;
+			if (perm | PTE_U)
+				// Changes to User Table
+				pgdir[PDX(va)] |= PTE_U;
+			return 0;
+		}
+		// Different page
+		page_remove(pgdir, va);
+	}
+
+	// Nothing in this PTE
+	*va_pte = pp_pa | perm | PTE_P;
+	if (perm | PTE_U)
+		// Changes to User Table
+		pgdir[PDX(va)] |= PTE_U;
+
+	pp-&amp;gt;pp_ref += 1;
+
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;使用-goto-的-page-insert:e47801faec949620d06a03161065dbeb&#34;&gt;使用&lt;code&gt;goto&lt;/code&gt;的&lt;code&gt;page_insert&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;有&lt;code&gt;goto&lt;/code&gt;，但代码不重复，跳转层级少，直观。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm) {
+	pte_t *va_pte = pgdir_walk(pgdir, va, 1);
+	if (! va_pte)
+		// E_NO_MEM, if page table couldn&#39;t be allocated
+		return -E_NO_MEM;
+
+	physaddr_t pp_pa = page2pa(pp);
+
+	if (! (*va_pte) &amp;amp; PTE_P)
+		// Nothing in this PTE
+		goto nonpresent;
+
+	// There is something in this pte.
+	if (PTE_ADDR(*va_pte) == pp_pa)
+		// Re-insert
+		goto present_same;
+	else
+		// Different page
+		goto present_different;
+
+	present_different:
+		page_remove(pgdir, va);
+
+	nonpresent:
+		*va_pte = pp_pa;
+		pp-&amp;gt;pp_ref += 1;
+		tlb_invalidate(pgdir, va);
+
+	present_same:
+		*va_pte = pp_pa | perm | PTE_P;
+		if (perm &amp;amp; PTE_U)
+			// Commits to User Table
+			pgdir[PDX(va)] |= PTE_U;
+		if (perm &amp;amp; PTE_W)
+			pgdir[PDX(va)] |= PTE_W;
+
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;总结:e47801faec949620d06a03161065dbeb&#34;&gt;总结&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;goto&lt;/code&gt;最好与判断写在一起，方便从语意理解此语句。&lt;/li&gt;
+&lt;li&gt;如果出口只有一个，进口有多个，可适当用&lt;code&gt;goto&lt;/code&gt;，符合DRY。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;another-fancy-case:e47801faec949620d06a03161065dbeb&#34;&gt;Another fancy case&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// error handler
+swith(i) {
+    case 1:
+        foo();
+        break;
+    case 2:
+        bar();
+        break;
+    case 3:
+        n = dosth_1();
+        if (n)
+            goto bad;
+        n = dosth_2();
+        if (n)
+            goto bad:
+        break;
+
+    default:
+    bad:
+        report();
+        end_this();
+        break;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;更多资料:e47801faec949620d06a03161065dbeb&#34;&gt;更多资料&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto&#34;&gt;https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto&lt;/a&gt;
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Topological_sorting&#34;&gt;https://en.wikipedia.org/wiki/Topological_sorting&lt;/a&gt;
+&lt;a href=&#34;https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131&#34;&gt;https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131&lt;/a&gt;
+Knuth, Donald E. &amp;ldquo;Structured Programming with go to Statements.&amp;rdquo; ACM Computing Surveys (CSUR) 6, no. 4 (1974): 261-301.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

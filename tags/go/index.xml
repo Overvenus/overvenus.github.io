@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on Neil</title>
+    <link>http://neilsh.com/tags/go/</link>
+    <description>Recent content in Go on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Mon, 09 Nov 2015 15:16:55 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>make slice map channel</title>
+      <link>http://neilsh.com/2015/11/09/make-slice-map-channel/</link>
+      <pubDate>Mon, 09 Nov 2015 15:16:55 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/11/09/make-slice-map-channel/</guid>
+      <description>
+
+&lt;h2 id=&#34;where-is-the-make-implemention:f54eeb4205b24658133f3791bb00140a&#34;&gt;Where is the make implemention?&lt;/h2&gt;
+
+&lt;p&gt;package &lt;strong&gt;runtime&lt;/strong&gt;
+By the way, &lt;em&gt;new&lt;/em&gt;, &lt;em&gt;map&lt;/em&gt;, &lt;em&gt;slice&lt;/em&gt;, &lt;em&gt;channel&lt;/em&gt;, &lt;em&gt;goroutine&lt;/em&gt; and &lt;em&gt;garbage collector&lt;/em&gt;[&lt;a href=&#34;https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8&#34;&gt;1&lt;/a&gt;] are also implemented in this package.&lt;/p&gt;
+
+&lt;h2 id=&#34;slices:f54eeb4205b24658133f3791bb00140a&#34;&gt;Slices&lt;/h2&gt;
+
+&lt;p&gt;Source file: go/src/runtime/slice.go&lt;/p&gt;
+
+&lt;h3 id=&#34;data-structure:f54eeb4205b24658133f3791bb00140a&#34;&gt;Data structure&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type slice struct {
+    array unsafe.Pointer
+    len   int
+    cap   int
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Underlying data structure of &lt;strong&gt;slice&lt;/strong&gt; is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of &lt;code&gt;unsafe.Pointer&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;// Pointer represents a pointer to an arbitrary type.  There are four special operations
+// available for type Pointer that are not available for other types.
+//  1) A pointer value of any type can be converted to a Pointer.
+//  2) A Pointer can be converted to a pointer value of any type.  &amp;lt;&amp;ndash; here!
+//  3) A uintptr can be converted to a Pointer.
+//  4) A Pointer can be converted to a uintptr.
+// Pointer therefore allows a program to defeat the type system and read and write
+// arbitrary memory. It should be used with extreme care.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In my opinion, &lt;strong&gt;Pointer&lt;/strong&gt; in Go and &lt;strong&gt;*void&lt;/strong&gt; in C are very like. &lt;em&gt;Pointer&lt;/em&gt; anesthetizes the type system and read and write arbitrary memory in Go. &lt;em&gt;*void&lt;/em&gt; can be converted to any type without warning in C.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h3 id=&#34;make-slices:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make slices&lt;/h3&gt;
+
+&lt;p&gt;Make slices is trival.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// TODO: take uintptrs instead of int64s?
+func makeslice(t *slicetype, len64, cap64 int64) slice {
+    // NOTE: The len &amp;gt; MaxMem/elemsize check here is not strictly necessary,
+    // but it produces a &#39;len out of range&#39; error instead of a &#39;cap out of range&#39; error
+    // when someone does make([]T, bignumber). &#39;cap out of range&#39; is true too,
+    // but since the cap is only being supplied implicitly, saying len is clearer.
+    // See issue 4085.
+    len := int(len64)
+    if len64 &amp;lt; 0 || int64(len) != len64 || t.elem.size &amp;gt; 0 &amp;amp;&amp;amp; uintptr(len) &amp;gt; _MaxMem/uintptr(t.elem.size) {
+        panic(errorString(&amp;quot;makeslice: len out of range&amp;quot;))
+    }
+    cap := int(cap64)
+    if cap &amp;lt; len || int64(cap) != cap64 || t.elem.size &amp;gt; 0 &amp;amp;&amp;amp; uintptr(cap) &amp;gt; _MaxMem/uintptr(t.elem.size) {
+        panic(errorString(&amp;quot;makeslice: cap out of range&amp;quot;))
+    }
+    p := newarray(t.elem, uintptr(cap))
+    return slice{p, len, cap}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, a slice is always 24 bytes(amd64, ubuntu 14.04 LTS), no matter how many elements it has or how much capacity it is. The actual data that a slice represents locate in other place, not in the slice itself. More details about slice can be found in [&lt;a href=&#34;https://gist.github.com/Overvenus/f6cf225ec33cc98d6b8c&#34;&gt;3&lt;/a&gt;] and [&lt;a href=&#34;https://blog.golang.org/go-slices-usage-and-internals&#34;&gt;4&lt;/a&gt;].&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;newarray&lt;/strong&gt; eventually calls &lt;strong&gt;mallocgc&lt;/strong&gt;, which will allocate memory in heap(for big array) or per-thread cache (for small array) [&lt;a href=&#34;http://goog-perftools.sourceforge.net/doc/tcmalloc.html&#34;&gt;2&lt;/a&gt;].&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// implementation of make builtin for slices
+func newarray(typ *_type, n uintptr) unsafe.Pointer {
+    flags := uint32(0)
+    if typ.kind&amp;amp;kindNoPointers != 0 {
+        flags |= flagNoScan
+    }
+    if int(n) &amp;lt; 0 || (typ.size &amp;gt; 0 &amp;amp;&amp;amp; n &amp;gt; _MaxMem/uintptr(typ.size)) {
+        panic(&amp;quot;runtime: allocation size out of range&amp;quot;)
+    }
+    return mallocgc(uintptr(typ.size)*n, typ, flags)
+    /*                               ^^  multiply size by n  */
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;maps:f54eeb4205b24658133f3791bb00140a&#34;&gt;Maps&lt;/h2&gt;
+
+&lt;p&gt;Source file: go/src/runtime/hashmap.go&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;// A map is just a hash table.  The data is arranged
+// into an array of buckets.  Each bucket contains up to
+// 8 key/value pairs.  The low-order bits of the hash are
+// used to select a bucket.  Each bucket contains a few
+// high-order bits of each hash to distinguish the entries
+// within a single bucket.
+//
+// If more than 8 keys hash to a bucket, we chain on
+// extra buckets.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;data-structure-1:f54eeb4205b24658133f3791bb00140a&#34;&gt;Data structure&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// A header for a Go map.
+type hmap struct {
+    // Note: the format of the Hmap is encoded in ../../cmd/internal/gc/reflect.go and
+    // ../reflect/type.go.  Don&#39;t change this structure without also changing that code!
+    count int // # live cells == size of map.  Must be first (used by len() builtin)
+    flags uint8
+    B     uint8  // log_2 of # of buckets (can hold up to loadFactor * 2^B items)
+    hash0 uint32 // hash seed
+
+    buckets    unsafe.Pointer // array of 2^B Buckets. may be nil if count==0.
+    oldbuckets unsafe.Pointer // previous bucket array of half the size, non-nil only when growing
+    nevacuate  uintptr        // progress counter for evacuation (buckets less than this have been evacuated)
+
+    // If both key and value do not contain pointers and are inline, then we mark bucket
+    // type as containing no pointers. This avoids scanning such maps.
+    // However, bmap.overflow is a pointer. In order to keep overflow buckets
+    // alive, we store pointers to all overflow buckets in hmap.overflow.
+    // Overflow is used only if key and value do not contain pointers.
+    // overflow[0] contains overflow buckets for hmap.buckets.
+    // overflow[1] contains overflow buckets for hmap.oldbuckets.
+    // The first indirection allows us to reduce static size of hmap.
+    // The second indirection allows to store a pointer to the slice in hiter.
+    overflow *[2]*[]*bmap
+}
+
+// A bucket for a Go map.
+type bmap struct {
+    tophash [bucketCnt]uint8
+    // Followed by bucketCnt keys and then bucketCnt values.
+    // NOTE: packing all the keys together and then all the values together makes the
+    // code a bit more complicated than alternating key/value/key/value/... but it allows
+    // us to eliminate padding which would be needed for, e.g., map[int64]int8.
+    // Followed by an overflow pointer.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;make-maps:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make maps&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// makemap implements a Go map creation make(map[k]v, hint)
+// If the compiler has determined that the map or the first bucket
+// can be created on the stack, h and/or bucket may be non-nil.
+// If h != nil, the map can be created directly in h.
+// If bucket != nil, bucket can be used as the first bucket.
+func makemap(t *maptype, hint int64, h *hmap, bucket unsafe.Pointer) *hmap {
+    if !ismapkey(t.key) {                             /* pointer --&amp;gt; ^^^^^ */
+        throw(&amp;quot;runtime.makemap: unsupported map key type&amp;quot;)
+    }
+
+    /* I delete some checks */
+
+    // make sure zeroptr is large enough
+    mapzero(t.elem)
+
+    // find size parameter which will hold the requested # of elements
+    B := uint8(0)
+    for ; hint &amp;gt; bucketCnt &amp;amp;&amp;amp; float32(hint) &amp;gt; loadFactor*float32(uintptr(1)&amp;lt;&amp;lt;B); B++ {
+    }
+
+    // allocate initial hash table
+    // if B == 0, the buckets field is allocated lazily later (in mapassign)
+    // If hint is large zeroing this memory could take a while.
+    buckets := bucket
+    if B != 0 {
+        buckets = newarray(t.bucket, uintptr(1)&amp;lt;&amp;lt;B)
+    }
+
+    // initialize Hmap
+    if h == nil {
+        h = (*hmap)(newobject(t.hmap))  /*  */
+    }
+    h.count = 0
+    h.B = B
+    h.flags = 0
+    h.hash0 = fastrand1()
+    h.buckets = buckets
+    h.oldbuckets = nil
+    h.nevacuate = 0
+
+    return h
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A map is always 8 bytes(amd64, ubuntu 14.04 LTS), because &lt;code&gt;makemap&lt;/code&gt; returns a poniter, ponites to hmap, the underlying data sturcture is allocated in heap.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// implementation of new builtin
+func newobject(typ *_type) unsafe.Pointer {
+    flags := uint32(0)
+    if typ.kind&amp;amp;kindNoPointers != 0 {
+        flags |= flagNoScan
+    }
+    return mallocgc(uintptr(typ.size), typ, flags)
+    /* compares with newarray, no multiplication */
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is worth nothing that &lt;code&gt;v, ok := map[k]&lt;/code&gt; and &lt;code&gt;v := map[k]&lt;/code&gt; are also implemented in this file.&lt;/p&gt;
+
+&lt;h2 id=&#34;channel:f54eeb4205b24658133f3791bb00140a&#34;&gt;Channel&lt;/h2&gt;
+
+&lt;p&gt;source file: go/src/runtime/channel.go&lt;/p&gt;
+
+&lt;h3 id=&#34;data-structure-2:f54eeb4205b24658133f3791bb00140a&#34;&gt;Data structure&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;type hchan struct {
+    qcount   uint           // total data in the queue
+    dataqsiz uint           // size of the circular queue
+    buf      unsafe.Pointer // points to an array of dataqsiz elements
+    elemsize uint16
+    closed   uint32
+    elemtype *_type // element type
+    sendx    uint   // send index
+    recvx    uint   // receive index
+    recvq    waitq  // list of recv waiters
+    sendq    waitq  // list of send waiters
+    lock     mutex
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;make-chan:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make chan&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;func makechan(t *chantype, size int64) *hchan {
+    elem := t.elem
+
+    /* I delete some checks */
+
+    var c *hchan
+    if elem.kind&amp;amp;kindNoPointers != 0 || size == 0 {
+        // Allocate memory in one call.
+        // Hchan does not contain pointers interesting for GC in this case:
+        // buf points into the same allocation, elemtype is persistent.
+        // SudoG&#39;s are referenced from their owning thread so they can&#39;t be collected.
+        // TODO(dvyukov,rlh): Rethink when collector can move allocated objects.
+        c = (*hchan)(mallocgc(hchanSize+uintptr(size)*uintptr(elem.size), nil, flagNoScan))
+        if size &amp;gt; 0 &amp;amp;&amp;amp; elem.size != 0 {
+            c.buf = add(unsafe.Pointer(c), hchanSize)
+        } else {
+            // race detector uses this location for synchronization
+            // Also prevents us from pointing beyond the allocation (see issue 9401).
+            c.buf = unsafe.Pointer(c)
+        }
+    } else {
+        c = new(hchan)
+        c.buf = newarray(elem, uintptr(size))
+    }
+    c.elemsize = uint16(elem.size)
+    c.elemtype = elem
+    c.dataqsiz = uint(size)
+
+    if debugChan {
+        print(&amp;quot;makechan: chan=&amp;quot;, c, &amp;quot;; elemsize=&amp;quot;, elem.size, &amp;quot;; elemalg=&amp;quot;, elem.alg, &amp;quot;; dataqsiz=&amp;quot;, size, &amp;quot;\n&amp;quot;)
+    }
+    return c
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A channel variable at runtime(not package) is very much like a map variable, they are both pointers, pointes to heap.&lt;/p&gt;
+
+&lt;h2 id=&#34;make-gist:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make gist&lt;/h2&gt;
+
+&lt;p&gt;I wrote a gist to uncover slice, map and channel at runtime(not package)&lt;a href=&#34;http://goog-perftools.sourceforge.net/doc/tcmalloc.html&#34;&gt;2&lt;/a&gt;.&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/Overvenus/f6cf225ec33cc98d6b8c.js&#34;&gt;&lt;/script&gt;
+
+&lt;h3 id=&#34;outputs-in-my-laptop:f54eeb4205b24658133f3791bb00140a&#34;&gt;Outputs in my laptop&lt;/h3&gt;
+
+&lt;p&gt;Env: Ubuntu 14.04 LTS, amd64&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ go run make.go
+GOOS linux
+GOARCH amd64
+--- array &amp;amp; slice ---
+si: type: [100]int
+si: sizeof: 800
+si: address 1st ele.: 0xc820062380
+---
+asi:    type: *[100]int
+asi:    sizeof: 8
+asi:    address: 0xc820062380
+asi:    address 1st ele.: 0xc820062380
+---
+si[:20]:    type: []int
+si[:20]:    sizeof: 24
+si[:20]:    address 1st ele.: 0xc820062380
+---
+si[:80]:    type: []int
+si[:80]:    sizeof: 24
+si[:80]:    address 1st ele.: 0xc820062380
+---
+assi:   type: *[]int
+assi:   sizeof: 8
+assi:   address: 0xc8200105e0
+--- map ---
+m:  type: map[int]int
+m:  sizeof: 8
+---
+am: type: *map[int]int
+am: sizeof: 8
+--- channel ---
+ci: type: chan int
+ci: sizeof: 8
+---
+aci:    type: *chan int
+aci:    sizeof: 8
+---
+ci: type: chan int
+ci: sizeof: 8
+---
+abci:   type: *chan int
+abci:   sizeof: 8
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;links:f54eeb4205b24658133f3791bb00140a&#34;&gt;Links&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1], &lt;a href=&#34;https://docs.google.com/document/d/1P3BLR31VA8cvLJLfMibSuTdwTuF7WWLux71CYD0eeD8&#34;&gt;Go 1.3+ Compiler Overhaul&lt;/a&gt;
+[2], &lt;a href=&#34;http://goog-perftools.sourceforge.net/doc/tcmalloc.html&#34;&gt;TCMalloc : Thread-Caching Malloc&lt;/a&gt;
+[3], &lt;a href=&#34;https://gist.github.com/Overvenus/f6cf225ec33cc98d6b8c&#34;&gt;slice, map and channel at runtime&lt;/a&gt;
+[4], &lt;a href=&#34;https://blog.golang.org/go-slices-usage-and-internals&#34;&gt;Go Slices: usage and internals&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Go Note</title>
+      <link>http://neilsh.com/2015/10/08/golang-note/</link>
+      <pubDate>Thu, 08 Oct 2015 22:03:01 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/10/08/golang-note/</guid>
+      <description>
+
+&lt;!--
+TODO:
+   - ...
+--&gt;
+
+&lt;h2 id=&#34;new-make-and-local-variable:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;&lt;code&gt;new&lt;/code&gt;, &lt;code&gt;make&lt;/code&gt; and Local variable&lt;/h2&gt;
+
+&lt;p&gt;In short: new allocates memory; make initializes the slice, map, and channel types; local variable may be not &lt;em&gt;local&lt;/em&gt; at all.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;new&lt;/code&gt;: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;make&lt;/code&gt;: creates slices, maps, and channels only, and it returns an &lt;em&gt;initialized (not zeroed)&lt;/em&gt; value of type T (not *T).&lt;/p&gt;
+
+&lt;p&gt;Local variable: unlike in C, it&amp;rsquo;s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., &lt;code&gt;return &amp;amp;File{fd: fd, name: name}&lt;/code&gt;)
+ &amp;ndash; &lt;a href=&#34;https://golang.org/doc/effective_go.html#allocation_new&#34;&gt;Effective GO#allocation_new&lt;/a&gt;
+&lt;!-- more --&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;stack-or-heap:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Stack or Heap?&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://golang.org/doc/faq#stack_or_heap&#34;&gt;Golang FAQ#stackheap&lt;/a&gt;
+&lt;strong&gt;How do I know whether a variable is allocated on the heap or the stack?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;From a correctness standpoint, you don&amp;rsquo;t need to know. Each variable in Go exists as long as there are &lt;em&gt;references&lt;/em&gt; to it. The storage location chosen by the implementation is irrelevant to the semantics of the language.&lt;/p&gt;
+
+&lt;p&gt;The storage location does have an effect on writing efficient programs. When possible, the Go compilers will allocate variables that are local to a function in that function&amp;rsquo;s stack frame. However, if the compiler cannot prove that the variable is not referenced after the function returns, then the compiler must allocate the variable on the garbage-collected heap to avoid dangling pointer errors. Also, if a local variable is very large, it might make more sense to store it on the heap rather than the stack.&lt;/p&gt;
+
+&lt;p&gt;In the current compilers, if a variable has its address taken, that variable is a candidate for allocation on the heap. However, a basic escape analysis recognizes some cases when such variables will not live past the return from the function and can reside on the stack.&lt;/p&gt;
+
+&lt;p&gt;An excellent talk about stack and heap of Go. &lt;a href=&#34;http://dave.cheney.net/2014/06/07/five-things-that-make-go-fast&#34;&gt;Five things that make Go fast&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;happen-before-and-channel:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Happen before and Channel&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://golang.org/ref/mem#tmp_7&#34;&gt;Golang Memory Model#channel&lt;/a&gt;
+&amp;gt; A send on a channel happens before the corresponding receive from that channel completes.&lt;/p&gt;
+
+&lt;p&gt;An interesting case where &lt;em&gt;Happen Before&lt;/em&gt; will take place.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;var c = make(chan int)
+var a string
+
+func f() {
+    a = &amp;quot;hello, world&amp;quot;
+    &amp;lt;-c
+}
+func main() {
+    go f()
+    c &amp;lt;- 0
+    print(a)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This snippet guarantes to print &amp;ldquo;hello, world&amp;rdquo;. The write to a happens before the receive on c, which happens before the corresponding send on c completes, which happens before the print.
+If the channel were buffered (e.g., &lt;code&gt;c = make(chan int, 1)&lt;/code&gt;) then the program would not be guaranteed to print &amp;ldquo;hello, world&amp;rdquo;. (It might print the empty string, crash, or do something else.)&lt;/p&gt;
+
+&lt;h2 id=&#34;concurrency:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Concurrency&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://talks.golang.org/2012/concurrency.slide&#34;&gt;Go Concurrency Patterns&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;main-exits:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;&lt;code&gt;main&lt;/code&gt; exits&lt;/h3&gt;
+
+&lt;p&gt;What happens to goroutines that running background when main function returns?&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;When the main returns, the programm goes away.
+       &amp;ndash; &lt;a href=&#34;https://youtu.be/f6kdp27TYZs?t=7m46s&#34;&gt;Rob Pike#main_exit&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It confused me for a long time, now I get a concrete answer.&lt;/p&gt;
+
+&lt;h3 id=&#34;generator-in-go:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Generator in Go&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Generator: function that returns a channel.
+Channels are first-class values, just like strings or integers.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import &amp;quot;fmt&amp;quot;
+import &amp;quot;time&amp;quot;
+import &amp;quot;math/rand&amp;quot;
+
+func main() {
+    // Python-like usage
+    for s := range boring(&amp;quot;generator&amp;quot;) {
+        fmt.Println(s)
+    }
+
+    fmt.Println(&amp;quot;func main exits&amp;quot;)
+}
+
+// ### Generator ###
+func boring(msg string) &amp;lt;-chan string { // Returns receive-only channel of strings.
+    c := make(chan string)
+    go func() { // We launch the goroutine from inside the function.
+        for i := 0; i &amp;lt; 10; i++ {
+            c &amp;lt;- fmt.Sprintf(&amp;quot;%s %d&amp;quot;, msg, i)
+            time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
+        }
+        close(c) // close channel c, otherwise for-range will be blocked.
+    }()
+    return c // Return the channel to the caller.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unlike &lt;strong&gt;Generator&lt;/strong&gt; in Python, the concept in Go is simple: &lt;em&gt;Generator: function that returns a channel&lt;/em&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Python Generator: generates data in time.&lt;/li&gt;
+&lt;li&gt;Go Generator: return a channel, reveives data in time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;tricky-keyword-select:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Tricky Keyword, &lt;code&gt;select&lt;/code&gt;&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Select&lt;/p&gt;
+
+&lt;p&gt;The select statement provides another way to handle multiple channels.
+It&amp;rsquo;s like a switch, but each case is a communication:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;All channels are evaluated.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Selection blocks until one communication can proceed, which then does.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;If multiple can proceed, select chooses pseudo-randomly.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;A default clause, if present, executes immediately if no channel is ready.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;select {
+    case v1 := &amp;lt;-c1:
+        fmt.Printf(&amp;quot;received %v from c1\n&amp;quot;, v1)
+    case v2 := &amp;lt;-c2:
+        fmt.Printf(&amp;quot;received %v from c2\n&amp;quot;, v1)
+    case c3 &amp;lt;- 23:
+        fmt.Printf(&amp;quot;sent %v to c3\n&amp;quot;, 23)
+    default:
+        fmt.Printf(&amp;quot;no one was ready to communicate\n&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Select with &lt;strong&gt;default&lt;/strong&gt; is a non-blocking statement, even if no other case can be processed. Without &lt;strong&gt;default&lt;/strong&gt;, select block forever if no other case can be processed.&lt;/p&gt;
+
+&lt;p&gt;END.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

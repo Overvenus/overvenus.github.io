@@ -1,823 +1,282 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Summary," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="公开课2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系">
-<meta property="og:type" content="article">
-<meta property="og:title" content="2015年总结">
-<meta property="og:url" content="http://neilsh.me/2015/12/31/summary-2015/index.html">
-<meta property="og:site_name" content="Neil">
-<meta property="og:description" content="公开课2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系">
-<meta property="og:image" content="http://ww3.sinaimg.cn/large/7f793092gw1ezitciklpaj20gf0cqjv1.jpg">
-<meta property="og:updated_time" content="2016-01-22T09:57:05.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2015年总结">
-<meta name="twitter:description" content="公开课2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Muse',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 0,
-      author: 'Author'
-    }
-  };
-</script>
-
-  <title> 2015年总结 | Neil </title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
-
-  
-
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-69367210-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">Neil</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">Share something cool.</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu ">
-      
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Neil Shen&#39;s summary of 2015.">
+<meta name="keywords" content="summary, 2015, reading, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="Neil Shen&#39;s summary of 2015."/>
+<meta property="og:title" content="2015年总结 &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.com/2015/12/31/summary-2015/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-12-31"/>
+<meta property="article:modified_time" content="2015-12-31"/>
+
+
+<meta property="article:tag" content="summary">
+<meta property="article:tag" content="2015">
+<meta property="article:tag" content="reading">
+
+
+
+        <link rel="icon" href="http://neilsh.com/assets/favicon.png" type="image/x-icon">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            Home
-          </a>
-        </li>
-      
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-font.css">
         
-        <li class="menu-item menu-item-about">
-          <a href="/me" rel="section">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-base.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/highlight-9.1.0-default.min.css">
+        <title>
             
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+                2015年总结 &middot; Neil
             
-            About
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
-
-      
-      
-      
-    </ul>
-  
-
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                2015年总结
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2015-12-31T11:12:58+08:00" content="2015-12-31">
-              2015-12-31
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/12/31/summary-2015/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/31/summary-2015/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-        </div>
-      </header>
-    
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">2015年总结</h1>
+                    <aside>
+                        <p>on <strong>Thu, Dec 31, 2015</strong></p>
+                    </aside>
+                
+            </header>
 
 
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <h2 id="u516C_u5F00_u8BFE"><a href="#u516C_u5F00_u8BFE" class="headerlink" title="公开课"></a>公开课</h2><p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。<br>等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。<br>论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
+<div id="toc">
+    <nav id="TableOfContents">
 <ul>
-<li>Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf" target="_blank" rel="external">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf</a>.</li>
-<li>Belay, Adam, George Prekas, Ana Klimovic, Samuel Grossman, Christos Kozyrakis, and Edouard Bugnion. 2014. “IX: A Protected Dataplane Operating System for High Throughput and Low Latency.” Proceedings of the 11th USENIX Conference on Operating Systems Design and Implementation, 49–65. <a href="http://dl.acm.org/citation.cfm?id=2685048.2685053" target="_blank" rel="external">http://dl.acm.org/citation.cfm?id=2685048.2685053</a>.</li>
-<li>Boyd-wickizer, Silas, M Frans Kaashoek, Robert Morris, and Nickolai Zeldovich. 2012. “Non-Scalable Locks Are Dangerous.” Proceedings of the Linux Symposium. <a href="http://ns1.fs.net/papers/linux:lock.pdf" target="_blank" rel="external">http://ns1.fs.net/papers/linux:lock.pdf</a>.</li>
-<li>Clements, Austin T, M Frans Kaashoek, and Nickolai Zeldovich. 2013. “RadixVM : Scalable Address Spaces for Multithreaded Applications.” EuroSys, 211–24. doi:10.1145/2465351.2465373.</li>
-<li>Engler, D R, M F Kaaspoek, and J O’Toole. 1995. “ExoKernel: An Operating System Architecture for Application Level Resource Management.” Proceedings of the 15th ACM Symposium on Operating System Principles 1 (212): 256–66. doi:<a href="http://doi.acm.org/10.1145/224056.224076" target="_blank" rel="external">http://doi.acm.org/10.1145/224056.224076</a>.</li>
-<li>Hunt, Galen C, and James R Larus. 2007. “Singularity: Rethinking the Software Stack.” Contract 41 (2): 37–49. doi:10.1145/1243418.1243424.<a id="more"></a></li>
-<li>Kivity, Avi, Uri Lublin, Anthony Liguori, Yaniv Kamay, and Dor Laor. 2007. “Kvm: The Linux Virtual Machine Monitor.” Proceedings of the Linux Symposium 1: 225–30. <a href="https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225" target="_blank" rel="external">https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225</a>.</li>
-<li>Ritchie, D M, and K Thompson. 1974. “The UNIX Time-Sharing System.” Communications of the ACM 17 (7): 365–75.</li>
-<li>Ritchie, Dm. 1984. “The Evolution of the Unix Time-Sharing System.” AT&amp;T Bell Laboratories Technical Journal 63 (6): 1577–93. doi:10.1007/3-540-09745-7_2.</li>
-<li>Simon, Herbert A, Philosophical Society, and No Dec. 2007. “The Architecture of Complexity” 106 (6): 467–82. doi:10.2307/985254.</li>
-<li>Tang, Shuo, Haohui Mai, and S.T. King. 2010. “Trust and Protection in the Illinois Browser Operating System.” Proceedings of the 9th USENIX Symposium on Operating Systems Design and Implementation (OSDI ’10), no. October: 17–31. <a href="http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf" target="_blank" rel="external">http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf</a>.</li>
-<li>Bolosky, William J, Dexter Bradshaw, Randolph B Haagens, Norbert P Kusters, and Peng Li. 2011. “Paxos Replicated State Machines as the Basis of a High-Performance Data Store 2 . Paxos Replicated State Ma- Chines.” System, 11.</li>
-<li>Cao, P, E Felten, and K Li. 1994. “Implementation and Performance of Application-Controlled File Caching.” Proceedings of the First Symposium on Operating Systems Design and Implementation, 165–78. citeseer.ifi.unizh.ch/cao94implementation.html.</li>
-<li>Chandra, Tushar, Robert Griesemer, and Joshua Redstone. 2007a. “Paxos Made Live - An Engineering Perspective ( 2006 Invited Talk ).” Perspective 7: 398–407. doi:10.1145/1281100.1281103.</li>
-<li>Tushar Chandra, Robert Griesemer, and Joshua Redstone. 2007b. “Paxos Made Live: An Engineering Perspective.” Proceedings of the Twenty-Sixth Annual ACM Symposium on Principles of Distributed Computing, 398–407. doi:10.1145/1281100.1281103.</li>
-<li>Corbett, James C, Jeffrey Dean, Michael Epstein, Andrew Fikes, Christopher Frost, J J Furman, Sanjay Ghemawat, et al. 2012. “Spanner : Google ’ S Globally-Distributed Database.” Proceedings of OSDI 2012, 1–14. doi:10.1145/2491245.</li>
-<li>Cully, Brendan, Geoffrey Lefebvre, and Dutch Meyer. 2008. “Remus: High Availability via Asynchronous Virtual Machine Replication.” Proceedings of the 5th … vi: 161–74. <a href="http://portal.acm.org/citation.cfm?id=1387589.1387601\nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/" target="_blank" rel="external">http://portal.acm.org/citation.cfm?id=1387589.1387601\nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/</a>.</li>
-<li>Dean, Jeffrey, and Sanjay Ghemawat. n.d. “MapReduce : Simplified Data Processing on Large Clusters,” 137–49.</li>
-<li>Fischer, Michael J., Nancy A. Lynch, and Michael S. Paterson. 1985. “Impossibility of Distributed Consensus with One Faulty Process.” Journal of the ACM 32 (2): 374–82. doi:10.1145/3149.214121.</li>
-<li>Hunt, Patrick, Mahadev Konar, Fp Junqueira, and Benjamin Reed. 2010. “ZooKeeper: Wait-Free Coordination for Internet-Scale Systems.” USENIX Annual Technical … 8: 11–11. <a href="http://portal.acm.org/citation.cfm?id=1855851\nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf" target="_blank" rel="external">http://portal.acm.org/citation.cfm?id=1855851\nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf</a>.</li>
-<li>Lamport, Leslie. 2001. “Paxos Made Simple.” ACM SIGACT News 32 (4): 51–58. doi:10.1145/568425.568433.</li>
-<li>Liskov, Barbara, and James Cowling. 2012. “Viewstamped Replication Revisited,” no. MIT-CSAIL-TR-2012-021: 1–14.</li>
-<li>Liskov, Barbara, Sanjay Ghemawat, Robert Gruber, Paul Johnson, and Liuba Shrira. 1991. “Replication in the Harp File System.” ACM SIGOPS Operating Systems Review 25: 226–38. doi:10.1145/121133.121169.</li>
-<li>Nightingale, Edmund B., Jeremy Elson, and Jinliang Fan. 2012. “Flat Datacenter Storage.” OSDI’12 Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 1–15. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf" target="_blank" rel="external">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf</a>.</li>
-<li>Drepper, Ulrich. 2007. “What Every Programmer Should Know about Memory.” Red Hat, Inc 3: 114. doi:10.1.1.91.957.</li>
-<li>Fähndrich, Manuel, Mark Aiken, Chris Hawblitzel, Orion Hodson, Galen Hunt, James R. Larus, and Steven Levi. 2006. “Language Support for Fast and Reliable Message-Based Communication in Singularity OS.” ACM SIGOPS Operating Systems Review 40 (4): 177. doi:10.1145/1218063.1217953.</li>
-<li>Mellor-crummey, John M, and Michael L Scott. 1991. “Calable Synchronization on.” Computer 9 (1): 21–65. doi:10.1145/103727.103729.</li>
-<li>Patterson, David a., Garth Gibson, and Randy H. Katz. 1988. “A Case for Redundant Arrays of Inexpensive Disks (RAID).” ACM SIGMOD Record 17 (3): 109–16. doi:10.1145/971701.50214.</li>
-<li>Saltzer, J. H., D. P. Reed, and D. D. Clark. 1984. “End-to-End Arguments in System Design.” ACM Transactions on Computer Systems 2 (4): 277–88. doi:10.1145/357401.357402.</li>
-<li>Savage, Stefan, Michael Burrows, Greg Nelson, Patrick Sobalvarro, and Thomas Anderson. 1997. “Eraser: A Dynamic Data Race Detector for Multithreaded Programs.” ACM Transactions on Computer Systems 15 (4): 391–411. doi:10.1145/265924.265927.</li>
-<li>Tweedie, SC. 1998. “Journaling the Linux ext2fs Filesystem.” The Fourth Annual Linux Expo, 1–8. <a href="http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf" target="_blank" rel="external">http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf</a>.</li>
-<li>Uhlig, Rich, Gil Neiger, Dion Rodgers, Amy L. Santoni, Fernando C M Martins, Andrew V. Anderson, Steven M. Bennett, Alain Kägi, Felix H. Leung, and Larry Smith. 2005. “Intel Virtualization Technology.” Computer 38 (5): 48–56. doi:10.1109/MC.2005.163.</li>
+<li>
+<ul>
+<li><a href="#公开课:f7f78efa2947b615033306c6fc2dd7d2">公开课</a></li>
+<li><a href="#项目:f7f78efa2947b615033306c6fc2dd7d2">项目</a></li>
+<li><a href="#阅读:f7f78efa2947b615033306c6fc2dd7d2">阅读</a></li>
+<li><a href="#值得一提:f7f78efa2947b615033306c6fc2dd7d2">值得一提</a></li>
+<li><a href="#总结与展望:f7f78efa2947b615033306c6fc2dd7d2">总结与展望</a></li>
+</ul></li>
 </ul>
-<h2 id="u9879_u76EE"><a href="#u9879_u76EE" class="headerlink" title="项目"></a>项目</h2><p>JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中<a href="/2015/08/30/few_words_about_6_828/">学到了很多</a>。<br>其他的几个小项目倒更像是玩具，不在这显摆了。</p>
-<h2 id="u9605_u8BFB"><a href="#u9605_u8BFB" class="headerlink" title="阅读"></a>阅读</h2><p>在 2015 一年里，书看得不是很多。我很难想象别人是怎么看完那长长的书单的。</p>
+</nav>
+</div>
+
+<article class="article-content">
+    
+
+<h2 id="公开课:f7f78efa2947b615033306c6fc2dd7d2">公开课</h2>
+
+<p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。
+等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。
+论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
+
+<h2 id="项目:f7f78efa2947b615033306c6fc2dd7d2">项目</h2>
+
+<p>JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中<a href="/2015/08/30/few_words_about_6_828/">学到了很多</a>。
+其他的几个小项目倒更像是玩具，不在这显摆了。</p>
+
+<h2 id="阅读:f7f78efa2947b615033306c6fc2dd7d2">阅读</h2>
+
+<p>在 2015 一年里，书看得不是很多。我很难想象别人是怎么看完那长长的书单的。</p>
+
 <ul>
 <li>《C和指针》 Kenneth A. Reek</li>
 <li>《算法导论》前四章 Thomas H.Cormen, Charles E.Leiserson, Ronald L.Rivest, Clifford Stein</li>
 <li>《计算机系统设计原理》 Jerome H. Saltzer, M. Frans Kaashoek</li>
 <li>《现代操作系统》 Andrew S. Tanenbaum</li>
 <li>《Structured Computer Organization》 Andrew S. Tanenbaum</li>
-<li>《深入理解计算机系统》 Randal E.Bryant, David R.O’Hallaron</li>
+<li>《深入理解计算机系统》 Randal E.Bryant, David R.O&rsquo;Hallaron</li>
 </ul>
-<hr>
+
+<hr/>
+
 <ul>
-<li>《如何阅读一本书》 莫提默·J. 艾德勒 查尔斯·范多伦 </li>
+<li>《如何阅读一本书》 莫提默·J. 艾德勒 查尔斯·范多伦</li>
 <li>《民主的细节》 刘瑜</li>
 <li>《黑客与画家》 Paul Graham</li>
 <li>《三体》 刘慈欣</li>
 <li>《百年孤独》 加西亚·马尔克斯 著 范晔 译</li>
-<li>《基督山伯爵》 大仲马</li>
 </ul>
-<h2 id="u503C_u5F97_u4E00_u63D0"><a href="#u503C_u5F97_u4E00_u63D0" class="headerlink" title="值得一提"></a>值得一提</h2><ul>
+
+<p>论文：</p>
+
+<ul>
+<li>Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf</a>.</li>
+<li>Belay, Adam, George Prekas, Ana Klimovic, Samuel Grossman, Christos Kozyrakis, and Edouard Bugnion. 2014. “IX: A Protected Dataplane Operating System for High Throughput and Low Latency.” Proceedings of the 11th USENIX Conference on Operating Systems Design and Implementation, 49–65. <a href="http://dl.acm.org/citation.cfm?id=2685048.2685053">http://dl.acm.org/citation.cfm?id=2685048.2685053</a>.</li>
+<li>Boyd-wickizer, Silas, M Frans Kaashoek, Robert Morris, and Nickolai Zeldovich. 2012. “Non-Scalable Locks Are Dangerous.” Proceedings of the Linux Symposium. <a href="http://ns1.fs.net/papers/linux:lock.pdf">http://ns1.fs.net/papers/linux:lock.pdf</a>.</li>
+<li>Clements, Austin T, M Frans Kaashoek, and Nickolai Zeldovich. 2013. “RadixVM : Scalable Address Spaces for Multithreaded Applications.” EuroSys, 211–24. doi:10.<sup>1145</sup>&frasl;<sub>2465351</sub>.2465373.</li>
+<li>Engler, D R, M F Kaaspoek, and J O’Toole. 1995. “ExoKernel: An Operating System Architecture for Application Level Resource Management.” Proceedings of the 15th ACM Symposium on Operating System Principles 1 (212): 256–66. doi:<a href="http://doi.acm.org/10.1145/224056.224076">http://doi.acm.org/10.1145/224056.224076</a>.</li>
+<li>Hunt, Galen C, and James R Larus. 2007. “Singularity: Rethinking the Software Stack.” Contract 41 (2): 37–49. doi:10.<sup>1145</sup>&frasl;<sub>1243418</sub>.1243424.</li>
+<li>Kivity, Avi, Uri Lublin, Anthony Liguori, Yaniv Kamay, and Dor Laor. 2007. “Kvm: The Linux Virtual Machine Monitor.” Proceedings of the Linux Symposium 1: 225–30. <a href="https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225">https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225</a>.</li>
+<li>Ritchie, D M, and K Thompson. 1974. “The UNIX Time-Sharing System.” Communications of the ACM 17 (7): 365–75.</li>
+<li>Ritchie, Dm. 1984. “The Evolution of the Unix Time-Sharing System.” AT&amp;T Bell Laboratories Technical Journal 63 (6): 1577–93. doi:10.<sup>1007</sup>&frasl;<sub>3</sub>-540-09745-7_2.</li>
+<li>Simon, Herbert A, Philosophical Society, and No Dec. 2007. “The Architecture of Complexity” 106 (6): 467–82. doi:10.<sup>2307</sup>&frasl;<sub>985254</sub>.</li>
+<li>Tang, Shuo, Haohui Mai, and S.T. King. 2010. “Trust and Protection in the Illinois Browser Operating System.” Proceedings of the 9th USENIX Symposium on Operating Systems Design and Implementation (OSDI ’10), no. October: 17–31. <a href="http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf">http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf</a>.</li>
+<li>Bolosky, William J, Dexter Bradshaw, Randolph B Haagens, Norbert P Kusters, and Peng Li. 2011. “Paxos Replicated State Machines as the Basis of a High-Performance Data Store 2 . Paxos Replicated State Ma- Chines.” System, 11.</li>
+<li>Cao, P, E Felten, and K Li. 1994. “Implementation and Performance of Application-Controlled File Caching.” Proceedings of the First Symposium on Operating Systems Design and Implementation, 165–78. citeseer.ifi.unizh.ch/cao94implementation.html.</li>
+<li>Chandra, Tushar, Robert Griesemer, and Joshua Redstone. 2007a. “Paxos Made Live - An Engineering Perspective ( 2006 Invited Talk ).” Perspective 7: 398–407. doi:10.<sup>1145</sup>&frasl;<sub>1281100</sub>.1281103.</li>
+<li>Tushar Chandra, Robert Griesemer, and Joshua Redstone. 2007b. “Paxos Made Live: An Engineering Perspective.” Proceedings of the Twenty-Sixth Annual ACM Symposium on Principles of Distributed Computing, 398–407. doi:10.<sup>1145</sup>&frasl;<sub>1281100</sub>.1281103.</li>
+<li>Corbett, James C, Jeffrey Dean, Michael Epstein, Andrew Fikes, Christopher Frost, J J Furman, Sanjay Ghemawat, et al. 2012. “Spanner : Google ’ S Globally-Distributed Database.” Proceedings of OSDI 2012, 1–14. doi:10.<sup>1145</sup>&frasl;<sub>2491245</sub>.</li>
+<li>Cully, Brendan, Geoffrey Lefebvre, and Dutch Meyer. 2008. “Remus: High Availability via Asynchronous Virtual Machine Replication.” Proceedings of the 5th … vi: 161–74. <a href="http://portal.acm.org/citation.cfm?id=1387589.1387601nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/">http://portal.acm.org/citation.cfm?id=1387589.1387601nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/</a>.</li>
+<li>Dean, Jeffrey, and Sanjay Ghemawat. n.d. “MapReduce : Simplified Data Processing on Large Clusters,” 137–49.</li>
+<li>Fischer, Michael J., Nancy A. Lynch, and Michael S. Paterson. 1985. “Impossibility of Distributed Consensus with One Faulty Process.” Journal of the ACM 32 (2): 374–82. doi:10.<sup>1145</sup>&frasl;<sub>3149</sub>.214121.</li>
+<li>Hunt, Patrick, Mahadev Konar, Fp Junqueira, and Benjamin Reed. 2010. “ZooKeeper: Wait-Free Coordination for Internet-Scale Systems.” USENIX Annual Technical … 8: 11–11. <a href="http://portal.acm.org/citation.cfm?id=1855851nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf">http://portal.acm.org/citation.cfm?id=1855851nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf</a>.</li>
+<li>Lamport, Leslie. 2001. “Paxos Made Simple.” ACM SIGACT News 32 (4): 51–58. doi:10.<sup>1145</sup>&frasl;<sub>568425</sub>.568433.</li>
+<li>Liskov, Barbara, and James Cowling. 2012. “Viewstamped Replication Revisited,” no. MIT-CSAIL-TR-2012-021: 1–14.</li>
+<li>Liskov, Barbara, Sanjay Ghemawat, Robert Gruber, Paul Johnson, and Liuba Shrira. 1991. “Replication in the Harp File System.” ACM SIGOPS Operating Systems Review 25: 226–38. doi:10.<sup>1145</sup>&frasl;<sub>121133</sub>.121169.</li>
+<li>Nightingale, Edmund B., Jeremy Elson, and Jinliang Fan. 2012. “Flat Datacenter Storage.” OSDI’12 Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 1–15. <a href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf">https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf</a>.</li>
+<li>Drepper, Ulrich. 2007. “What Every Programmer Should Know about Memory.” Red Hat, Inc 3: 114. doi:10.1.1.91.957.</li>
+<li>Fähndrich, Manuel, Mark Aiken, Chris Hawblitzel, Orion Hodson, Galen Hunt, James R. Larus, and Steven Levi. 2006. “Language Support for Fast and Reliable Message-Based Communication in Singularity OS.” ACM SIGOPS Operating Systems Review 40 (4): 177. doi:10.<sup>1145</sup>&frasl;<sub>1218063</sub>.1217953.</li>
+<li>Mellor-crummey, John M, and Michael L Scott. 1991. “Calable Synchronization on.” Computer 9 (1): 21–65. doi:10.<sup>1145</sup>&frasl;<sub>103727</sub>.103729.</li>
+<li>Patterson, David a., Garth Gibson, and Randy H. Katz. 1988. “A Case for Redundant Arrays of Inexpensive Disks (RAID).” ACM SIGMOD Record 17 (3): 109–16. doi:10.<sup>1145</sup>&frasl;<sub>971701</sub>.50214.</li>
+<li>Saltzer, J. H., D. P. Reed, and D. D. Clark. 1984. “End-to-End Arguments in System Design.” ACM Transactions on Computer Systems 2 (4): 277–88. doi:10.<sup>1145</sup>&frasl;<sub>357401</sub>.357402.</li>
+<li>Savage, Stefan, Michael Burrows, Greg Nelson, Patrick Sobalvarro, and Thomas Anderson. 1997. “Eraser: A Dynamic Data Race Detector for Multithreaded Programs.” ACM Transactions on Computer Systems 15 (4): 391–411. doi:10.<sup>1145</sup>&frasl;<sub>265924</sub>.265927.</li>
+<li>Tweedie, SC. 1998. “Journaling the Linux ext2fs Filesystem.” The Fourth Annual Linux Expo, 1–8. <a href="http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf">http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf</a>.</li>
+<li>Uhlig, Rich, Gil Neiger, Dion Rodgers, Amy L. Santoni, Fernando C M Martins, Andrew V. Anderson, Steven M. Bennett, Alain Kägi, Felix H. Leung, and Larry Smith. 2005. “Intel Virtualization Technology.” Computer 38 (5): 48–56. doi:10.1109/MC.2005.163.</li>
+</ul>
+
+<h2 id="值得一提:f7f78efa2947b615033306c6fc2dd7d2">值得一提</h2>
+
+<ul>
 <li>在 StackOverflow 回答了第一个问题，并被接受！</li>
 </ul>
-<p><img src="http://ww3.sinaimg.cn/large/7f793092gw1ezitciklpaj20gf0cqjv1.jpg" alt=""></p>
+
+<p><img src="http://ww3.sinaimg.cn/large/7f793092gw1ezitciklpaj20gf0cqjv1.jpg" alt="" /></p>
+
 <ul>
 <li>Github 第一个 Pull Requset，并被合并。我为科学计算界做出了贡献！ (΄◞ิ౪◟ิ‵)</li>
 <li>第一份实习，简历有点料了！</li>
 <li>建立了这个博客！</li>
 </ul>
-<h2 id="u603B_u7ED3_u4E0E_u5C55_u671B"><a href="#u603B_u7ED3_u4E0E_u5C55_u671B" class="headerlink" title="总结与展望"></a>总结与展望</h2><p>总的来说，我在 2015 年过得很充实，对自己的表现也很满意。有得必有失，这一年我长期呆在实验室里，闷头看书学习，户外活动急剧减少，2014 年坚持的跑步也在今年放弃了，起初安慰自己没时间，有雾霾，但真的是这样吗？时间就像海绵里的水，只要你愿意挤，总还是有的。雾霾天跑步诚然不利于健康，但也不会天天都是。<br>2016 年，我希望自己在保持这股子学习劲儿的同时还要恢复户外锻炼的习惯，就酱。</p>
-<p>完</p>
 
-      
-    </div>
+<h2 id="总结与展望:f7f78efa2947b615033306c6fc2dd7d2">总结与展望</h2>
 
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/Summary/" rel="tag">#Summary</a>
-          
-        </div>
-      
+<p>总的来说，我在 2015 年过得很充实，对自己的表现也很满意。有得必有失，这一年我长期呆在实验室里，闷头看书学习，户外活动急剧减少，2014 年坚持的跑步也在今年放弃了，起初安慰自己没时间，有雾霾，但真的是这样吗？时间就像海绵里的水，只要你愿意挤，总还是有的。雾霾天跑步诚然不利于健康，但也不会天天都是。
+2016 年，我希望自己在保持这股子学习劲儿的同时还要恢复户外锻炼的习惯，就酱。</p>
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/12/25/least-square-in-matrix/" rel="next" title="最小二乘法的矩阵形式">
-                <i class="fa fa-chevron-left"></i> 最小二乘法的矩阵形式
-              </a>
-            
-          </div>
+<p>完。</p>
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/01/20/tbutton-mini-commands-launcher/" rel="prev" title="TButton 命令行快捷按钮">
-                TButton 命令行快捷按钮 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-  <div class="comments" id="comments">
+</article>
+<div class="article-tags">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </div>
+    <ul id="tags">
+  
+    <li><a href="tags/summary">#Summary</a></li>
+  
+</ul>
+
+</div>
+
+
+<div class="comment-content">
+
     
-  </div>
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/asset/image/avatar.jpg"
-               alt="Neil Shen" />
-          <p class="site-author-name" itemprop="name">Neil Shen</p>
-          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">posts</span>
-            </a>
-          </div>
-
-          
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">16</span>
-              <span class="site-state-item-name">tags</span>
-              </a>
-          </div>
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
         
 
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/Overvenus" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/idstn" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u516C_u5F00_u8BFE"><span class="nav-number">1.</span> <span class="nav-text">公开课</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9879_u76EE"><span class="nav-number">2.</span> <span class="nav-text">项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9605_u8BFB"><span class="nav-number">3.</span> <span class="nav-text">阅读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u503C_u5F97_u4E00_u63D0"><span class="nav-number">4.</span> <span class="nav-text">值得一提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3_u4E0E_u5C55_u671B"><span class="nav-number">5.</span> <span class="nav-text">总结与展望</span></a></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2015 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Neil Shen</span>
-</div>
-
-<div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
-</div>
-
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Muse
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top"></div>
-  </div>
-
-  
-
-
-  
-
-
-
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
-
-
-
-  
-  
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
-        });
-
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
-
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
-
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
-
-      if (CONFIG.sidebar === 'post') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
-        }
-      }
-    };
-  });
-</script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
-
-
-
-  
-
-
-
-  
-
-    <script type="text/javascript">
-      var disqus_shortname = 'neilsh';
-      var disqus_identifier = '2015/12/31/summary-2015/';
-      var disqus_title = '2015年总结';
-      var disqus_url = 'http://neilsh.me/2015/12/31/summary-2015/';
-
-      function run_disqus_script(disqus_script){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.com\/2015\/12\/31\/summary-2015\/';
+    var disqus_title = '2015年总结';
+    var disqus_url = 'http:\/\/neilsh.com\/2015\/12\/31\/summary-2015\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-      run_disqus_script('count.js');
-      
-        run_disqus_script('embed.js');
-      
-    </script>
-  
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        
+            Copyright 2015 <i class="fa fa-copyright fa-fw"></i> Neil Shen
+        
+         </br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+        </footer>
+        <script src="http://neilsh.com/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
 
 
 
-  
-  
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-        processEscapes: true,
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
   </script>
 
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-    });
-  </script>
 
-  
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-
-
-  
-  
-
-
-</body>
+    </body>
 </html>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Distributed System on Neil</title>
+    <link>http://neilsh.com/tags/distributed-system/</link>
+    <description>Recent content in Distributed System on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 25 Nov 2015 19:25:23 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/distributed-system/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>paxos digest</title>
+      <link>http://neilsh.com/2015/11/25/paxos-digest/</link>
+      <pubDate>Wed, 25 Nov 2015 19:25:23 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/11/25/paxos-digest/</guid>
+      <description>
+
+&lt;h2 id=&#34;paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Paxos&lt;/h2&gt;
+
+&lt;p&gt;Paxos is one of the most important algorithms in distributed system.[&lt;a href=&#34;http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf&#34;&gt;1&lt;/a&gt;]
+Here are some notes about Basic Paxos.&lt;/p&gt;
+
+&lt;h2 id=&#34;three-roles-in-paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Three roles in Paxos&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Proposers&lt;/li&gt;
+&lt;li&gt;Acceptor&lt;/li&gt;
+&lt;li&gt;Learners&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;General view:  &lt;strong&gt;&lt;em&gt;Proposers&lt;/em&gt;&lt;/strong&gt; send proposals to &lt;strong&gt;&lt;em&gt;Acceptors&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;Acceptors&lt;/em&gt;&lt;/strong&gt; accept a proposal and forward to &lt;strong&gt;&lt;em&gt;Learners&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;Learners&lt;/em&gt;&lt;/strong&gt; decided the proposal.
+In real world, a single server acts &lt;strong&gt;two or more&lt;/strong&gt; roles.&lt;/p&gt;
+
+&lt;h2 id=&#34;requirements:8aa297440e030e6ae04600c7109020a5&#34;&gt;Requirements&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;An acceptor must accept the first proposal that it receives.
+1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.&lt;/li&gt;
+&lt;li&gt;If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.
+2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.
+2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.
+2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;rpcs-and-phases:8aa297440e030e6ae04600c7109020a5&#34;&gt;RPCs and Phases&lt;/h2&gt;
+
+&lt;p&gt;Proposers send two kinds of RPC to &lt;strong&gt;majority&lt;/strong&gt; Acceptors.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;em&gt;Prepare&lt;/em&gt;, send with a uniqe proposal number n.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Accept&lt;/em&gt;, send with a uniqe proposal number n and proposal value v.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;There are two phases in Paxos.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Phase 1: broadcast &lt;em&gt;Prepare&lt;/em&gt; RPC&lt;/li&gt;
+&lt;li&gt;Phase 2: broadcast &lt;em&gt;Accept&lt;/em&gt; RPC&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Majority is the key to achieve consensus and correctness.&lt;/p&gt;
+
+&lt;h2 id=&#34;implementation:8aa297440e030e6ae04600c7109020a5&#34;&gt;Implementation&lt;/h2&gt;
+
+&lt;p&gt;Every server play all roles (proposer, acceptor, and learner) in every instance of the algorithm. For a normal operation, there will be a server being elected to act the &lt;strong&gt;leader&lt;/strong&gt;, which is the distinguished proposer (the &lt;strong&gt;only one&lt;/strong&gt; that tries to issue proposals) in all instances of the algorithm.&lt;/p&gt;
+
+&lt;h2 id=&#34;pseudo-code:8aa297440e030e6ae04600c7109020a5&#34;&gt;Pseudo code&lt;/h2&gt;
+
+&lt;p&gt;Handout of 6.824, Spring 2015 [&lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html&#34;&gt;2&lt;/a&gt;]&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;      --- Paxos Proposer ---
+
+      proposer(v):
+        while not decided:
+          choose n, unique and higher than any n seen so far
+          send prepare(n) to all servers including self
+          if prepare_ok(n, na, va) from majority:       --- na and nv is proposal number and value (if any) that acceptor has accepted.
+            v&#39; = va with highest na; choose own v otherwise   
+            send accept(n, v&#39;) to all
+            if accept_ok(n) from majority:              --- Paxos Learner ---
+              send decided(v&#39;) to all
+
+
+      --- Paxos Acceptor ---
+
+      acceptor state on each node (persistent):
+       np     --- highest prepare seen
+       na, va --- highest accept seen
+
+      acceptor&#39;s prepare(n) handler:
+       if n &amp;gt; np
+         np = n
+         reply prepare_ok(n, na, va)
+       else
+         reply prepare_reject
+
+
+      acceptor&#39;s accept(n, v) handler:
+       if n &amp;gt;= np
+         np = n
+         na = n
+         va = v
+         reply accept_ok(n)
+       else
+         reply accept_reject
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;examples:8aa297440e030e6ae04600c7109020a5&#34;&gt;Examples&lt;/h2&gt;
+
+&lt;p&gt;Servers and proposal vaule: S1(X)
+Prepare: P,1
+Accept: A,1,X&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-1:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 1&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2
+S3       P,1    A,1,X
+                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;X is chosen.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-2:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 2&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2       P,1    A,1,X    P,3    A,3,X
+S3(Y)                    P,3    A,3,X
+                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;X is chosen.
+S2 response &lt;code&gt;P,3&lt;/code&gt; with &lt;code&gt;1,X&lt;/code&gt;, S3 send proposal value X instead of Y.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-3:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 3&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X
+S2       P,1             P,3    A,3,Y    A,1,X(rej)
+S3(Y)                    P,3    A,3,Y
+                                    ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Y is chosen.
+&lt;code&gt;A,1,X&lt;/code&gt; is rejected, because 3 &amp;gt; 1.&lt;/p&gt;
+
+&lt;h3 id=&#34;e-g-4:8aa297440e030e6ae04600c7109020a5&#34;&gt;E.g. 4&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;S1(X)    P,1    A,1,X                                  A,3,Y(rej)
+S2       P,1             P,3             A,1,X(rej)    A,3,Y
+S3(Y)                    P,3    A,3,Y    A,1,X(rej)    
+                                                           ^ chosen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Y is chosen.
+Later, Learner will find out Y is the chosen value, and then send decided(Y) to all servers.&lt;/p&gt;
+
+&lt;h2 id=&#34;links:8aa297440e030e6ae04600c7109020a5&#34;&gt;Links&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1]. &lt;a href=&#34;http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf&#34;&gt;Lamport, Leslie. &amp;ldquo;Paxos made simple.&amp;rdquo; ACM Sigact News 32, no. 4 (2001): 18-25.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]. &lt;a href=&#34;http://nil.csail.mit.edu/6.824/2015/notes/paxos-code.html&#34;&gt;Handout, LEC5, 6.824&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]. &lt;a href=&#34;https://www.youtube.com/watch?v=JEpsBg0AO6o&#34;&gt;Paxos lecture (Raft user study)&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;end.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

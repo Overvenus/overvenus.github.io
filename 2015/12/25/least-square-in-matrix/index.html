@@ -1,802 +1,408 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Matlab," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
-<meta property="og:type" content="article">
-<meta property="og:title" content="最小二乘法的矩阵形式">
-<meta property="og:url" content="http://neilsh.me/2015/12/25/least-square-in-matrix/index.html">
-<meta property="og:site_name" content="Neil">
-<meta property="og:description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
-<meta property="og:updated_time" content="2016-01-22T09:57:05.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="最小二乘法的矩阵形式">
-<meta name="twitter:description" content="拟合曲线与最小二乘法曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\bet">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Muse',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 0,
-      author: 'Author'
-    }
-  };
-</script>
-
-  <title> 最小二乘法的矩阵形式 | Neil </title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
-
-  
-
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-69367210-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">Neil</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">Share something cool.</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu ">
-      
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="solving least square problem in matrix.">
+<meta name="keywords" content="Matlab, least square, matrix, Normal equations, QR-Factorization, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="solving least square problem in matrix."/>
+<meta property="og:title" content="最小二乘法的矩阵形式 &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.com/2015/12/25/least-square-in-matrix/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-12-25"/>
+<meta property="article:modified_time" content="2015-12-25"/>
+
+
+<meta property="article:tag" content="Matlab">
+<meta property="article:tag" content="least square">
+<meta property="article:tag" content="matrix">
+<meta property="article:tag" content="Normal equations">
+<meta property="article:tag" content="QR-Factorization">
+
+
+
+        <link rel="icon" href="http://neilsh.com/assets/favicon.png" type="image/x-icon">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            Home
-          </a>
-        </li>
-      
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-font.css">
         
-        <li class="menu-item menu-item-about">
-          <a href="/me" rel="section">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-base.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/highlight-9.1.0-default.min.css">
+        <title>
             
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+                最小二乘法的矩阵形式 &middot; Neil
             
-            About
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">最小二乘法的矩阵形式</h1>
+                    <aside>
+                        <p>on <strong>Fri, Dec 25, 2015</strong></p>
+                    </aside>
+                
+            </header>
 
-      
-      
-      
-    </ul>
-  
 
-  
+<div id="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#拟合曲线与最小二乘法:7da2dc83c8d8e9ad8c6717b64208ddaf">拟合曲线与最小二乘法</a></li>
+<li><a href="#最小二乘矩阵形式:7da2dc83c8d8e9ad8c6717b64208ddaf">最小二乘矩阵形式</a></li>
+<li><a href="#最小二乘矩阵算法:7da2dc83c8d8e9ad8c6717b64208ddaf">最小二乘矩阵算法</a>
+<ul>
+<li><a href="#normal-equations:7da2dc83c8d8e9ad8c6717b64208ddaf">Normal equations</a></li>
+<li><a href="#qr-factorization:7da2dc83c8d8e9ad8c6717b64208ddaf">QR-Factorization</a></li>
+</ul></li>
+<li><a href="#参考文献:7da2dc83c8d8e9ad8c6717b64208ddaf">参考文献</a></li>
+</ul></li>
+</ul>
 </nav>
+</div>
 
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
+<article class="article-content">
     
 
-  
-  
+<h2 id="拟合曲线与最小二乘法:7da2dc83c8d8e9ad8c6717b64208ddaf">拟合曲线与最小二乘法</h2>
 
-  
-  
-  
+<p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                最小二乘法的矩阵形式
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2015-12-25T10:10:28+08:00" content="2015-12-25">
-              2015-12-25
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/12/25/least-square-in-matrix/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/25/least-square-in-matrix/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <h2 id="u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><a href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5" class="headerlink" title="拟合曲线与最小二乘法"></a>拟合曲线与最小二乘法</h2><p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
 <p>最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :</p>
-<p>$$<br>\begin{align}<br>\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\<br>y &amp;= \hat{y} + \delta<br>\end{align}<br>$$</p>
+
+<p>$$
+\begin{align}
+\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\
+y &amp;= \hat{y} + \delta
+\end{align}
+$$</p>
+
 <p>$\delta$ 是残差，这是回归方程与真实值存在出入的原因[1]。</p>
+
 <p>根据 m 个数据点 $(x_i, y_i),i=1,2,3⋯,m$ 可以定义一个代表偏离程度的函数:</p>
-<p>$$<br>S(\beta_0, \beta_1, \dots, \beta_n) = \sum_{j = 1}^m [y_i - f(x; \beta_0, \beta_1, \dots,\beta_n)]^2 = \sum \delta<br>$$</p>
+
+<p>$$
+S(\beta_0, \beta_1, \dots, \beta_n) = \sum_{j = 1}^m [y_i - f(x; \beta_0, \beta_1, \dots,\beta_n)]^2 = \sum \delta
+$$</p>
+
 <p>当 $S(\beta_0, \beta_1, \dots,\beta_n)$ 取得最小值时，此时的 $\beta_0, \beta_1, \dots,\beta_n$ 即为回归方程的回归系数，也是最小二乘解。</p>
-<a id="more"></a>
-<h2 id="u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u5F62_u5F0F"><a href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u5F62_u5F0F" class="headerlink" title="最小二乘矩阵形式"></a>最小二乘矩阵形式</h2><p>多组测量数据 $(x_i,y_i),i=1,2,3⋯,m$ 可以构成两个行列式[2]：</p>
+
+<!-- more -->
+
+<h2 id="最小二乘矩阵形式:7da2dc83c8d8e9ad8c6717b64208ddaf">最小二乘矩阵形式</h2>
+
+<p>多组测量数据 $(x_i,y_i),i=1,2,3⋯,m$ 可以构成两个行列式[2]：</p>
+
 <p>$$ X=\begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_m \end{bmatrix}, Y=\begin{bmatrix} y_1 \\ y_2 \\ y_3 \\ \vdots \\ y_m \end{bmatrix} $$</p>
+
 <p>将多组数据代入到回归方程 $f$ 后，可得：</p>
-<p>$$<br>Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \dots + \beta_n X^n + \Delta<br>$$</p>
-<p>$$<br>\Delta = \begin{bmatrix}<br>\delta_1 \\ \delta_2 \\ \delta_3 \\ \vdots \\ \delta_m<br>\end{bmatrix} , \beta=\begin{bmatrix}<br>\beta_0 \\ \beta_1 \\ \vdots \\ \beta_n<br>\end{bmatrix}<br>$$</p>
+
+<p>$$
+Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \dots + \beta_n X^n + \Delta
+$$</p>
+
+<p>$$
+\Delta = \begin{bmatrix}
+\delta_1 \\ \delta_2 \\ \delta_3 \\ \vdots \\ \delta_m
+\end{bmatrix} , \beta=\begin{bmatrix}
+\beta_0 \\ \beta_1 \\ \vdots \\ \beta_n
+\end{bmatrix}
+$$</p>
+
 <p>再将 X 的转化为范德蒙德行列式：</p>
-<p>$$<br>V=\begin{bmatrix}<br>1 &amp; x_1 &amp; x_1^2 &amp; \dots &amp; x_1^{n} \\<br>1 &amp; x_2 &amp; x_2^2 &amp; \dots &amp; x_2^{n} \\<br>1 &amp; x_3 &amp; x_3^2 &amp; \dots &amp; x_3^{n} \\<br>\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp;\vdots \\<br>1 &amp; x_m &amp; x_m^2 &amp; \dots &amp; x_m^{n}<br>\end{bmatrix}<br>$$</p>
-<p>综上，可得：<br>$$<br>V\beta \approx Y \Rightarrow \Delta = \hat{Y} - Y = V\beta - Y<br>$$</p>
+
+<p>$$
+V=\begin{bmatrix}
+1 &amp; x_1 &amp; x_1^2 &amp; \dots &amp; x_1^{n} \\
+1 &amp; x_2 &amp; x_2^2 &amp; \dots &amp; x_2^{n} \\
+1 &amp; x_3 &amp; x_3^2 &amp; \dots &amp; x_3^{n} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp;\vdots \\
+1 &amp; x_m &amp; x_m^2 &amp; \dots &amp; x_m^{n}
+\end{bmatrix}
+$$</p>
+
+<p>综上，可得：
+$$
+V\beta \approx Y \Rightarrow \Delta = \hat{Y} - Y = V\beta - Y
+$$</p>
+
 <p>$\hat{Y}$ 为 $\hat{y_i}$构成的列向量。</p>
+
 <p>因为 $\Delta$ 的范数: $\Vert \Delta \Vert = \left( \sum_{i = 1}^m \delta_i^2 \right)^\frac{1}2$，所以求最小二乘解即可转化为如何使 $\Delta$ 的范数最小。</p>
-<p>$$<br>\Vert \Delta \Vert^2  = \sum{\delta_i^2}<br>                      = \begin{bmatrix}<br>                         \delta_1 \delta_2 \dots \delta_n<br>                        \end{bmatrix} \begin{bmatrix}\delta_1 \\<br>                                                     \delta_2 \\<br>                                                     \vdots \\<br>                                                     \delta_n<br>                                      \end{bmatrix}<br>                      = \delta^T \delta<br>$$</p>
-<p>$$<br>\Vert \Delta \Vert^2 = \Vert Y - V\beta \Vert^2 = \left( Y - V\beta \right)^T\left( Y - V\beta \right)<br>$$</p>
-<h2 id="u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u7B97_u6CD5"><a href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u7B97_u6CD5" class="headerlink" title="最小二乘矩阵算法"></a>最小二乘矩阵算法</h2><blockquote>
-<p>Let the scalar $\alpha$ be defined by<br>$$\alpha = Y^T X$$<br>where Y is n × 1, X is n × 1, and both Y and X are functions of the vector z. Then<br>$$\frac{d(\alpha)}{d(z)} = X^T\frac{d(Y)}{d(z)}+Y^T\frac{d(X)}{d(z)}$$</p>
+
+<p>$$
+\Vert \Delta \Vert^2  = \sum{\delta_i^2}
+                      = \begin{bmatrix}
+                         \delta_1 \delta_2 \dots \delta_n
+                        \end{bmatrix} \begin{bmatrix}\delta_1 \\
+                                                     \delta_2 \\
+                                                     \vdots \\
+                                                     \delta_n
+                                      \end{bmatrix}
+                      = \delta^T \delta
+$$</p>
+
+<p>$$
+\Vert \Delta \Vert^2 = \Vert Y - V\beta \Vert^2 = \left( Y - V\beta \right)^T\left( Y - V\beta \right)
+$$</p>
+
+<h2 id="最小二乘矩阵算法:7da2dc83c8d8e9ad8c6717b64208ddaf">最小二乘矩阵算法</h2>
+
+<blockquote>
+<p>Let the scalar $\alpha$ be defined by
+$$\alpha = Y^T X$$
+where Y is n × 1, X is n × 1, and both Y and X are functions of the vector z. Then
+$$\frac{d(\alpha)}{d(z)} = X^T\frac{d(Y)}{d(z)}+Y^T\frac{d(X)}{d(z)}$$</p>
 </blockquote>
-<p>根据上面定理，可得：<br>$$<br>\frac{d\Delta}{d\beta} = \frac{d}{d\beta}\left(\left( Y - V\beta \right)^T\left( Y - V\beta \right)\right) = -2V^T\left(Y-V\beta\right)<br>$$</p>
+
+<p>根据上面定理，可得：
+$$
+\frac{d\Delta}{d\beta} = \frac{d}{d\beta}\left(\left( Y - V\beta \right)^T\left( Y - V\beta \right)\right) = -2V^T\left(Y-V\beta\right)
+$$</p>
+
 <p>为使 $\Delta$ 最小，可使 $\frac{d\Delta}{d\beta} = 0 \Rightarrow -2V^T\left(Y-V\beta\right) = 0$。</p>
+
 <p>目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。</p>
+
 <!--
 这三个算法应用在计算机中时，有几点需要注意：
  1. 计算机中，浮点数的精度有限，当数过小时，就成0.
  2. 
 -->
+
 <!--
 TOOD: 
  0. 是否可逆，奇异矩阵
  1. 计算机精度问题
  2. 算法稳定问题
 -->
-<h3 id="Normal_equations"><a href="#Normal_equations" class="headerlink" title="Normal equations"></a>Normal equations</h3><p>$$<br>\begin{align}<br>-2V^T\left(Y-V\beta\right) &amp;= 0\\<br>V^T V\beta &amp;= V^TY \\<br>\beta &amp;= \left(V^T V\right)^{-1}V^T Y<br>\end{align}<br>$$<br>这个算法的时间复杂度最小，计算 $\beta$ 速度最快。但是在计算机中，浮点数的精度有限，当某些矩阵中的数过小时，就算该矩阵是满秩的非奇异的，但在计算机中，该矩阵就是奇异矩阵。<br>这个问题在 Normal equations 尤为严重[2]。比如下面矩阵 D：<br>$$<br>\begin{align}<br>D &amp;= \begin{bmatrix}<br>1 &amp; 1 \\<br>0 &amp; \delta \\<br>\delta &amp; 0 \\<br>\end{bmatrix}, |\delta| = 1 \times \text{Minimum precision} \\<br>D^T D &amp;= \begin{bmatrix}<br>1+\delta^2 &amp; 1 \\<br>1 &amp; 1+\delta^2<br>\end{bmatrix}<br>\end{align}<br>$$<br>这个算法出现了 $\delta^2$，容易出现奇异矩阵，所以不稳定。</p>
-<h3 id="QR-Factorization"><a href="#QR-Factorization" class="headerlink" title="QR-Factorization"></a>QR-Factorization</h3><p>QR-Factorization 要比 Normal equations 稳定。<br>这个算法先把 $V$ 进行 QR 分解[<a href="https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems" target="_blank" rel="external">3</a>]: $QR = V$<br>$$<br>\begin{align}<br>V^T V \beta &amp;= V^T Y \\<br>(QR)^T Q R \beta &amp;= (Q R)^T Y \\<br>R^T Q^T Q R \beta &amp;= R^T Q^T Y \\<br>R^T R \beta &amp;= R^T Q^T Y \\<br>R\beta &amp;= Q^T Y \\<br>\beta &amp;= R^{-1} Q^T Y<br>\end{align}<br>$$<br>由于 R 是一个上三角矩阵，所以求解很方便。这个也是 Matlab 中<code>polyfit</code>合的算法[2]。</p>
-<h2 id="u53C2_u8003_u6587_u732E"><a href="#u53C2_u8003_u6587_u732E" class="headerlink" title="参考文献"></a>参考文献</h2><blockquote>
+
+<h3 id="normal-equations:7da2dc83c8d8e9ad8c6717b64208ddaf">Normal equations</h3>
+
+<p>$$
+\begin{align}
+-2V^T\left(Y-V\beta\right) &amp;= 0\\
+V^T V\beta &amp;= V^TY \\
+\beta &amp;= \left(V^T V\right)^{-1}V^T Y
+\end{align}
+$$
+这个算法的时间复杂度最小，计算 $\beta$ 速度最快。但是在计算机中，浮点数的精度有限，当某些矩阵中的数过小时，就算该矩阵是满秩的非奇异的，但在计算机中，该矩阵就是奇异矩阵。
+这个问题在 Normal equations 尤为严重[2]。比如下面矩阵 D：
+$$
+\begin{align}
+D &amp;= \begin{bmatrix}
+1 &amp; 1 \\
+0 &amp; \delta \\
+\delta &amp; 0 \\
+\end{bmatrix}, |\delta| = 1 \times \text{Minimum precision} \\
+D^T D &amp;= \begin{bmatrix}
+1+\delta^2 &amp; 1 \\
+1 &amp; 1+\delta^2
+\end{bmatrix}
+\end{align}
+$$
+这个算法出现了 $\delta^2$，容易出现奇异矩阵，所以不稳定。</p>
+
+<h3 id="qr-factorization:7da2dc83c8d8e9ad8c6717b64208ddaf">QR-Factorization</h3>
+
+<p>QR-Factorization 要比 Normal equations 稳定。
+这个算法先把 $V$ 进行 QR 分解[<a href="https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems">3</a>]: $QR = V$
+$$
+\begin{align}
+V^T V \beta &amp;= V^T Y \\
+(QR)^T Q R \beta &amp;= (Q R)^T Y \\
+R^T Q^T Q R \beta &amp;= R^T Q^T Y \\
+R^T R \beta &amp;= R^T Q^T Y \\
+R\beta &amp;= Q^T Y \\
+\beta &amp;= R^{-1} Q^T Y
+\end{align}
+$$
+由于 R 是一个上三角矩阵，所以求解很方便。这个也是 Matlab 中<code>polyfit</code>合的算法[2]。</p>
+
+<h2 id="参考文献:7da2dc83c8d8e9ad8c6717b64208ddaf">参考文献</h2>
+
+<blockquote>
 <p>[1] Chatterjee, Samprit, Ali S. Hadi, and Bertram Price. 2000. Regression analysis by example. New York: Wiley.</p>
+
 <p>[2] Moler, Cleve B. Numerical Computing with MATLAB: Revised Reprint. Siam, 2008.</p>
-<p>[3] Wikipedia contributors, “QR decomposition,” Wikipedia, The Free Encyclopedia, <a href="https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems" target="_blank" rel="external">https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems</a> (accessed November 23, 2015).</p>
+
+<p>[3] Wikipedia contributors, &ldquo;QR decomposition,&rdquo; Wikipedia, The Free Encyclopedia, <a href="https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems">https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems</a> (accessed November 23, 2015).</p>
 </blockquote>
+
 <!-- Links -->
 
-      
-    </div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/Matlab/" rel="tag">#Matlab</a>
-          
-        </div>
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/11/29/erya-no-pause/" rel="next" title="解除尔雅公开课暂停">
-                <i class="fa fa-chevron-left"></i> 解除尔雅公开课暂停
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/12/31/summary-2015/" rel="prev" title="2015年总结">
-                2015年总结 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-  <div class="comments" id="comments">
+</article>
+<div class="article-tags">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </div>
-    
-  </div>
-
-
-        </div>
-        
-          
+    <ul id="tags">
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/asset/image/avatar.jpg"
-               alt="Neil Shen" />
-          <p class="site-author-name" itemprop="name">Neil Shen</p>
-          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">posts</span>
-            </a>
-          </div>
-
-          
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">16</span>
-              <span class="site-state-item-name">tags</span>
-              </a>
-          </div>
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/Overvenus" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/idstn" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u62DF_u5408_u66F2_u7EBF_u4E0E_u6700_u5C0F_u4E8C_u4E58_u6CD5"><span class="nav-number">1.</span> <span class="nav-text">拟合曲线与最小二乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u5F62_u5F0F"><span class="nav-number">2.</span> <span class="nav-text">最小二乘矩阵形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6700_u5C0F_u4E8C_u4E58_u77E9_u9635_u7B97_u6CD5"><span class="nav-number">3.</span> <span class="nav-text">最小二乘矩阵算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Normal_equations"><span class="nav-number">3.1.</span> <span class="nav-text">Normal equations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QR-Factorization"><span class="nav-number">3.2.</span> <span class="nav-text">QR-Factorization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u6587_u732E"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
+    <li><a href="tags/matlab">#Matlab</a></li>
   
-  &copy;  2015 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Neil Shen</span>
+</ul>
+
 </div>
 
-<div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
-</div>
-
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Muse
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top"></div>
-  </div>
-
-  
-
-
-  
-
-
-
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
-
-
-
-  
-  
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
-        });
-
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
-
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
-
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
-
-      if (CONFIG.sidebar === 'post') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        
+            
+                
+        showMathMenu: false,
+        showMathMenuMSIE: false,
+                
+            
+        menuSettings: {
+            
+          zoom: "Double-Click",
+            
+            
+          renderer: "SVG"
+            
+        },
+        
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          displayMath: [['$$','$$'], ['\\[','\\]']],
+          processEscapes: true,
+          processEnvironments: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          TeX: { equationNumbers: { autoNumber: "AMS" },
+               extensions: ["AMSmath.js", "AMSsymbols.js"] }
         }
-      }
-    };
-  });
-</script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
-
-
-
-  
-
-
-
-  
-
-    <script type="text/javascript">
-      var disqus_shortname = 'neilsh';
-      var disqus_identifier = '2015/12/25/least-square-in-matrix/';
-      var disqus_title = '最小二乘法的矩阵形式';
-      var disqus_url = 'http://neilsh.me/2015/12/25/least-square-in-matrix/';
-
-      function run_disqus_script(disqus_script){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
-
-      run_disqus_script('count.js');
-      
-        run_disqus_script('embed.js');
-      
+      });
     </script>
-  
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        
+        
+        
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+
+    
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+<div class="comment-content">
+
+    
+        
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.com\/2015\/12\/25\/least-square-in-matrix\/';
+    var disqus_title = '最小二乘法的矩阵形式';
+    var disqus_url = 'http:\/\/neilsh.com\/2015\/12\/25\/least-square-in-matrix\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        
+            Copyright 2015 <i class="fa fa-copyright fa-fw"></i> Neil Shen
+        
+         </br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+        </footer>
+        <script src="http://neilsh.com/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
 
 
 
-  
-  
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-        processEscapes: true,
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
   </script>
 
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-    });
-  </script>
 
-  
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-
-
-  
-  
-
-
-</body>
+    </body>
 </html>

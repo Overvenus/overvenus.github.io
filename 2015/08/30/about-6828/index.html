@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Few words about 6.828.">
+<meta name="keywords" content="mit, 6.828, operating system, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="Few words about 6.828."/>
+<meta property="og:title" content="Few words about 6.828 &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.com/2015/08/30/about-6828/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-08-30"/>
+<meta property="article:modified_time" content="2015-08-30"/>
+
+
+<meta property="article:tag" content="mit">
+<meta property="article:tag" content="6.828">
+<meta property="article:tag" content="operating system">
+
+
+
+        <link rel="icon" href="http://neilsh.com/assets/favicon.png" type="image/x-icon">
+        
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-font.css">
+        
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-base.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/highlight-9.1.0-default.min.css">
+        <title>
+            
+                Few words about 6.828 &middot; Neil
+            
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">Few words about 6.828</h1>
+                    <aside>
+                        <p>on <strong>Sun, Aug 30, 2015</strong></p>
+                    </aside>
+                
+            </header>
+
+
+<div id="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#6-828简介:1f5d1f87c04791fc85f6df330cc0063e">6.828简介</a></li>
+<li><a href="#知新:1f5d1f87c04791fc85f6df330cc0063e">知新</a>
+<ul>
+<li><a href="#寻找资料的正确姿势:1f5d1f87c04791fc85f6df330cc0063e">寻找资料的正确姿势</a></li>
+<li><a href="#c-的黑魔法:1f5d1f87c04791fc85f6df330cc0063e">C 的黑魔法</a>
+<ul>
+<li><a href="#给结构体初始化时给指定成员赋值:1f5d1f87c04791fc85f6df330cc0063e">给结构体初始化时给指定成员赋值：</a></li>
+<li><a href="#跨源文件调用匿名结构体变量:1f5d1f87c04791fc85f6df330cc0063e">跨源文件调用匿名结构体变量：</a></li>
+<li><a href="#关键字-volatile:1f5d1f87c04791fc85f6df330cc0063e">关键字 volatile</a></li>
+<li><a href="#指针与数组:1f5d1f87c04791fc85f6df330cc0063e">指针与数组</a></li>
+</ul></li>
+<li><a href="#杂项:1f5d1f87c04791fc85f6df330cc0063e">杂项</a></li>
+</ul></li>
+<li><a href="#一些资源:1f5d1f87c04791fc85f6df330cc0063e">一些资源</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+
+<article class="article-content">
+    
+
+<p>Recently I&rsquo;ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
+
+<!-- more -->
+
+<h2 id="6-828简介:1f5d1f87c04791fc85f6df330cc0063e">6.828简介</h2>
+
+<p>好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。</p>
+
+<h2 id="知新:1f5d1f87c04791fc85f6df330cc0063e">知新</h2>
+
+<h3 id="寻找资料的正确姿势:1f5d1f87c04791fc85f6df330cc0063e">寻找资料的正确姿势</h3>
+
+<p>课程实验中有许多地方并没有说得很仔细，只有大概的意图，实现的细节需要你自己去查阅资料。比如说汇编里面的 <code>call</code> <code>ret</code> 对 <code>ESP</code><code>EBP</code><code>EIP</code>三个寄存器的影响，它指出了这两个指令于函数调用上、传递参数有关，然后它让你写一个栈回溯函数。
+Google <code>ret call</code> 的第一个结果：<a href="http://www.c-jump.com/CIS77/ASM/Procedures/P77_0010_call_ret.htm">CALL and RET Instructions</a></p>
+
+<blockquote>
+<p>CALL pushes the return address onto the stack and transfers control to a procedure.
+RET pops the return address off the stack and returns control to that location.</p>
+</blockquote>
+
+<p>嗯，很好，把 <code>call</code> 和 <code>ret</code> 所干的事说了一下，但是太模糊了，比如说 return address 指向哪里，怎样来 transfers control ， pops the return address 到哪里？这些都没有说清楚。对于初学者来说，这个结果只能做参考，并不能直接拿来用。
+后来经过一番查找后找到了图文并茂的资料。<a href="http://unixwiz.net/techtips/win32-callconv-asm.html">Intel x86 Function-call Conventions - Assembly View</a> 其中 Calling a __cdecl function 那一节讲得很清楚:
+<img src="http://ww1.sinaimg.cn/large/7f793092gw1evo1wpue9bg20770cm3yd.gif" alt="" /></p>
+
+<blockquote>
+<p>16(%ebp) - third function parameter
+12(%ebp) - second function parameter
+8(%ebp)  - first function parameter</p>
+</blockquote>
+
+<p>一图胜千言，函数调用，参数传递，<code>ESP</code><code>EBP</code><code>EIP</code>都给说明白了。对比一下前面引用的资料，完全符合。现在我们可以理解，为什么栈要从高向低生长，C 语言中参数为什么从右向左压入栈，函数内的本地变量占用的内存为什么不需要手动管理，这一切都是紧密相关的。</p>
+
+<h3 id="c-的黑魔法:1f5d1f87c04791fc85f6df330cc0063e">C 的黑魔法</h3>
+
+<p>C 语言作为入门课在大一上学期时就学了，教材是谭浩强的，他的书在网上被喷的狗血淋头，我也觉得这不是本好教材，借了本 B&amp;D 的 《The C Programming Language》，囫囵吞枣地看了一遍，指针、结构体、联合体、枚举等概念倒背如流，期末的时候拿了高分，自以为 C 学得还不错。现在想来，那时还是太年轻，操作系统里漫天的指针，结构体、联合体互相的嵌套更是少不了，各种神奇的写法见都没见过。下面来几个简单的例子：</p>
+
+<h4 id="给结构体初始化时给指定成员赋值:1f5d1f87c04791fc85f6df330cc0063e">给结构体初始化时给指定成员赋值：</h4>
+
+<pre><code class="language-c">struct foo {
+    int i;
+    unsigned u;
+    char *str;
+};
+
+int bar(void) {
+    char *s = &quot;Hello!&quot;;
+    struct foo f = {
+        .str = s;
+    };
+    return 0; 
+}
+</code></pre>
+
+<h4 id="跨源文件调用匿名结构体变量:1f5d1f87c04791fc85f6df330cc0063e">跨源文件调用匿名结构体变量：</h4>
+
+<pre><code class="language-c">// 定义在 a.c 中
+struct {
+    int i;
+    unsigned us[99];
+} foo;
+
+// 在 b.c 中
+extern struct {
+    int i;
+    unsigned us[99];
+} foo;
+
+int bar(void) {
+    printf(&quot;%d\n&quot;, foo.i);
+    return 0;
+}
+</code></pre>
+
+<h4 id="关键字-volatile:1f5d1f87c04791fc85f6df330cc0063e">关键字 volatile</h4>
+
+<blockquote>
+<p>the volatile keyword indicates that a value may change between different accesses, even if it does not appear to be modified. This keyword prevents an optimizing compiler from optimizing away subsequent reads or writes and thus incorrectly reusing a stale value or omitting writes.    &ndash; <a href="https://en.wikipedia.org/wiki/Volatile_(computer_programming)">Wikipedia</a></p>
+</blockquote>
+
+<p>引用指出 volatile 是为了防止编译“优化”对该变量的一系列读写操作。上面抛出一大段结论，还是挺令人疑惑的。什么叫 may change between different accesses， 什么叫 optimizing away subsequent reads or writes？这一切用“底层“的汇编来解释反而容易。
+<a href="/assets/code/v_int.c">带有 volatile</a></p>
+
+<pre><code class="language-c">// volatile_int.c
+volatile int foo;
+
+// 总计4次对 foo 的操作
+void main(void) {
+    foo = 0xff;
+    printf(&quot;%d\n&quot;, foo);
+    foo = 0xff;
+    printf(&quot;%d\n&quot;, foo);
+}
+</code></pre>
+
+<pre><code class="language-sh"># 编译
+$ gcc -O1 volatile_int.c -o volatile_int
+# 查看汇编
+$ objdump -S volatile_int &gt; v.asm
+</code></pre>
+
+<pre><code class="language-asm">000000000040055d &lt;main&gt;:
+  40055d:	48 83 ec 08          	sub    $0x8,%rsp
+  400561:	c7 05 d9 0a 20 00 ff 	movl   $0xff,0x200ad9(%rip)        # 601044 &lt;foo&gt;
+  400568:	00 00 00 
+  40056b:	8b 15 d3 0a 20 00    	mov    0x200ad3(%rip),%edx        # 601044 &lt;foo&gt;
+  400571:	be 34 06 40 00       	mov    $0x400634,%esi
+  400576:	bf 01 00 00 00       	mov    $0x1,%edi
+  40057b:	b8 00 00 00 00       	mov    $0x0,%eax
+  400580:	e8 db fe ff ff       	callq  400460 &lt;__printf_chk@plt&gt;
+  400585:	c7 05 b5 0a 20 00 ff 	movl   $0xff,0x200ab5(%rip)        # 601044 &lt;foo&gt;
+  40058c:	00 00 00 
+  40058f:	8b 15 af 0a 20 00    	mov    0x200aaf(%rip),%edx        # 601044 &lt;foo&gt;
+  400595:	be 34 06 40 00       	mov    $0x400634,%esi
+  40059a:	bf 01 00 00 00       	mov    $0x1,%edi
+  40059f:	b8 00 00 00 00       	mov    $0x0,%eax
+  4005a4:	e8 b7 fe ff ff       	callq  400460 &lt;__printf_chk@plt&gt;
+  4005a9:	48 83 c4 08          	add    $0x8,%rsp
+  4005ad:	c3                   	retq   
+  4005ae:	66 90                	xchg   %ax,%ax
+</code></pre>
+
+<p><a href="/assets/code/nv_int.c">不带 volatile</a></p>
+
+<pre><code class="language-asm">000000000040055d &lt;main&gt;:
+  40055d:	48 83 ec 08          	sub    $0x8,%rsp
+  400561:	c7 05 d9 0a 20 00 ff 	movl   $0xff,0x200ad9(%rip)        # 601044 &lt;foo&gt;
+  400568:	00 00 00 
+  40056b:	ba ff 00 00 00       	mov    $0xff,%edx
+  400570:	be 34 06 40 00       	mov    $0x400634,%esi
+  400575:	bf 01 00 00 00       	mov    $0x1,%edi
+  40057a:	b8 00 00 00 00       	mov    $0x0,%eax
+  40057f:	e8 dc fe ff ff       	callq  400460 &lt;__printf_chk@plt&gt;
+  400584:	c7 05 b6 0a 20 00 ff 	movl   $0xff,0x200ab6(%rip)        # 601044 &lt;foo&gt;
+  40058b:	00 00 00 
+  40058e:	ba ff 00 00 00       	mov    $0xff,%edx
+  400593:	be 34 06 40 00       	mov    $0x400634,%esi
+  400598:	bf 01 00 00 00       	mov    $0x1,%edi
+  40059d:	b8 00 00 00 00       	mov    $0x0,%eax
+  4005a2:	e8 b9 fe ff ff       	callq  400460 &lt;__printf_chk@plt&gt;
+  4005a7:	48 83 c4 08          	add    $0x8,%rsp
+  4005ab:	c3                   	retq   
+  4005ac:	0f 1f 40 00          	nopl   0x0(%rax)
+</code></pre>
+
+<p>对比可见，带有 volatile 的对 foo 有四次操作，而不带的只有 2 次，从这个例子可以看出一些端倪， volatile 确保了 C 源码中每次对 foo 的操作都是直接对 foo 内存地址的操作。</p>
+
+<h4 id="指针与数组:1f5d1f87c04791fc85f6df330cc0063e">指针与数组</h4>
+
+<p>用伪码来简述一下两者的关系。</p>
+
+<pre><code class="language-c">char *pc = 0；
+int *pi = 0;
+int ai[5] = {0, 1, 2, 3, 4};
+
+(pc += 1) == 1 is true;
+
+if (sizeof(int) == 4)
+    then pi + 1 == 4 is true; ((int *)pc) + 1 == 5 is true;
+
+*ai == 0 is true
+
+pi = ai
+    then *pi == 0, pi[1] == 1, pi[4] == 4 are true;
+</code></pre>
+
+<p>自从学了6.828后，指针再也不是洪水猛兽，自以为余已达收发自如的境界。</p>
+
+<h3 id="杂项:1f5d1f87c04791fc85f6df330cc0063e">杂项</h3>
+
+<p>对各种计算机术语有了新的认识：process、thread、stub、trap、caller、callee、coroutine等等。
+各种命令：man、git、make、gcc、objdump等等。特别是man，我还是第一次知道，man还能当编程手册，查看函数的用法。
+理论与实践之间的差异，工程上的权衡于妥协。</p>
+
+<h2 id="一些资源:1f5d1f87c04791fc85f6df330cc0063e">一些资源</h2>
+
+<p><a href="http://pdos.csail.mit.edu/6.828/2014/index.html">官方网站</a></p>
+
+<p><a href="https://www.youtube.com/playlist?list=PLfciLKR3SgqNJKKIKUliWoNBBH1VHL3AP">课程视频</a></p>
+
+<p><a href="https://bitbucket.org/overvenus/jos/">我的 JOS (已完成lab1～6)</a></p>
+
+<p>最后，再次感谢 MIT 的教师职员们，并以一张 JOS 靓照结尾。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1evohw0nih7j20k00bw75r.jpg" alt="" /></p>
+
+<p>个人笔记，难免有误，如有发现，还望指出。
+END.</p>
+
+</article>
+<div class="article-tags">
+    
+    <ul id="tags">
+  
+    <li><a href="tags/mit">#MIT</a></li>
+  
+</ul>
+
+</div>
+
+
+<div class="comment-content">
+
+    
+        
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.com\/2015\/08\/30\/about-6828\/';
+    var disqus_title = 'Few words about 6.828';
+    var disqus_url = 'http:\/\/neilsh.com\/2015\/08\/30\/about-6828\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        
+            Copyright 2015 <i class="fa fa-copyright fa-fw"></i> Neil Shen
+        
+         </br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+        </footer>
+        <script src="http://neilsh.com/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+    </body>
+</html>

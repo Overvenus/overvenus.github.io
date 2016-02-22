@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Summary on Neil</title>
+    <link>http://neilsh.com/tags/summary/</link>
+    <description>Recent content in Summary on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Thu, 31 Dec 2015 11:12:58 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/summary/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>2015年总结</title>
+      <link>http://neilsh.com/2015/12/31/summary-2015/</link>
+      <pubDate>Thu, 31 Dec 2015 11:12:58 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/12/31/summary-2015/</guid>
+      <description>
+
+&lt;h2 id=&#34;公开课:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;公开课&lt;/h2&gt;
+
+&lt;p&gt;2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。
+等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。
+论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。&lt;/p&gt;
+
+&lt;h2 id=&#34;项目:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;项目&lt;/h2&gt;
+
+&lt;p&gt;JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中&lt;a href=&#34;http://neilsh.com/2015/08/30/few_words_about_6_828/&#34;&gt;学到了很多&lt;/a&gt;。
+其他的几个小项目倒更像是玩具，不在这显摆了。&lt;/p&gt;
+
+&lt;h2 id=&#34;阅读:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;阅读&lt;/h2&gt;
+
+&lt;p&gt;在 2015 一年里，书看得不是很多。我很难想象别人是怎么看完那长长的书单的。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;《C和指针》 Kenneth A. Reek&lt;/li&gt;
+&lt;li&gt;《算法导论》前四章 Thomas H.Cormen, Charles E.Leiserson, Ronald L.Rivest, Clifford Stein&lt;/li&gt;
+&lt;li&gt;《计算机系统设计原理》 Jerome H. Saltzer, M. Frans Kaashoek&lt;/li&gt;
+&lt;li&gt;《现代操作系统》 Andrew S. Tanenbaum&lt;/li&gt;
+&lt;li&gt;《Structured Computer Organization》 Andrew S. Tanenbaum&lt;/li&gt;
+&lt;li&gt;《深入理解计算机系统》 Randal E.Bryant, David R.O&amp;rsquo;Hallaron&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr/&gt;
+
+&lt;ul&gt;
+&lt;li&gt;《如何阅读一本书》 莫提默·J. 艾德勒 查尔斯·范多伦&lt;/li&gt;
+&lt;li&gt;《民主的细节》 刘瑜&lt;/li&gt;
+&lt;li&gt;《黑客与画家》 Paul Graham&lt;/li&gt;
+&lt;li&gt;《三体》 刘慈欣&lt;/li&gt;
+&lt;li&gt;《百年孤独》 加西亚·马尔克斯 著 范晔 译&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;论文：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Belay, Adam, Andrea Bittau, and Ali Mashtizadeh. 2012. “Dune: Safe User-Level Access to Privileged Cpu Features.” OSDI ’12: Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 335–48. &lt;a href=&#34;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf&#34;&gt;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-117.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Belay, Adam, George Prekas, Ana Klimovic, Samuel Grossman, Christos Kozyrakis, and Edouard Bugnion. 2014. “IX: A Protected Dataplane Operating System for High Throughput and Low Latency.” Proceedings of the 11th USENIX Conference on Operating Systems Design and Implementation, 49–65. &lt;a href=&#34;http://dl.acm.org/citation.cfm?id=2685048.2685053&#34;&gt;http://dl.acm.org/citation.cfm?id=2685048.2685053&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Boyd-wickizer, Silas, M Frans Kaashoek, Robert Morris, and Nickolai Zeldovich. 2012. “Non-Scalable Locks Are Dangerous.” Proceedings of the Linux Symposium. &lt;a href=&#34;http://ns1.fs.net/papers/linux:lock.pdf&#34;&gt;http://ns1.fs.net/papers/linux:lock.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Clements, Austin T, M Frans Kaashoek, and Nickolai Zeldovich. 2013. “RadixVM : Scalable Address Spaces for Multithreaded Applications.” EuroSys, 211–24. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2465351&lt;/sub&gt;.2465373.&lt;/li&gt;
+&lt;li&gt;Engler, D R, M F Kaaspoek, and J O’Toole. 1995. “ExoKernel: An Operating System Architecture for Application Level Resource Management.” Proceedings of the 15th ACM Symposium on Operating System Principles 1 (212): 256–66. doi:&lt;a href=&#34;http://doi.acm.org/10.1145/224056.224076&#34;&gt;http://doi.acm.org/10.1145/224056.224076&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Hunt, Galen C, and James R Larus. 2007. “Singularity: Rethinking the Software Stack.” Contract 41 (2): 37–49. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1243418&lt;/sub&gt;.1243424.&lt;/li&gt;
+&lt;li&gt;Kivity, Avi, Uri Lublin, Anthony Liguori, Yaniv Kamay, and Dor Laor. 2007. “Kvm: The Linux Virtual Machine Monitor.” Proceedings of the Linux Symposium 1: 225–30. &lt;a href=&#34;https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225&#34;&gt;https://www.kernel.org/doc/mirror/ols2007v1.pdf#page=225&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Ritchie, D M, and K Thompson. 1974. “The UNIX Time-Sharing System.” Communications of the ACM 17 (7): 365–75.&lt;/li&gt;
+&lt;li&gt;Ritchie, Dm. 1984. “The Evolution of the Unix Time-Sharing System.” AT&amp;amp;T Bell Laboratories Technical Journal 63 (6): 1577–93. doi:10.&lt;sup&gt;1007&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt;-540-09745-7_2.&lt;/li&gt;
+&lt;li&gt;Simon, Herbert A, Philosophical Society, and No Dec. 2007. “The Architecture of Complexity” 106 (6): 467–82. doi:10.&lt;sup&gt;2307&lt;/sup&gt;&amp;frasl;&lt;sub&gt;985254&lt;/sub&gt;.&lt;/li&gt;
+&lt;li&gt;Tang, Shuo, Haohui Mai, and S.T. King. 2010. “Trust and Protection in the Illinois Browser Operating System.” Proceedings of the 9th USENIX Symposium on Operating Systems Design and Implementation (OSDI ’10), no. October: 17–31. &lt;a href=&#34;http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf&#34;&gt;http://www.usenix.org/events/osdi10/tech/full_papers/Tang.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Bolosky, William J, Dexter Bradshaw, Randolph B Haagens, Norbert P Kusters, and Peng Li. 2011. “Paxos Replicated State Machines as the Basis of a High-Performance Data Store 2 . Paxos Replicated State Ma- Chines.” System, 11.&lt;/li&gt;
+&lt;li&gt;Cao, P, E Felten, and K Li. 1994. “Implementation and Performance of Application-Controlled File Caching.” Proceedings of the First Symposium on Operating Systems Design and Implementation, 165–78. citeseer.ifi.unizh.ch/cao94implementation.html.&lt;/li&gt;
+&lt;li&gt;Chandra, Tushar, Robert Griesemer, and Joshua Redstone. 2007a. “Paxos Made Live - An Engineering Perspective ( 2006 Invited Talk ).” Perspective 7: 398–407. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1281100&lt;/sub&gt;.1281103.&lt;/li&gt;
+&lt;li&gt;Tushar Chandra, Robert Griesemer, and Joshua Redstone. 2007b. “Paxos Made Live: An Engineering Perspective.” Proceedings of the Twenty-Sixth Annual ACM Symposium on Principles of Distributed Computing, 398–407. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1281100&lt;/sub&gt;.1281103.&lt;/li&gt;
+&lt;li&gt;Corbett, James C, Jeffrey Dean, Michael Epstein, Andrew Fikes, Christopher Frost, J J Furman, Sanjay Ghemawat, et al. 2012. “Spanner : Google ’ S Globally-Distributed Database.” Proceedings of OSDI 2012, 1–14. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2491245&lt;/sub&gt;.&lt;/li&gt;
+&lt;li&gt;Cully, Brendan, Geoffrey Lefebvre, and Dutch Meyer. 2008. “Remus: High Availability via Asynchronous Virtual Machine Replication.” Proceedings of the 5th … vi: 161–74. &lt;a href=&#34;http://portal.acm.org/citation.cfm?id=1387589.1387601nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/&#34;&gt;http://portal.acm.org/citation.cfm?id=1387589.1387601nhttp://www.usenix.org/event/nsdi08/tech/full_papers/cully/cully_html/&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Dean, Jeffrey, and Sanjay Ghemawat. n.d. “MapReduce : Simplified Data Processing on Large Clusters,” 137–49.&lt;/li&gt;
+&lt;li&gt;Fischer, Michael J., Nancy A. Lynch, and Michael S. Paterson. 1985. “Impossibility of Distributed Consensus with One Faulty Process.” Journal of the ACM 32 (2): 374–82. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3149&lt;/sub&gt;.214121.&lt;/li&gt;
+&lt;li&gt;Hunt, Patrick, Mahadev Konar, Fp Junqueira, and Benjamin Reed. 2010. “ZooKeeper: Wait-Free Coordination for Internet-Scale Systems.” USENIX Annual Technical … 8: 11–11. &lt;a href=&#34;http://portal.acm.org/citation.cfm?id=1855851nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf&#34;&gt;http://portal.acm.org/citation.cfm?id=1855851nhttps://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Lamport, Leslie. 2001. “Paxos Made Simple.” ACM SIGACT News 32 (4): 51–58. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;568425&lt;/sub&gt;.568433.&lt;/li&gt;
+&lt;li&gt;Liskov, Barbara, and James Cowling. 2012. “Viewstamped Replication Revisited,” no. MIT-CSAIL-TR-2012-021: 1–14.&lt;/li&gt;
+&lt;li&gt;Liskov, Barbara, Sanjay Ghemawat, Robert Gruber, Paul Johnson, and Liuba Shrira. 1991. “Replication in the Harp File System.” ACM SIGOPS Operating Systems Review 25: 226–38. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;121133&lt;/sub&gt;.121169.&lt;/li&gt;
+&lt;li&gt;Nightingale, Edmund B., Jeremy Elson, and Jinliang Fan. 2012. “Flat Datacenter Storage.” OSDI’12 Proceedings of the 10th USENIX Conference on Operating Systems Design and Implementation, 1–15. &lt;a href=&#34;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf&#34;&gt;https://www.usenix.org/system/files/conference/osdi12/osdi12-final-75.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Drepper, Ulrich. 2007. “What Every Programmer Should Know about Memory.” Red Hat, Inc 3: 114. doi:10.1.1.91.957.&lt;/li&gt;
+&lt;li&gt;Fähndrich, Manuel, Mark Aiken, Chris Hawblitzel, Orion Hodson, Galen Hunt, James R. Larus, and Steven Levi. 2006. “Language Support for Fast and Reliable Message-Based Communication in Singularity OS.” ACM SIGOPS Operating Systems Review 40 (4): 177. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;1218063&lt;/sub&gt;.1217953.&lt;/li&gt;
+&lt;li&gt;Mellor-crummey, John M, and Michael L Scott. 1991. “Calable Synchronization on.” Computer 9 (1): 21–65. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;103727&lt;/sub&gt;.103729.&lt;/li&gt;
+&lt;li&gt;Patterson, David a., Garth Gibson, and Randy H. Katz. 1988. “A Case for Redundant Arrays of Inexpensive Disks (RAID).” ACM SIGMOD Record 17 (3): 109–16. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;971701&lt;/sub&gt;.50214.&lt;/li&gt;
+&lt;li&gt;Saltzer, J. H., D. P. Reed, and D. D. Clark. 1984. “End-to-End Arguments in System Design.” ACM Transactions on Computer Systems 2 (4): 277–88. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;357401&lt;/sub&gt;.357402.&lt;/li&gt;
+&lt;li&gt;Savage, Stefan, Michael Burrows, Greg Nelson, Patrick Sobalvarro, and Thomas Anderson. 1997. “Eraser: A Dynamic Data Race Detector for Multithreaded Programs.” ACM Transactions on Computer Systems 15 (4): 391–411. doi:10.&lt;sup&gt;1145&lt;/sup&gt;&amp;frasl;&lt;sub&gt;265924&lt;/sub&gt;.265927.&lt;/li&gt;
+&lt;li&gt;Tweedie, SC. 1998. “Journaling the Linux ext2fs Filesystem.” The Fourth Annual Linux Expo, 1–8. &lt;a href=&#34;http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf&#34;&gt;http://www.stanford.edu/class/cs240/readings/ext2-journal-design.pdf&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Uhlig, Rich, Gil Neiger, Dion Rodgers, Amy L. Santoni, Fernando C M Martins, Andrew V. Anderson, Steven M. Bennett, Alain Kägi, Felix H. Leung, and Larry Smith. 2005. “Intel Virtualization Technology.” Computer 38 (5): 48–56. doi:10.1109/MC.2005.163.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;值得一提:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;值得一提&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在 StackOverflow 回答了第一个问题，并被接受！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww3.sinaimg.cn/large/7f793092gw1ezitciklpaj20gf0cqjv1.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Github 第一个 Pull Requset，并被合并。我为科学计算界做出了贡献！ (΄◞ิ౪◟ิ‵)&lt;/li&gt;
+&lt;li&gt;第一份实习，简历有点料了！&lt;/li&gt;
+&lt;li&gt;建立了这个博客！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;总结与展望:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;总结与展望&lt;/h2&gt;
+
+&lt;p&gt;总的来说，我在 2015 年过得很充实，对自己的表现也很满意。有得必有失，这一年我长期呆在实验室里，闷头看书学习，户外活动急剧减少，2014 年坚持的跑步也在今年放弃了，起初安慰自己没时间，有雾霾，但真的是这样吗？时间就像海绵里的水，只要你愿意挤，总还是有的。雾霾天跑步诚然不利于健康，但也不会天天都是。
+2016 年，我希望自己在保持这股子学习劲儿的同时还要恢复户外锻炼的习惯，就酱。&lt;/p&gt;
+
+&lt;p&gt;完。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

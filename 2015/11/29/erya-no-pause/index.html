@@ -1,785 +1,244 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hacking,JavaScript," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
-<meta property="og:type" content="article">
-<meta property="og:title" content="解除尔雅公开课暂停">
-<meta property="og:url" content="http://neilsh.me/2015/11/29/erya-no-pause/index.html">
-<meta property="og:site_name" content="Neil">
-<meta property="og:description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
-<meta property="og:image" content="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg">
-<meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg">
-<meta property="og:updated_time" content="2016-01-22T09:57:05.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="解除尔雅公开课暂停">
-<meta name="twitter:description" content="恶心的暂停这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P
-过程对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[1]，使查看 js 事件监">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Muse',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 0,
-      author: 'Author'
-    }
-  };
-</script>
-
-  <title> 解除尔雅公开课暂停 | Neil </title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
-
-  
-
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-69367210-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">Neil</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">Share something cool.</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu ">
-      
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="remove erya&#39;s pause when mouse moves out of browser.">
+<meta name="keywords" content="erya, pause, hack, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="remove erya&#39;s pause when mouse moves out of browser."/>
+<meta property="og:title" content="解除尔雅公开课暂停 &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.com/2015/11/29/erya-no-pause/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-11-29"/>
+<meta property="article:modified_time" content="2015-11-29"/>
+
+
+<meta property="article:tag" content="erya">
+<meta property="article:tag" content="pause">
+<meta property="article:tag" content="hack">
+
+
+
+        <link rel="icon" href="http://neilsh.com/assets/favicon.png" type="image/x-icon">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            Home
-          </a>
-        </li>
-      
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-font.css">
         
-        <li class="menu-item menu-item-about">
-          <a href="/me" rel="section">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-base.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/highlight-9.1.0-default.min.css">
+        <title>
             
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+                解除尔雅公开课暂停 &middot; Neil
             
-            About
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">解除尔雅公开课暂停</h1>
+                    <aside>
+                        <p>on <strong>Sun, Nov 29, 2015</strong></p>
+                    </aside>
+                
+            </header>
 
-      
-      
-      
-    </ul>
-  
 
-  
+<div id="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#恶心的暂停:e99fde2bd1ab83d1dc4d02061c03ef67">恶心的暂停</a></li>
+<li><a href="#过程:e99fde2bd1ab83d1dc4d02061c03ef67">过程</a></li>
+<li><a href="#脚本:e99fde2bd1ab83d1dc4d02061c03ef67">脚本</a></li>
+<li><a href="#已知问题:e99fde2bd1ab83d1dc4d02061c03ef67">已知问题</a></li>
+<li><a href="#链接:e99fde2bd1ab83d1dc4d02061c03ef67">链接</a></li>
+</ul></li>
+</ul>
 </nav>
+</div>
 
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
+<article class="article-content">
     
 
-  
-  
+<h2 id="恶心的暂停:e99fde2bd1ab83d1dc4d02061c03ef67">恶心的暂停</h2>
 
-  
-  
-  
+<p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+<h2 id="过程:e99fde2bd1ab83d1dc4d02061c03ef67">过程</h2>
 
-    
-      <header class="post-header">
+<p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：
+<!-- more -->
+<img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt="" />
+这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：</p>
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                解除尔雅公开课暂停
-              
-            
-          </h1>
-        
+<pre><code class="language-javascript">$('#eryaPlayer').pauseMovie();
+</code></pre>
 
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2015-11-29T22:04:04+08:00" content="2015-11-29">
-              2015-11-29
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/11/29/erya-no-pause/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/29/erya-no-pause/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <h2 id="u6076_u5FC3_u7684_u6682_u505C"><a href="#u6076_u5FC3_u7684_u6682_u505C" class="headerlink" title="恶心的暂停"></a>恶心的暂停</h2><p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
-<h2 id="u8FC7_u7A0B"><a href="#u8FC7_u7A0B" class="headerlink" title="过程"></a>过程</h2><p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[<a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">1</a>]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：<br><a id="more"></a><br><img src="http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg" alt=""><br>这个函数中的<code>pauseMovie()</code>基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#eryaPlayer'</span>).pauseMovie();</span><br></pre></td></tr></table></figure></p>
 <p>视频就暂停了。</p>
-<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg" alt=""></p>
-<p>再输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onblur = <span class="literal">null</span></span><br></pre></td></tr></table></figure></p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1eyp1u6wek1j20ga0c40v5.jpg" alt="" /></p>
+
+<p>再输入：</p>
+
+<pre><code class="language-javascript">window.onblur = null
+</code></pre>
+
 <p>上面命令执行完之后，暂停的限制就解除了。 LOL</p>
-<h2 id="u811A_u672C"><a href="#u811A_u672C" class="headerlink" title="脚本"></a>脚本</h2><p>我并没有学过 js，只能照葫芦画瓢，根据官方文档来写[<a href="http://wiki.greasespot.net/Greasemonkey_Manual" target="_blank" rel="external">2</a>]。如果哪里出错或写的不好，欢迎提出来。</p>
-<p>Firefox + Greasemonkey[<a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" target="_blank" rel="external">3</a>]，把脚本拖入浏览器即使用。</p>
+
+<h2 id="脚本:e99fde2bd1ab83d1dc4d02061c03ef67">脚本</h2>
+
+<p>我并没有学过 js，只能照葫芦画瓢，根据官方文档来写[<a href="http://wiki.greasespot.net/Greasemonkey_Manual">2</a>]。如果哪里出错或写的不好，欢迎提出来。</p>
+
+<p>Firefox + Greasemonkey[<a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/">3</a>]，把脚本拖入浏览器即使用。</p>
+
 <script src="https://gist.github.com/Overvenus/c41a34f7e039b9207210.js"></script>
 
+<h2 id="已知问题:e99fde2bd1ab83d1dc4d02061c03ef67">已知问题</h2>
 
-<h2 id="u5DF2_u77E5_u95EE_u9898"><a href="#u5DF2_u77E5_u95EE_u9898" class="headerlink" title="已知问题"></a>已知问题</h2><ol>
+<ol>
 <li>无法去除随机暂停及验证码暂停。</li>
 <li>Chrome 无法使用。</li>
 </ol>
-<h2 id="u94FE_u63A5"><a href="#u94FE_u63A5" class="headerlink" title="链接"></a>链接</h2><blockquote>
-<p>[1]: <a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/" target="_blank" rel="external">Event listeners popup, @media sidebar, Cubic bezier editor + more – Firefox Developer Tools Episode 33</a></p>
-<p>[2]: <a href="http://wiki.greasespot.net/Greasemonkey_Manual" target="_blank" rel="external">Greasemonkey Manual - GreaseSpot Wiki</a></p>
-<p>[3]: <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" target="_blank" rel="external">Greasemonkey :: Add-ons for Firefox</a></p>
+
+<h2 id="链接:e99fde2bd1ab83d1dc4d02061c03ef67">链接</h2>
+
+<blockquote>
+<p>[1]: <a href="https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/">Event listeners popup, @media sidebar, Cubic bezier editor + more – Firefox Developer Tools Episode 33</a></p>
+
+<p>[2]: <a href="http://wiki.greasespot.net/Greasemonkey_Manual">Greasemonkey Manual - GreaseSpot Wiki</a></p>
+
+<p>[3]: <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/">Greasemonkey :: Add-ons for Firefox</a></p>
 </blockquote>
+
 <p>End.</p>
 
-      
-    </div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/Hacking/" rel="tag">#Hacking</a>
-          
-            <a href="/tags/JavaScript/" rel="tag">#JavaScript</a>
-          
-        </div>
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/11/25/paxos_digest/" rel="next" title="paxos-digest">
-                <i class="fa fa-chevron-left"></i> paxos-digest
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/12/25/least-square-in-matrix/" rel="prev" title="最小二乘法的矩阵形式">
-                最小二乘法的矩阵形式 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-  <div class="comments" id="comments">
+</article>
+<div class="article-tags">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </div>
+    <ul id="tags">
+  
+    <li><a href="tags/hacking">#Hacking</a></li>
+  
+    <li><a href="tags/javascript">#JavaScript</a></li>
+  
+</ul>
+
+</div>
+
+
+<div class="comment-content">
+
     
-  </div>
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/asset/image/avatar.jpg"
-               alt="Neil Shen" />
-          <p class="site-author-name" itemprop="name">Neil Shen</p>
-          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">posts</span>
-            </a>
-          </div>
-
-          
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">16</span>
-              <span class="site-state-item-name">tags</span>
-              </a>
-          </div>
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
         
 
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/Overvenus" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/idstn" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u6076_u5FC3_u7684_u6682_u505C"><span class="nav-number">1.</span> <span class="nav-text">恶心的暂停</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FC7_u7A0B"><span class="nav-number">2.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u811A_u672C"><span class="nav-number">3.</span> <span class="nav-text">脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5DF2_u77E5_u95EE_u9898"><span class="nav-number">4.</span> <span class="nav-text">已知问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u94FE_u63A5"><span class="nav-number">5.</span> <span class="nav-text">链接</span></a></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2015 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Neil Shen</span>
-</div>
-
-<div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
-</div>
-
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Muse
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top"></div>
-  </div>
-
-  
-
-
-  
-
-
-
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
-
-
-
-  
-  
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
-        });
-
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
-
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
-
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
-
-      if (CONFIG.sidebar === 'post') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
-        }
-      }
-    };
-  });
-</script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
-
-
-
-  
-
-
-
-  
-
-    <script type="text/javascript">
-      var disqus_shortname = 'neilsh';
-      var disqus_identifier = '2015/11/29/erya-no-pause/';
-      var disqus_title = '解除尔雅公开课暂停';
-      var disqus_url = 'http://neilsh.me/2015/11/29/erya-no-pause/';
-
-      function run_disqus_script(disqus_script){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.com\/2015\/11\/29\/erya-no-pause\/';
+    var disqus_title = '解除尔雅公开课暂停';
+    var disqus_url = 'http:\/\/neilsh.com\/2015\/11\/29\/erya-no-pause\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-      run_disqus_script('count.js');
-      
-        run_disqus_script('embed.js');
-      
-    </script>
-  
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        
+            Copyright 2015 <i class="fa fa-copyright fa-fw"></i> Neil Shen
+        
+         </br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+        </footer>
+        <script src="http://neilsh.com/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
 
 
 
-  
-  
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-        processEscapes: true,
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
   </script>
 
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-    });
-  </script>
 
-  
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-
-
-  
-  
-
-
-</body>
+    </body>
 </html>

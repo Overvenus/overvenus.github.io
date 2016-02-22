@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Matlab on Neil</title>
+    <link>http://neilsh.com/tags/matlab/</link>
+    <description>Recent content in Matlab on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 25 Dec 2015 10:10:28 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/matlab/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>最小二乘法的矩阵形式</title>
+      <link>http://neilsh.com/2015/12/25/least-square-in-matrix/</link>
+      <pubDate>Fri, 25 Dec 2015 10:10:28 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/12/25/least-square-in-matrix/</guid>
+      <description>
+
+&lt;h2 id=&#34;拟合曲线与最小二乘法:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;拟合曲线与最小二乘法&lt;/h2&gt;
+
+&lt;p&gt;曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。&lt;/p&gt;
+
+&lt;p&gt;最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{align}
+\hat{y} &amp;amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\
+y &amp;amp;= \hat{y} + \delta
+\end{align}
+$$&lt;/p&gt;
+
+&lt;p&gt;$\delta$ 是残差，这是回归方程与真实值存在出入的原因[1]。&lt;/p&gt;
+
+&lt;p&gt;根据 m 个数据点 $(x_i, y_i),i=1,2,3⋯,m$ 可以定义一个代表偏离程度的函数:&lt;/p&gt;
+
+&lt;p&gt;$$
+S(\beta_0, \beta_1, \dots, \beta_n) = \sum_{j = 1}^m [y_i - f(x; \beta_0, \beta_1, \dots,\beta_n)]^2 = \sum \delta
+$$&lt;/p&gt;
+
+&lt;p&gt;当 $S(\beta_0, \beta_1, \dots,\beta_n)$ 取得最小值时，此时的 $\beta_0, \beta_1, \dots,\beta_n$ 即为回归方程的回归系数，也是最小二乘解。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;最小二乘矩阵形式:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;最小二乘矩阵形式&lt;/h2&gt;
+
+&lt;p&gt;多组测量数据 $(x_i,y_i),i=1,2,3⋯,m$ 可以构成两个行列式[2]：&lt;/p&gt;
+
+&lt;p&gt;$$ X=\begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_m \end{bmatrix}, Y=\begin{bmatrix} y_1 \\ y_2 \\ y_3 \\ \vdots \\ y_m \end{bmatrix} $$&lt;/p&gt;
+
+&lt;p&gt;将多组数据代入到回归方程 $f$ 后，可得：&lt;/p&gt;
+
+&lt;p&gt;$$
+Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \dots + \beta_n X^n + \Delta
+$$&lt;/p&gt;
+
+&lt;p&gt;$$
+\Delta = \begin{bmatrix}
+\delta_1 \\ \delta_2 \\ \delta_3 \\ \vdots \\ \delta_m
+\end{bmatrix} , \beta=\begin{bmatrix}
+\beta_0 \\ \beta_1 \\ \vdots \\ \beta_n
+\end{bmatrix}
+$$&lt;/p&gt;
+
+&lt;p&gt;再将 X 的转化为范德蒙德行列式：&lt;/p&gt;
+
+&lt;p&gt;$$
+V=\begin{bmatrix}
+1 &amp;amp; x_1 &amp;amp; x_1^2 &amp;amp; \dots &amp;amp; x_1^{n} \\
+1 &amp;amp; x_2 &amp;amp; x_2^2 &amp;amp; \dots &amp;amp; x_2^{n} \\
+1 &amp;amp; x_3 &amp;amp; x_3^2 &amp;amp; \dots &amp;amp; x_3^{n} \\
+\vdots &amp;amp; \vdots &amp;amp; \vdots &amp;amp; \ddots &amp;amp;\vdots \\
+1 &amp;amp; x_m &amp;amp; x_m^2 &amp;amp; \dots &amp;amp; x_m^{n}
+\end{bmatrix}
+$$&lt;/p&gt;
+
+&lt;p&gt;综上，可得：
+$$
+V\beta \approx Y \Rightarrow \Delta = \hat{Y} - Y = V\beta - Y
+$$&lt;/p&gt;
+
+&lt;p&gt;$\hat{Y}$ 为 $\hat{y_i}$构成的列向量。&lt;/p&gt;
+
+&lt;p&gt;因为 $\Delta$ 的范数: $\Vert \Delta \Vert = \left( \sum_{i = 1}^m \delta_i^2 \right)^\frac{1}2$，所以求最小二乘解即可转化为如何使 $\Delta$ 的范数最小。&lt;/p&gt;
+
+&lt;p&gt;$$
+\Vert \Delta \Vert^2  = \sum{\delta_i^2}
+                      = \begin{bmatrix}
+                         \delta_1 \delta_2 \dots \delta_n
+                        \end{bmatrix} \begin{bmatrix}\delta_1 \\
+                                                     \delta_2 \\
+                                                     \vdots \\
+                                                     \delta_n
+                                      \end{bmatrix}
+                      = \delta^T \delta
+$$&lt;/p&gt;
+
+&lt;p&gt;$$
+\Vert \Delta \Vert^2 = \Vert Y - V\beta \Vert^2 = \left( Y - V\beta \right)^T\left( Y - V\beta \right)
+$$&lt;/p&gt;
+
+&lt;h2 id=&#34;最小二乘矩阵算法:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;最小二乘矩阵算法&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Let the scalar $\alpha$ be defined by
+$$\alpha = Y^T X$$
+where Y is n × 1, X is n × 1, and both Y and X are functions of the vector z. Then
+$$\frac{d(\alpha)}{d(z)} = X^T\frac{d(Y)}{d(z)}+Y^T\frac{d(X)}{d(z)}$$&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;根据上面定理，可得：
+$$
+\frac{d\Delta}{d\beta} = \frac{d}{d\beta}\left(\left( Y - V\beta \right)^T\left( Y - V\beta \right)\right) = -2V^T\left(Y-V\beta\right)
+$$&lt;/p&gt;
+
+&lt;p&gt;为使 $\Delta$ 最小，可使 $\frac{d\Delta}{d\beta} = 0 \Rightarrow -2V^T\left(Y-V\beta\right) = 0$。&lt;/p&gt;
+
+&lt;p&gt;目前常见的算法有三种：Normal equations，QR-Factorization 和 SVD。&lt;/p&gt;
+
+&lt;!--
+这三个算法应用在计算机中时，有几点需要注意：
+ 1. 计算机中，浮点数的精度有限，当数过小时，就成0.
+ 2. 
+--&gt;
+
+&lt;!--
+TOOD: 
+ 0. 是否可逆，奇异矩阵
+ 1. 计算机精度问题
+ 2. 算法稳定问题
+--&gt;
+
+&lt;h3 id=&#34;normal-equations:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;Normal equations&lt;/h3&gt;
+
+&lt;p&gt;$$
+\begin{align}
+-2V^T\left(Y-V\beta\right) &amp;amp;= 0\\
+V^T V\beta &amp;amp;= V^TY \\
+\beta &amp;amp;= \left(V^T V\right)^{-1}V^T Y
+\end{align}
+$$
+这个算法的时间复杂度最小，计算 $\beta$ 速度最快。但是在计算机中，浮点数的精度有限，当某些矩阵中的数过小时，就算该矩阵是满秩的非奇异的，但在计算机中，该矩阵就是奇异矩阵。
+这个问题在 Normal equations 尤为严重[2]。比如下面矩阵 D：
+$$
+\begin{align}
+D &amp;amp;= \begin{bmatrix}
+1 &amp;amp; 1 \\
+0 &amp;amp; \delta \\
+\delta &amp;amp; 0 \\
+\end{bmatrix}, |\delta| = 1 \times \text{Minimum precision} \\
+D^T D &amp;amp;= \begin{bmatrix}
+1+\delta^2 &amp;amp; 1 \\
+1 &amp;amp; 1+\delta^2
+\end{bmatrix}
+\end{align}
+$$
+这个算法出现了 $\delta^2$，容易出现奇异矩阵，所以不稳定。&lt;/p&gt;
+
+&lt;h3 id=&#34;qr-factorization:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;QR-Factorization&lt;/h3&gt;
+
+&lt;p&gt;QR-Factorization 要比 Normal equations 稳定。
+这个算法先把 $V$ 进行 QR 分解[&lt;a href=&#34;https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems&#34;&gt;3&lt;/a&gt;]: $QR = V$
+$$
+\begin{align}
+V^T V \beta &amp;amp;= V^T Y \\
+(QR)^T Q R \beta &amp;amp;= (Q R)^T Y \\
+R^T Q^T Q R \beta &amp;amp;= R^T Q^T Y \\
+R^T R \beta &amp;amp;= R^T Q^T Y \\
+R\beta &amp;amp;= Q^T Y \\
+\beta &amp;amp;= R^{-1} Q^T Y
+\end{align}
+$$
+由于 R 是一个上三角矩阵，所以求解很方便。这个也是 Matlab 中&lt;code&gt;polyfit&lt;/code&gt;合的算法[2]。&lt;/p&gt;
+
+&lt;h2 id=&#34;参考文献:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;参考文献&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[1] Chatterjee, Samprit, Ali S. Hadi, and Bertram Price. 2000. Regression analysis by example. New York: Wiley.&lt;/p&gt;
+
+&lt;p&gt;[2] Moler, Cleve B. Numerical Computing with MATLAB: Revised Reprint. Siam, 2008.&lt;/p&gt;
+
+&lt;p&gt;[3] Wikipedia contributors, &amp;ldquo;QR decomposition,&amp;rdquo; Wikipedia, The Free Encyclopedia, &lt;a href=&#34;https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems&#34;&gt;https://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems&lt;/a&gt; (accessed November 23, 2015).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- Links --&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

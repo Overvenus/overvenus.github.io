@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ubuntu on Neil</title>
+    <link>http://neilsh.com/tags/ubuntu/</link>
+    <description>Recent content in Ubuntu on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 20 Jan 2016 20:54:10 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Debian Packaging 教程</title>
+      <link>http://neilsh.com/2016/01/20/debian-packaging-step-by-step/</link>
+      <pubDate>Wed, 20 Jan 2016 20:54:10 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2016/01/20/debian-packaging-step-by-step/</guid>
+      <description>
+
+&lt;h2 id=&#34;新手之痛:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;新手之痛&lt;/h2&gt;
+
+&lt;p&gt;说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo apt-get install build-essential devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)&lt;/p&gt;
+
+&lt;p&gt;有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。&lt;/p&gt;
+
+&lt;p&gt;我&lt;strong&gt;没有&lt;/strong&gt;严格遵守 Debian 社区打包的步骤，这记录的是一个 quick and dirty way not the Debian way!这是大概的过程:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;创建 GPG: 用于给 deb 签名&lt;/li&gt;
+&lt;li&gt;打包 DEB: 有点麻烦，规矩多，步骤多&lt;/li&gt;
+&lt;li&gt;上传 Launchpad: 添加到 PPA，以后安装就方便了&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;创建-gpg:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;创建 GPG&lt;/h2&gt;
+
+&lt;p&gt;阮一峰有一篇非常棒的 &lt;a href=&#34;http://www.ruanyifeng.com/blog/2013/07/gpg.html&#34;&gt;GPG入门教程&lt;/a&gt;，里面涵盖了新手上手 GPG 所需的基本步骤。&lt;/p&gt;
+
+&lt;p&gt;我在这补充一下，他的文章中上传公钥使用的是 &lt;code&gt;hkp://subkeys.pgp.net&lt;/code&gt;，我这试了几次都出现了连接错误。所以，我推荐 &lt;code&gt;hkp://keyserver.ubuntu.com&lt;/code&gt;，使用它，不仅是因为连得上，还因为在 Launchpad 创建 PPA 也要用它。&lt;/p&gt;
+
+&lt;h2 id=&#34;创建-ppa:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;创建 PPA&lt;/h2&gt;
+
+&lt;p&gt;摘自 &lt;a href=&#34;http://askubuntu.com/a/71516/436021&#34;&gt;How do I create a PPA?&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://login.launchpad.net/+new_account&#34;&gt;创建 Launchpad 帐号&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://launchpad.net/people/+me/&#34;&gt;激活 PPA&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;用 GPG 签约 &lt;a href=&#34;https://launchpad.net/codeofconduct&#34;&gt;the Ubuntu code of conduct&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2 id=&#34;打包-deb:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;打包 DEB&lt;/h2&gt;
+
+&lt;p&gt;这儿以我的最近写的 &lt;a href=&#34;http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt; 为例。TButton 关键就 3 个文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  indicator-tbutton-0.1  tree
+.
+├── indicator-tbutton
+├── indicator-tbutton.desktop
+└── tbutton-icon.png
+
+0 directories, 3 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;对上面命令的解释：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;➜&lt;/code&gt; :一行新命令的开始标志&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;indicator-tbutton-0.1&lt;/code&gt; : 当前文件夹&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;tree&lt;/code&gt; : Linux 命令，列出当前目录的结构&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;准备工作:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;准备工作&lt;/h3&gt;
+
+&lt;p&gt;在开始之前先把一些&lt;strong&gt;准备工作&lt;/strong&gt;做好。&lt;/p&gt;
+
+&lt;h4 id=&#34;安装工具:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;安装工具&lt;/h4&gt;
+
+&lt;p&gt;我没有安装上面提及的所以工具，这条命令会安装这篇教程中涉及到的工具。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo apt-get insatll build-essential debhelper fakeroot dh-make lintian dput python-bzrlib tree vim
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;维护者信息:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;维护者信息&lt;/h4&gt;
+
+&lt;p&gt;向控制台配置文件(一般为 &lt;code&gt;～/.bashrc&lt;/code&gt; 或者 &lt;code&gt;~/.zshrc&lt;/code&gt;)中添加：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;export DEBEMAIL=&amp;lt;YOUR EMAIL&amp;gt;   # 我们的电子邮件地址
+export DEBFULLNAME=&amp;lt;YOUR NAME&amp;gt; # 我们的真实姓名
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这两个信息在生成 debian 配置文件，也就是下面 &lt;em&gt;第6步&lt;/em&gt; 中会被用到。&lt;/p&gt;
+
+&lt;h3 id=&#34;创建-debian-模板:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;创建 debian 模板&lt;/h3&gt;
+
+&lt;p&gt;创建步骤：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;在 Home 文件夹里创建个叫 sandbox 的文件夹&lt;/li&gt;
+&lt;li&gt;把 indicator-tbutton-0.1 文件夹复制到 sandbox&lt;/li&gt;
+&lt;li&gt;把 indicator-tbutton-0.1 文件夹整个打包成 indicator-tbutton-0.1.tar.gz&lt;/li&gt;
+&lt;li&gt;把 indicator-tbutton-0.1.tar.gz 移动到 indicator-tbutton-0.1 文件夹中&lt;/li&gt;
+&lt;li&gt;进入 indicator-tbutton-0.1 文件夹中&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;dh_make&lt;/code&gt;，参数： （完整文档可以运行&lt;code&gt;man dh_make&lt;/code&gt;）
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-c gpl3&lt;/code&gt;: license 信息，我这儿用 GPLv3&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-f indicator-tbutton-0.1.tar.gz&lt;/code&gt;: 指定&lt;strong&gt;原&lt;/strong&gt;源代码压缩包&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;删除不必要的文件，具体可以参见 &lt;a href=&#34;https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian&#34;&gt;TButton/debian&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;编辑 debian 文件夹中的配置文件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  ~  cp -R indicator-tbutton-0.1 sandbox
+➜  ~  cd sandbox 
+➜  sandbox  tree
+.
+└── indicator-tbutton-0.1
+    ├── indicator-tbutton
+    ├── indicator-tbutton.desktop
+    └── tbutton-icon.png
+
+1 directory, 3 files
+
+➜  sandbox  tar -cvzf indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1
+indicator-tbutton-0.1/
+indicator-tbutton-0.1/tbutton-icon.png
+indicator-tbutton-0.1/indicator-tbutton
+indicator-tbutton-0.1/indicator-tbutton.desktop
+
+➜  sandbox  cp indicator-tbutton-0.1.tar.gz indicator-tbutton-0.1/
+➜  sandbox  cd indicator-tbutton-0.1 
+➜  indicator-tbutton-0.1  tree
+.
+├── indicator-tbutton
+├── indicator-tbutton-0.1.tar.gz
+├── indicator-tbutton.desktop
+└── tbutton-icon.png
+
+0 directories, 4 files
+
+➜  indicator-tbutton-0.1  dh_make -c gpl3  -f indicator-tbutton-0.1.tar.gz
+
+Type of package: single binary, indep binary, multiple binary, library, kernel module, kernel patch?
+ [s/i/m/l/k/n] s  # 这里输入 s
+
+Maintainer name  : Neil Shen
+Email-Address    : overvenus@gmail.com 
+Date             : Thu, 21 Jan 2016 14:07:51 +0800
+Package Name     : indicator-tbutton
+Version          : 0.1
+License          : gpl3
+Type of Package  : Single
+Hit &amp;lt;enter&amp;gt; to confirm:   # 这里按回车
+Currently there is no top level Makefile. This may require additional tuning.
+Done. Please edit the files in the debian/ subdirectory now. You should also
+check that the indicator-tbutton Makefiles install into $DESTDIR and not in / .
+
+➜  indicator-tbutton-0.1  tree
+.
+├── debian
+│   ├── changelog
+│   ├── compat
+│   ├── control
+│   ├── copyright
+│   ├── docs
+│   ├── indicator-tbutton.cron.d.ex
+│   ├── indicator-tbutton.default.ex
+│   ├── indicator-tbutton.doc-base.EX
+│   ├── init.d.ex
+│   ├── manpage.1.ex
+│   ├── manpage.sgml.ex
+│   ├── manpage.xml.ex
+│   ├── menu.ex
+│   ├── postinst.ex
+│   ├── postrm.ex
+│   ├── preinst.ex
+│   ├── prerm.ex
+│   ├── README.Debian
+│   ├── README.source
+│   ├── rules
+│   ├── source
+│   │   └── format
+│   └── watch.ex
+├── indicator-tbutton
+├── indicator-tbutton-0.1.tar.gz
+├── indicator-tbutton.desktop
+└── tbutton-icon.png
+
+2 directories, 26 files
+
+# 删除文件ing...
+# 最终目录结构
+➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  tree 
+.
+├── indicator-tbutton-0.1
+│   ├── debian
+│   │   ├── changelog
+│   │   ├── compat
+│   │   ├── control
+│   │   ├── copyright
+│   │   ├── rules
+│   │   └── source
+│   │       └── format
+│   ├── indicator-tbutton
+│   ├── indicator-tbutton.desktop
+│   └── tbutton-icon.png
+└── indicator-tbutton_0.1.orig.tar.gz
+
+3 directories, 10 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;编辑-debian-配置文件:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;编辑 debian 配置文件&lt;/h3&gt;
+
+&lt;p&gt;配置文件指的是 &lt;code&gt;debian\&lt;/code&gt; 文件夹下的那几个文件，每个都有不同的功能，有的一旦配置完以后都不用去改动，还有的每次发布都到改动。
+对几个重要文件的说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;changelog: 记录每次发布的对软件的更改和控制发布的版本号&lt;/li&gt;
+&lt;li&gt;rule: 控制如何安装软件, 语法于 Makefile 类似（可以参看我的 rule）&lt;/li&gt;
+&lt;li&gt;copyright: 软件的版权与发布协议&lt;/li&gt;
+&lt;li&gt;control: 维护者信息，软件简介，依赖&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上面四个文件是我们需要编辑的，具体内容怎么写可以参照 &lt;a href=&#34;https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian&#34;&gt;TButton/debian&lt;/a&gt;，详细信息请看 &lt;a href=&#34;http://www.debian.org/doc/manuals/maint-guide/&#34;&gt;Debian New Maintainers’ Guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;本地打包测试:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;本地打包测试&lt;/h3&gt;
+
+&lt;p&gt;到了这一步就简单了，就是一句命令的事儿 &amp;mdash; &lt;code&gt;fakeroot dpkg-buildpackage -F&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;-F&lt;/code&gt; : 以完全模式打包，创建 .deb 文件，打包源码，GPG 签名等等。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;# 接上面
+➜  sandbox  cd indicator-tbutton-0.1 
+➜  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F 
+dpkg-buildpackage: source package indicator-tbutton-0.1
+dpkg-buildpackage: source version 0.1-1
+dpkg-buildpackage: source distribution trusty
+dpkg-buildpackage: source changed by Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;
+dpkg-buildpackage: host architecture amd64
+ dpkg-source --before-build indicator-tbutton-0.1
+ debian/rules clean
+dh_testdir
+dh_testroot
+rm -f build-stamp
+dh_clean
+ dpkg-source -b indicator-tbutton-0.1
+dpkg-source: error: can&#39;t build with source format &#39;3.0 (quilt)&#39;: no upstream tarball found at ../indicator-tbutton-0.1_0.1.orig.tar.{bz2,gz,lzma,xz}
+dpkg-buildpackage: error: dpkg-source -b indicator-tbutton-0.1 gave error exit status 255
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Oops，出错了！来看看是什么错误。。。
+哦，原来是没有找到 &lt;code&gt;../indicator-tbutton-0.1_0.1.orig.tar.{bz2,gz,lzma,xz}&lt;/code&gt;，我们在 sandbox 下有 &lt;code&gt;indicator-tbutton_0.1.orig.tar.gz&lt;/code&gt; 但是，dpkg 要求我们提供 &lt;code&gt;indicator-tbutton-0.1_0.1.orig.tar.gz&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  ls
+indicator-tbutton-0.1  indicator-tbutton_0.1.orig.tar.gz
+# 重命名
+➜  sandbox  mv indicator-tbutton_0.1.orig.tar.gz indicator-tbutton-0.1_0.1.orig.tar.gz
+➜  sandbox  ls
+indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz
+➜  sandbox  cd indicator-tbutton-0.1 
+# 再来试一下
+➜  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -F 
+dpkg-buildpackage: source package indicator-tbutton-0.1
+dpkg-buildpackage: source version 0.1-1
+dpkg-buildpackage: source distribution trusty
+dpkg-buildpackage: source changed by Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;
+dpkg-buildpackage: host architecture amd64
+ dpkg-source --before-build indicator-tbutton-0.1
+ debian/rules clean
+dh_testdir
+dh_testroot
+rm -f build-stamp
+dh_clean
+ dpkg-source -b indicator-tbutton-0.1
+dpkg-source: info: using source format `3.0 (quilt)&#39;
+dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc
+ debian/rules build
+dh_testdir
+touch configure-stamp
+touch build-stamp
+ debian/rules binary
+dh_testdir
+dh_testroot
+dh_prep
+dh_installdirs
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps
+mkdir -m 755 -p /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart
+install -m 755 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/bin
+install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/tbutton-icon.png /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/icons/hicolor/96x96/apps
+install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/usr/share/applications
+install -m 644 /home/neil/sandbox/indicator-tbutton-0.1/indicator-tbutton.desktop /home/neil/sandbox/indicator-tbutton-0.1/debian/indicator-tbutton/etc/xdg/autostart
+dh_testdir
+dh_testroot
+dh_installchangelogs
+dh_installdocs
+dh_icons
+dh_installmenu
+# dh_python2
+# dh_pysupport
+dh_link
+dh_strip
+dh_compress
+dh_fixperms
+dh_installdeb
+dh_gencontrol
+dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable ${python:Depends}
+dpkg-gencontrol: warning: Depends field of package indicator-tbutton: unknown substitution variable ${shlibs:Depends}
+dh_md5sums
+dh_builddeb
+dpkg-deb: building package `indicator-tbutton&#39; in `../indicator-tbutton_0.1-1_amd64.deb&#39;.
+ signfile indicator-tbutton-0.1_0.1-1.dsc
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-genchanges  &amp;gt;../indicator-tbutton-0.1_0.1-1_amd64.changes
+dpkg-genchanges: including full source code in upload
+ signfile indicator-tbutton-0.1_0.1-1_amd64.changes
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-source --after-build indicator-tbutton-0.1
+dpkg-buildpackage: full upload (original source is included)
+
+➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  ls
+indicator-tbutton-0.1
+indicator-tbutton-0.1_0.1-1_amd64.changes
+indicator-tbutton-0.1_0.1-1.debian.tar.gz
+indicator-tbutton-0.1_0.1-1.dsc
+indicator-tbutton-0.1_0.1.orig.tar.gz
+indicator-tbutton_0.1-1_amd64.deb
+
+# OK! 大功告成
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;现在我们有了 .deb 文件，先把它解压，看看有没有打包进全部的文件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  mkdir temp
+➜  sandbox  dpkg -x indicator-tbutton_0.1-1_amd64.deb temp
+➜  sandbox  tree
+.
+├── indicator-tbutton-0.1
+│   ├── build-stamp
+│   ├── configure-stamp
+│   ├── debian
+│   │   ├── changelog
+│   │   ├── compat
+│   │   ├── control
+│   │   ├── copyright
+│   │   ├── files
+│   │   ├── indicator-tbutton
+│   │   │   ├── DEBIAN
+│   │   │   │   ├── conffiles
+│   │   │   │   ├── control
+│   │   │   │   └── md5sums
+│   │   │   ├── etc
+│   │   │   │   └── xdg
+│   │   │   │       └── autostart
+│   │   │   │           └── indicator-tbutton.desktop
+│   │   │   └── usr
+│   │   │       ├── bin
+│   │   │       │   └── indicator-tbutton
+│   │   │       └── share
+│   │   │           ├── applications
+│   │   │           │   └── indicator-tbutton.desktop
+│   │   │           ├── doc
+│   │   │           │   └── indicator-tbutton
+│   │   │           │       ├── changelog.Debian.gz
+│   │   │           │       └── copyright
+│   │   │           └── icons
+│   │   │               └── hicolor
+│   │   │                   └── 96x96
+│   │   │                       └── apps
+│   │   │                           └── tbutton-icon.png
+│   │   ├── indicator-tbutton.debhelper.log
+│   │   ├── indicator-tbutton.substvars
+│   │   ├── rules
+│   │   └── source
+│   │       └── format
+│   ├── indicator-tbutton
+│   ├── indicator-tbutton.desktop
+│   └── tbutton-icon.png
+├── indicator-tbutton-0.1_0.1-1_amd64.changes
+├── indicator-tbutton-0.1_0.1-1.debian.tar.gz
+├── indicator-tbutton-0.1_0.1-1.dsc
+├── indicator-tbutton-0.1_0.1.orig.tar.gz
+├── indicator-tbutton_0.1-1_amd64.deb
+└── temp
+    ├── etc
+    │   └── xdg
+    │       └── autostart
+    │           └── indicator-tbutton.desktop
+    └── usr
+        ├── bin
+        │   └── indicator-tbutton
+        └── share
+            ├── applications
+            │   └── indicator-tbutton.desktop
+            ├── doc
+            │   └── indicator-tbutton
+            │       ├── changelog.Debian.gz
+            │       └── copyright
+            └── icons
+                └── hicolor
+                    └── 96x96
+                        └── apps
+                            └── tbutton-icon.png
+
+32 directories, 34 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Perfect! 全部打包了！ ヽ(○´∀`)ﾉ♪&lt;/p&gt;
+
+&lt;p&gt;如果电脑中有装有 Ubuntu 的虚拟机的话，可以在里面安装，再次验证。&lt;/p&gt;
+
+&lt;p&gt;如果我们还有耐心的话，可用 lintain 来检查 deb 包的其他问题。下面是我的 .deb 问题，两个警告，一个错误，但并无大碍。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  lintian indicator-tbutton_0.1-1_amd64.deb
+W: indicator-tbutton: new-package-should-close-itp-bug
+W: indicator-tbutton: binary-without-manpage usr/bin/indicator-tbutton
+E: indicator-tbutton: python-script-but-no-python-dep usr/bin/indicator-tbutton
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;上传-launchpad:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;上传 Launchpad&lt;/h2&gt;
+
+&lt;p&gt;最后一部分，涉及的工具只有 &lt;code&gt;dput&lt;/code&gt;。首先，先要对它配置一下。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  vim ~/.dput.cf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;输入以下内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[my-ppa]
+fqdn = ppa.launchpad.net
+method = sftp               # 确保我们已将 ssh-key 添加到 Launchpad!
+incoming = &amp;lt;YOUR PPA PATH&amp;gt;  # 这是我的： ~overvenus/ubuntu/ppa/
+login = &amp;lt;YOUR ACCONT NAME&amp;gt;  # 这是我的： overvenus
+allow_unsigned_uploads = 0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在上传之前，我们先要清理一下，然后换个模式 build， &lt;code&gt;fakeroot dpkg-buildpackage -S&lt;/code&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;-S&lt;/code&gt; : 只打包源码，GPG 签名。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  sandbox  ls
+indicator-tbutton-0.1
+indicator-tbutton-0.1_0.1-1_amd64.changes
+indicator-tbutton-0.1_0.1-1.debian.tar.gz
+indicator-tbutton-0.1_0.1-1.dsc
+indicator-tbutton-0.1_0.1.orig.tar.gz
+indicator-tbutton_0.1-1_amd64.deb
+temp
+
+# 删除文件ing
+➜  sandbox  rm -r indicator-tbutton-0.1_0.1-1_amd64.changes indicator-tbutton-0.1_0.1-1.debian.tar.gz indicator-tbutton-0.1_0.1-1.dsc indicator-tbutton_0.1-1_amd64.deb temp
+➜  sandbox  ls
+indicator-tbutton-0.1  indicator-tbutton-0.1_0.1.orig.tar.gz
+
+# 清理
+➜  sandbox  cd indicator-tbutton-0.1 
+➜  indicator-tbutton-0.1  dh_clean
+#  换个模式 build
+➜  indicator-tbutton-0.1  fakeroot dpkg-buildpackage -S 
+dpkg-buildpackage: source package indicator-tbutton-0.1
+dpkg-buildpackage: source version 0.1-1
+dpkg-buildpackage: source distribution trusty
+dpkg-buildpackage: source changed by Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;
+ dpkg-source --before-build indicator-tbutton-0.1
+ debian/rules clean
+dh_testdir
+dh_testroot
+rm -f build-stamp
+dh_clean
+ dpkg-source -b indicator-tbutton-0.1
+dpkg-source: info: using source format `3.0 (quilt)&#39;
+dpkg-source: info: building indicator-tbutton-0.1 using existing ./indicator-tbutton-0.1_0.1.orig.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.debian.tar.gz
+dpkg-source: info: building indicator-tbutton-0.1 in indicator-tbutton-0.1_0.1-1.dsc
+ signfile indicator-tbutton-0.1_0.1-1.dsc
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-genchanges -S &amp;gt;../indicator-tbutton-0.1_0.1-1_source.changes
+dpkg-genchanges: including full source code in upload
+ signfile indicator-tbutton-0.1_0.1-1_source.changes
+
+You need a passphrase to unlock the secret key for
+user: &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+2048-bit RSA key, ID 90E9FAC7, created 2015-12-27
+
+
+ dpkg-source --after-build indicator-tbutton-0.1
+dpkg-buildpackage: full upload (original source is included)
+
+# 注意，没有 deb！
+➜  indicator-tbutton-0.1  cd ..
+➜  sandbox  ls
+indicator-tbutton-0.1
+indicator-tbutton-0.1_0.1-1.debian.tar.gz
+indicator-tbutton-0.1_0.1-1.dsc
+indicator-tbutton-0.1_0.1-1_source.changes
+indicator-tbutton-0.1_0.1.orig.tar.gz
+# 上传到 PPA
+➜  sandbox  dput my-ppa  indicator-tbutton-0.1_0.1-1_source.changes
+Checking signature on .changes
+gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7
+gpg: Good signature from &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1_source.changes.
+Checking signature on .dsc
+gpg: Signature made Friday, January 22, 2016 PM03:49:06 CST using RSA key ID 90E9FAC7
+gpg: Good signature from &amp;quot;Neil Shen &amp;lt;overvenus@gmail.com&amp;gt;&amp;quot;
+Good signature on /home/neil/sandbox/indicator-tbutton-0.1_0.1-1.dsc.
+Uploading to my-ppa (via sftp to ppa.launchpad.net):
+  indicator-tbutton-0.1_0.1-1.dsc: Agent admitted failure to sign using the key.
+Enter passphrase for key &#39;/home/neil/.ssh/id_rsa&#39;: 
+...
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;等上传完毕后 Launchpad 会发一封邮件给我们，被接受，会有以下回复。被拒，也会把原因写在邮件中。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1f08c4vj25bj20hf0d141a.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如果一切正常，30 分钟后，我们就能从 PPA 中安装我们的软件。比如安装 TButton：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo add-apt-repository ppa:overvenus/ppa
+sudo apt-get update
+sudo apt-get install indicator-tbutton
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;参考链接:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;参考链接&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian&#34;&gt;TButton/debian&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.ruanyifeng.com/blog/2013/07/gpg.html&#34;&gt;GPG入门教程&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://askubuntu.com/a/71516/436021&#34;&gt;How do I create a PPA?&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://packaging.ubuntu.com/singlehtml/&#34;&gt;Ubuntu Packaging Guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=nhoRyd2CEVs&#34;&gt;How to build a simple Debian package (*.Deb) - YouTube&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.debian.org/doc/manuals/maint-guide/&#34;&gt;Debian New Maintainers’ Guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf&#34;&gt;Packaging tutorial&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;End.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>TButton 命令行快捷按钮</title>
+      <link>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</link>
+      <pubDate>Wed, 20 Jan 2016 12:02:36 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</guid>
+      <description>&lt;p&gt;众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。
+比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;killall -s STOP vmware-vmx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;killall -s CONT vmware-vmx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果用图形化来暂停虚拟机的话，需要打开 System Monitor 点击 Processes 标签，在几百个进程中找到 vmware-vmx，右击出现菜单，点击 Stop Process。擅长用户交互的图形化界面在这种事前羸弱不堪。&lt;/p&gt;
+
+&lt;p&gt;不过经常敲键盘也确实挺烦人的，能不能做一个快捷方式，鼠标点一下就行了呢？我在网上找了一圈，并没有发现现成的解决方案，又是自己动手丰衣足食的节奏，于是就有了 &lt;a href=&#34;https://github.com/overvenus/tbutton&#34;&gt;&lt;strong&gt;TButton&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TButton&lt;/strong&gt; 是用 Python 写的，做做很快，没花多长时间。参考了 &lt;a href=&#34;https://github.com/phuslu/goproxy/blob/master/assets/gui/goagent-gtk.py&#34;&gt;goagent-gtk&lt;/a&gt;
+开源在 &lt;em&gt;&lt;a href=&#34;https://github.com/overvenus/tbutton&#34;&gt;https://github.com/overvenus/tbutton&lt;/a&gt;&lt;/em&gt;
+昨天我做了一个安装包，&lt;a href=&#34;https://github.com/overvenus/tbutton/releases&#34;&gt;戳这下载&lt;/a&gt;。或者从我的 PPA 安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo add-apt-repository ppa:overvenus/ppa
+sudo apt-get update
+sudo apt-get install indicator-tbutton
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;目前的功能还很简单，就只有“点击 &amp;ndash;&amp;gt; 执行”，对应的命令要在配置文件中写好，配置文件在 &lt;code&gt;~/.config/Tbutton/&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;下面是 TButton 在我电脑上的使用效果：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/overvenus/tbutton/master/art/TbuttonScr.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;PS：这个小玩具其实早想写了，但总是迟迟不肯动手，这不趁复习周看书看烦了，赶紧写一下，不然看书都没效率了（逃。。。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

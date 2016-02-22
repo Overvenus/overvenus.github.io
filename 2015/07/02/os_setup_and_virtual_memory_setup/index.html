@@ -1,836 +1,472 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="C,C.S.笔记,MIT," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Neil" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="##引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
-##MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址">
-<meta property="og:type" content="article">
-<meta property="og:title" content="内核的启动和建立虚拟内存">
-<meta property="og:url" content="http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/index.html">
-<meta property="og:site_name" content="Neil">
-<meta property="og:description" content="##引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
-##MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址">
-<meta property="og:image" content="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg">
-<meta property="og:updated_time" content="2015-11-07T04:04:21.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="内核的启动和建立虚拟内存">
-<meta name="twitter:description" content="##引言这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper The UNIX Time-Sharing System。
-##MMU的工作机制MMU是 x86 CPU 集成的一个硬件，负责把虚拟地址">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Muse',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 0,
-      author: 'Author'
-    }
-  };
-</script>
-
-  <title> 内核的启动和建立虚拟内存 | Neil </title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
-
-  
-
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-69367210-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">Neil</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">Share something cool.</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu ">
-      
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="JOS 如何建立虚拟内存，MIT6.828 Lab2 的答案。">
+<meta name="keywords" content="6.828, JOS, operating system, kernel, virtual memory, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="JOS 如何建立虚拟内存，MIT6.828 Lab2 的答案。"/>
+<meta property="og:title" content="内核的启动和建立虚拟内存 &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.com/2015/07/02/os_setup_and_virtual_memory_setup/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-07-02"/>
+<meta property="article:modified_time" content="2015-07-02"/>
+
+
+<meta property="article:tag" content="6.828">
+<meta property="article:tag" content="JOS">
+<meta property="article:tag" content="operating system">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="virtual memory">
+
+
+
+        <link rel="icon" href="http://neilsh.com/assets/favicon.png" type="image/x-icon">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            Home
-          </a>
-        </li>
-      
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-font.css">
         
-        <li class="menu-item menu-item-about">
-          <a href="/me" rel="section">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-base.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/highlight-9.1.0-default.min.css">
+        <title>
             
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+                内核的启动和建立虚拟内存 &middot; Neil
             
-            About
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">内核的启动和建立虚拟内存</h1>
+                    <aside>
+                        <p>on <strong>Thu, Jul 02, 2015</strong></p>
+                    </aside>
+                
+            </header>
 
-      
-      
-      
-    </ul>
-  
 
-  
+<div id="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#引言:4d7dde7d86a055790fb12700223cbbb1">引言</a></li>
+<li><a href="#mmu的工作机制:4d7dde7d86a055790fb12700223cbbb1">MMU的工作机制</a></li>
+<li><a href="#bootloader-到内核:4d7dde7d86a055790fb12700223cbbb1">BootLoader 到内核</a></li>
+<li><a href="#内核初期的内存映射:4d7dde7d86a055790fb12700223cbbb1">内核初期的内存映射</a>
+<ul>
+<li><a href="#开启-mmu:4d7dde7d86a055790fb12700223cbbb1">开启 MMU</a></li>
+<li><a href="#工作在虚拟地址:4d7dde7d86a055790fb12700223cbbb1">工作在虚拟地址</a></li>
+<li><a href="#内核的结构:4d7dde7d86a055790fb12700223cbbb1">内核的结构</a></li>
+<li><a href="#内核建立虚拟内存:4d7dde7d86a055790fb12700223cbbb1">内核建立虚拟内存</a></li>
+</ul></li>
+<li><a href="#总结:4d7dde7d86a055790fb12700223cbbb1">总结</a></li>
+</ul></li>
+</ul>
 </nav>
+</div>
 
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
+<article class="article-content">
     
 
-  
-  
+<h2 id="引言:4d7dde7d86a055790fb12700223cbbb1">引言</h2>
 
-  
-  
-  
+<p>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。
+JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf">The UNIX Time-Sharing System</a>。</p>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+<h2 id="mmu的工作机制:4d7dde7d86a055790fb12700223cbbb1">MMU的工作机制</h2>
 
-    
-      <header class="post-header">
+<p><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。
+<code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                内核的启动和建立虚拟内存
-              
-            
-          </h1>
-        
+<p>本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。
+先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：
+<!-- more -->
+<img src="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg" alt="" />
+术语说明：
+&gt; <code>page</code>: <code>MMU</code> 在逻辑上把内存分割为一个一个4KB大小的块。
+&gt; <code>page table</code>: 一个 <code>page</code>，大小4KB，内容是*1024个*指向不同 <code>page</code> 的地址及其权限。
+&gt; <code>page directory</code>：一个 <code>page</code>，大小4KB，内容是*1024个*指向不同 <code>page table</code> 的地址及其权限。
+&gt; <code>cr3</code>: x86 CPU 中的一个寄存器，存有一个32位的地址，指向一个 <code>page directory</code>。</p>
 
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2015-07-02T18:02:00+08:00" content="2015-07-02">
-              2015-07-02
-            </time>
-          </span>
+<p>单个<code>page</code>的寻址：
+&gt; 4KB = 4096 = 0x1000</p>
 
-          
+<p>由于每一个 <code>page</code> 都是4KB，它们的起始地址是*0x?????000*，以3个0x0结尾，所以*真正有效*的数据是前20bits。之后的12bits可用来设置该 <code>page</code>的权限。这也解释了为什么神图中仅靠前20bits的<code>PPN</code>就能找到对应的<code>page</code>。</p>
 
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/07/02/os_setup_and_virtual_memory_setup/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/02/os_setup_and_virtual_memory_setup/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
+<p>一个<code>page directory</code>足以映射4GB的内存：
+&gt; 1 x 1024 x 1024 x (4 x 1024) = 4GB
+&gt; one <code>cr3</code> points to one <code>page directory</code>
+&gt; one <code>page directory</code> has 1024 <code>page tables</code>
+&gt; one <code>page table</code> has 1024 <code>pages</code>
+&gt; one <code>page</code> has 4KB memory</p>
 
-          
+<h2 id="bootloader-到内核:4d7dde7d86a055790fb12700223cbbb1">BootLoader 到内核</h2>
 
-          
-          
-        </div>
-      </header>
-    
+<p>BIOS 把硬盘第一个扇区的数据(BootLoader)加载到内存物理地址<code>0x7c00</code>后，便把<code>eip = 7c00</code>，CPU 开始执行内存<code>7c00</code>处(BootLoader)的代码，此时 CPU 还未开启 <code>PAGING</code>，并处于16位模式。BootLoager要做的就是关闭中断，开启保护模式，进入32位工作状态，并且把硬盘中的内核加载代内存<code>0x10000</code>处，然后把硬件的使用权移交给内核。</p>
 
+<h2 id="内核初期的内存映射:4d7dde7d86a055790fb12700223cbbb1">内核初期的内存映射</h2>
 
-    <div class="post-body" itemprop="articleBody">
+<h3 id="开启-mmu:4d7dde7d86a055790fb12700223cbbb1">开启 MMU</h3>
 
-      
-      
+<p>内核接管硬件后，所有的地址都是物理地址，<code>eip</code>寄存器指向物理地址的内核指令。之后，内核第一时间开启了<code>MMU</code>。下面是 JOS 内核启动的头几条汇编代码，在<code>entry.S</code>文件中。</p>
 
-      
-        <p>##引言<br>这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。<br>JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper <a href="http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf" target="_blank" rel="external">The UNIX Time-Sharing System</a>。</p>
-<p>##MMU的工作机制<br><code>MMU</code>是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。<br><code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
-<p>本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。<br>先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：<br><a id="more"></a><br><img src="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg" alt=""><br>术语说明：</p>
-<blockquote>
-<p><code>page</code>: <code>MMU</code> 在逻辑上把内存分割为一个一个4KB大小的块。<br><code>page table</code>: 一个 <code>page</code>，大小4KB，内容是<em>1024个</em>指向不同 <code>page</code> 的地址及其权限。<br><code>page directory</code>：一个 <code>page</code>，大小4KB，内容是<em>1024个</em>指向不同 <code>page table</code> 的地址及其权限。<br><code>cr3</code>: x86 CPU 中的一个寄存器，存有一个32位的地址，指向一个 <code>page directory</code>。</p>
-</blockquote>
-<p>单个<code>page</code>的寻址：</p>
-<blockquote>
-<p>4KB = 4096 = 0x1000</p>
-</blockquote>
-<p>由于每一个 <code>page</code> 都是4KB，它们的起始地址是<em>0x?????000</em>，以3个0x0结尾，所以<em>真正有效</em>的数据是前20bits。之后的12bits可用来设置该 <code>page</code>的权限。这也解释了为什么神图中仅靠前20bits的<code>PPN</code>就能找到对应的<code>page</code>。</p>
-<p>一个<code>page directory</code>足以映射4GB的内存：</p>
-<blockquote>
-<p>1 x 1024 x 1024 x (4 x 1024) = 4GB<br>one <code>cr3</code> points to one <code>page directory</code><br>one <code>page directory</code> has 1024 <code>page tables</code><br>one <code>page table</code> has 1024 <code>pages</code><br>one <code>page</code> has 4KB memory</p>
-</blockquote>
-<p>##BootLoader 到内核<br>BIOS 把硬盘第一个扇区的数据(BootLoader)加载到内存物理地址<code>0x7c00</code>后，便把<code>eip = 7c00</code>，CPU 开始执行内存<code>7c00</code>处(BootLoader)的代码，此时 CPU 还未开启 <code>PAGING</code>，并处于16位模式。BootLoager要做的就是关闭中断，开启保护模式，进入32位工作状态，并且把硬盘中的内核加载代内存<code>0x10000</code>处，然后把硬件的使用权移交给内核。</p>
-<p>##内核初期的内存映射</p>
-<p>###开启 MMU<br>内核接管硬件后，所有的地址都是物理地址，<code>eip</code>寄存器指向物理地址的内核指令。之后，内核第一时间开启了<code>MMU</code>。下面是 JOS 内核启动的头几条汇编代码，在<code>entry.S</code>文件中。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line"><span class="preprocessor"># The Multiboot header</span></span><br><span class="line">.align <span class="number">4</span></span><br><span class="line">.<span class="keyword">long</span> MULTIBOOT_HEADER_MAGIC</span><br><span class="line">.<span class="keyword">long</span> MULTIBOOT_HEADER_FLAGS</span><br><span class="line">.<span class="keyword">long</span> CHECKSUM</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># '_start' specifies the ELF entry point.  Since we haven't set up</span></span><br><span class="line"><span class="preprocessor"># virtual memory when the bootloader enters this code, we need the</span></span><br><span class="line"><span class="preprocessor"># bootloader to jump to the *physical* address of the entry point.</span></span><br><span class="line">.globl		_start</span><br><span class="line">_start = RELOC(entry)</span><br><span class="line"></span><br><span class="line">.globl entry</span><br><span class="line">entry:</span><br><span class="line">	movw	$<span class="number">0x1234</span>,<span class="number">0x472</span>			<span class="preprocessor"># warm boot</span></span><br><span class="line"></span><br><span class="line">    <span class="preprocessor"># entry_pgdir 是 page directory，被硬编码在内核中。</span></span><br><span class="line">	movl	$(RELOC(entry_pgdir)), %eax</span><br><span class="line">	movl	%eax, %cr3</span><br><span class="line">	<span class="preprocessor"># Turn on paging.  开启 PAGING</span></span><br><span class="line">	movl	%cr0, %eax</span><br><span class="line">	orl	$(CR0_PE|CR0_PG|CR0_WP), %eax</span><br><span class="line">	movl	%eax, %cr0</span><br><span class="line"><span class="preprocessor">#接下面的汇编代码</span></span><br></pre></td></tr></table></figure></p>
-<p>但此时虚拟内存还没有建立，代码操作的地址还是物理地址，所用的 page directory 及 page table 硬编码在内核中，虚拟地址和物理地址是<em>一对一且连续映射</em>的。<br>下面是硬编码在内核中的 page directory。大意就是虚拟地址<code>0x0000 0000～0x0040 0000</code>和<code>0xF000 0000～0xF040 0000</code>都映射到物理地址<code>0x0000 0000～0x0040 0000</code>，且是<em>连续一对一映射</em>。换句话说，整个内核的虚拟地址就是物理地址加上<code>KERNBASE</code>，详细下面内核结构会解释。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KERNBASE 0xF0000000</span></span><br><span class="line">__attribute__((__aligned__(PGSIZE)))  <span class="comment">// 4KB 对齐</span></span><br><span class="line"><span class="keyword">pde_t</span> entry_pgdir[<span class="number">1024</span>] = &#123;</span><br><span class="line">	<span class="comment">// Map VA's [0, 4MB) to PA's [0, 4MB)</span></span><br><span class="line">	[<span class="number">0</span>]</span><br><span class="line">		= ((<span class="keyword">uintptr_t</span>)entry_pgtable - KERNBASE) + PTE_P,</span><br><span class="line">	<span class="comment">// Map VA's [KERNBASE, KERNBASE+4MB) to PA's [0, 4MB)</span></span><br><span class="line">	[KERNBASE&gt;&gt;<span class="number">22</span>]</span><br><span class="line">		= ((<span class="keyword">uintptr_t</span>)entry_pgtable - KERNBASE) + PTE_P + PTE_W</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<pre><code class="language-C">.text
+# The Multiboot header
+.align 4
+.long MULTIBOOT_HEADER_MAGIC
+.long MULTIBOOT_HEADER_FLAGS
+.long CHECKSUM
+
+# '_start' specifies the ELF entry point.  Since we haven't set up
+# virtual memory when the bootloader enters this code, we need the
+# bootloader to jump to the *physical* address of the entry point.
+.globl		_start
+_start = RELOC(entry)
+
+.globl entry
+entry:
+	movw	$0x1234,0x472			# warm boot
+
+    # entry_pgdir 是 page directory，被硬编码在内核中。
+	movl	$(RELOC(entry_pgdir)), %eax
+	movl	%eax, %cr3
+	# Turn on paging.  开启 PAGING
+	movl	%cr0, %eax
+	orl	$(CR0_PE|CR0_PG|CR0_WP), %eax
+	movl	%eax, %cr0
+#接下面的汇编代码
+</code></pre>
+
+<p>但此时虚拟内存还没有建立，代码操作的地址还是物理地址，所用的 page directory 及 page table 硬编码在内核中，虚拟地址和物理地址是*一对一且连续映射*的。
+下面是硬编码在内核中的 page directory。大意就是虚拟地址<code>0x0000 0000～0x0040 0000</code>和<code>0xF000 0000～0xF040 0000</code>都映射到物理地址<code>0x0000 0000～0x0040 0000</code>，且是*连续一对一映射*。换句话说，整个内核的虚拟地址就是物理地址加上<code>KERNBASE</code>，详细下面内核结构会解释。</p>
+
+<pre><code class="language-C">#define KERNBASE 0xF0000000
+__attribute__((__aligned__(PGSIZE)))  // 4KB 对齐
+pde_t entry_pgdir[1024] = {
+	// Map VA's [0, 4MB) to PA's [0, 4MB)
+	[0]
+		= ((uintptr_t)entry_pgtable - KERNBASE) + PTE_P,
+	// Map VA's [KERNBASE, KERNBASE+4MB) to PA's [0, 4MB)
+	[KERNBASE&gt;&gt;22]
+		= ((uintptr_t)entry_pgtable - KERNBASE) + PTE_P + PTE_W
+};
+</code></pre>
+
 <p>不过这样做还是有问题，这个 page directory 及其 page table 必须要在内存开始的头4MB之内，不然MMU就会报错。不过幸好，我们的内核还不大，4MB足够装下，实际上还有许多空闲的空间。</p>
-<p>###工作在虚拟地址<br>开启<code>MMU</code>后，所有对内存的操作都会经过翻译，CPU 的<code>eip</code>寄存器还是指向低位的物理地址，为了后续代码的正常工作，我们要把它转化为指向高位的虚拟地址，在 JOS 这个转化很简单，其实质就是加上<code>KERNBASE</code>，理由见上面<code>entry_pgdir</code>。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#接上面的汇编代码。</span></span><br><span class="line">	<span class="preprocessor"># Now paging is enabled, but we're still running at a low EIP</span></span><br><span class="line">	<span class="preprocessor"># (why is this okay?).  Jump up above KERNBASE before entering</span></span><br><span class="line">	<span class="preprocessor"># C code.</span></span><br><span class="line">	mov	$relocated, %eax</span><br><span class="line">	jmp	*%eax</span><br><span class="line">relocated:  <span class="preprocessor"># 此处的虚拟地址=物理地址+KERNBASE</span></span><br><span class="line">    <span class="preprocessor"># ...</span></span><br></pre></td></tr></table></figure>
-<p><code>jmp</code>之后内存就正式工作完成初期的<code>PAGING</code>。<br>为什么要<code>jmp</code>一下（疑惑脸）？请看<code>内核的结构</code>。</p>
-<p>###内核的结构<br>我<em>认为（可能有错，还没学过编译）</em>：</p>
-<blockquote>
-<p>JOS 的内核是虚拟按地址链接的，所有<code>symbol</code>（，代码和静态变量？）的地址都是虚拟地址（对于内核初期来说）。</p>
-</blockquote>
-<p>这句话是什么意思？请看内核的链接文件。<br><figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ENTRY<span class="params">(_start)</span></span><br><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">/* Link the kernel at this address: "." means the current address */</span></span><br><span class="line">	. = <span class="number">0</span>xF0100000;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* AT(...) gives the load address of this section, which tells</span><br><span class="line">	   the boot loader where to load the kernel in physical memory */</span></span><br><span class="line">	.<span class="built_in">text</span> : AT<span class="params">(<span class="number">0</span>x100000)</span> &#123;</span><br><span class="line">		<span class="built_in">*</span><span class="params">(.text .stub .text.* .gnu.linkonce.t.*)</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	PROVIDE<span class="params">(etext = .)</span>;	<span class="comment">/* Define the 'etext' symbol to this value */</span></span><br><span class="line">    <span class="comment">/* ... */</span></span><br></pre></td></tr></table></figure></p>
+
+<h3 id="工作在虚拟地址:4d7dde7d86a055790fb12700223cbbb1">工作在虚拟地址</h3>
+
+<p>开启<code>MMU</code>后，所有对内存的操作都会经过翻译，CPU 的<code>eip</code>寄存器还是指向低位的物理地址，为了后续代码的正常工作，我们要把它转化为指向高位的虚拟地址，在 JOS 这个转化很简单，其实质就是加上<code>KERNBASE</code>，理由见上面<code>entry_pgdir</code>。</p>
+
+<pre><code class="language-C">#接上面的汇编代码。
+	# Now paging is enabled, but we're still running at a low EIP
+	# (why is this okay?).  Jump up above KERNBASE before entering
+	# C code.
+	mov	$relocated, %eax
+	jmp	*%eax
+relocated:  # 此处的虚拟地址=物理地址+KERNBASE
+    # ... 
+</code></pre>
+
+<p><code>jmp</code>之后内存就正式工作完成初期的<code>PAGING</code>。
+为什么要<code>jmp</code>一下（疑惑脸）？请看<code>内核的结构</code>。</p>
+
+<h3 id="内核的结构:4d7dde7d86a055790fb12700223cbbb1">内核的结构</h3>
+
+<p>我*认为（可能有错，还没学过编译）*：
+&gt; JOS 的内核是虚拟按地址链接的，所有<code>symbol</code>（，代码和静态变量？）的地址都是虚拟地址（对于内核初期来说）。</p>
+
+<p>这句话是什么意思？请看内核的链接文件。</p>
+
+<pre><code>ENTRY(_start)
+SECTIONS
+{
+	/* Link the kernel at this address: &quot;.&quot; means the current address */
+	. = 0xF0100000;
+
+	/* AT(...) gives the load address of this section, which tells
+	   the boot loader where to load the kernel in physical memory */
+	.text : AT(0x100000) {
+		*(.text .stub .text.* .gnu.linkonce.t.*)
+	}
+
+	PROVIDE(etext = .);	/* Define the 'etext' symbol to this value */
+    /* ... */
+</code></pre>
+
 <p>用这链接文件编译出的内核的 section headers 如下：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ objdump -h obj/kern/kernel&#10;&#10;obj/kern/kernel:     file format elf32-i386&#10;Sections:&#10;Idx Name          Size      VMA       LMA       File off  Algn&#10;  0 .text         00001947  f0100000  00100000  00001000  2**4&#10;                  CONTENTS, ALLOC, LOAD, READONLY, CODE&#10;  1 .rodata       00000770  f0101960  00101960  00002960  2**5&#10;                  CONTENTS, ALLOC, LOAD, READONLY, DATA&#10;  2 .stab         00003919  f01020d0  001020d0  000030d0  2**2&#10;                  CONTENTS, ALLOC, LOAD, READONLY, DATA&#10;  3 .stabstr      00001907  f01059e9  001059e9  000069e9  2**0&#10;                  CONTENTS, ALLOC, LOAD, READONLY, DATA&#10;  4 .data         0000a300  f0108000  00108000  00009000  2**12&#10;                  CONTENTS, ALLOC, LOAD, DATA&#10;  5 .bss          00000644  f0112300  00112300  00013300  2**5&#10;                  ALLOC&#10;  6 .comment      00000024  00000000  00000000  00013300  2**0&#10;                  CONTENTS, READONLY</span><br></pre></td></tr></table></figure>
-<p><code>VMA</code>：virtual memory address | <code>LMA</code>：load memory address<br><code>0 .text         00001947  f0100000  00100000  00001000  2**4</code>，<br><code>.text</code>的虚拟地址是<code>0xf0100000</code>，加载地址（执行地址）<code>0x00100000</code>。<br>内核的第一条指令在内存<code>0x00100000</code>处，<code>eip = 0x00100000</code>，虚拟地址是<code>0xf0100000</code>。</p>
+
+<pre><code class="language-shell">$ objdump -h obj/kern/kernel
+
+obj/kern/kernel:     file format elf32-i386
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00001947  f0100000  00100000  00001000  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .rodata       00000770  f0101960  00101960  00002960  2**5
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .stab         00003919  f01020d0  001020d0  000030d0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .stabstr      00001907  f01059e9  001059e9  000069e9  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .data         0000a300  f0108000  00108000  00009000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  5 .bss          00000644  f0112300  00112300  00013300  2**5
+                  ALLOC
+  6 .comment      00000024  00000000  00000000  00013300  2**0
+                  CONTENTS, READONLY
+</code></pre>
+
+<p><code>VMA</code>：virtual memory address | <code>LMA</code>：load memory address
+<code>0 .text         00001947  f0100000  00100000  00001000  2**4</code>，
+<code>.text</code>的虚拟地址是<code>0xf0100000</code>，加载地址（执行地址）<code>0x00100000</code>。
+内核的第一条指令在内存<code>0x00100000</code>处，<code>eip = 0x00100000</code>，虚拟地址是<code>0xf0100000</code>。</p>
+
 <p>再看内核的 symbol table：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ objdump -t obj/kern/kernel | sed &#39;1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d&#39;&#10;addr.      sym.&#10;0010000c T _start&#10;f010000c T entry&#10;f010002f t relocated&#10;f010003e t spin&#10;f0100040 T i386_init&#10;f0100094 T _panic&#10;f01000f3 T _warn&#10;...</span><br></pre></td></tr></table></figure>
-<p><code>0010000c T _start</code> 和 <code>f010000c T entry</code> 它们就是上面的汇编代码中的<code>_start</code> 和 <code>entry</code>。<br>这意味着 <code>0010000c</code> 和 <code>f010000c</code> 指向的是同一处。因为内核从<code>f010000c</code>开始链接，所以<code>relocated</code>处于高位（即虚拟地址）。<code>jmp</code>是为了使<code>eip</code>指向虚拟地址的内核代码。<code>mov</code>是为了防止 assembler 把<code>jmp</code>“优化”掉。</p>
-<p>###内核建立虚拟内存<br>完成上面的工作之后，内核开始建立虚拟内存。<br><code>pmap.c</code>是 JOS 的内存管理的源码文件。下面是一些关键的全局变量。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// These variables are set by i386_detect_memory()</span></span><br><span class="line"><span class="keyword">size_t</span> npages;			<span class="comment">// Amount of physical memory (in pages)</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">size_t</span> npages_basemem;	<span class="comment">// Amount of base memory (in pages)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// These variables are set in mem_init()</span></span><br><span class="line"><span class="keyword">pde_t</span> *kern_pgdir;		<span class="comment">// Kernel's initial page directory</span></span><br><span class="line"><span class="comment">// 用来代表`page`的结构体</span></span><br><span class="line"><span class="keyword">struct</span> PageInfo *pages;		<span class="comment">// Physical page state array</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">struct</span> PageInfo *page_free_list;	<span class="comment">// Free list of physical pages</span></span><br></pre></td></tr></table></figure>
+
+<pre><code class="language-shell">$ objdump -t obj/kern/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d'
+addr.      sym.
+0010000c T _start
+f010000c T entry
+f010002f t relocated
+f010003e t spin
+f0100040 T i386_init
+f0100094 T _panic
+f01000f3 T _warn
+...
+</code></pre>
+
+<p><code>0010000c T _start</code> 和 <code>f010000c T entry</code> 它们就是上面的汇编代码中的<code>_start</code> 和 <code>entry</code>。
+这意味着 <code>0010000c</code> 和 <code>f010000c</code> 指向的是同一处。因为内核从<code>f010000c</code>开始链接，所以<code>relocated</code>处于高位（即虚拟地址）。<code>jmp</code>是为了使<code>eip</code>指向虚拟地址的内核代码。<code>mov</code>是为了防止 assembler 把<code>jmp</code>“优化”掉。</p>
+
+<h3 id="内核建立虚拟内存:4d7dde7d86a055790fb12700223cbbb1">内核建立虚拟内存</h3>
+
+<p>完成上面的工作之后，内核开始建立虚拟内存。
+<code>pmap.c</code>是 JOS 的内存管理的源码文件。下面是一些关键的全局变量。</p>
+
+<pre><code class="language-C">// These variables are set by i386_detect_memory()
+size_t npages;			// Amount of physical memory (in pages)
+static size_t npages_basemem;	// Amount of base memory (in pages)
+
+// These variables are set in mem_init()
+pde_t *kern_pgdir;		// Kernel's initial page directory
+// 用来代表`page`的结构体
+struct PageInfo *pages;		// Physical page state array
+static struct PageInfo *page_free_list;	// Free list of physical pages
+</code></pre>
+
 <p><code>void mem_init(void);</code>这函数初始化硬件的全部内存并建立虚拟内存。下面我节选了部分代码。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mem_init</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// Find out how much memory the machine has (npages &amp; npages_basemem).</span></span><br><span class="line">	<span class="comment">// 首先探测所有的机器有多少内存</span></span><br><span class="line">	i386_detect_memory();</span><br><span class="line">	<span class="comment">//////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	<span class="comment">// create initial page directory.</span></span><br><span class="line">	<span class="comment">// 用一个简易的 alloc 函数为变量`kern_pgdir`申请一个`page`，</span></span><br><span class="line">	<span class="comment">// 此`page`在kernel之后。`kern_pgdir`指向一个高位的虚拟地址。</span></span><br><span class="line">	kern_pgdir = (<span class="keyword">pde_t</span> *) boot_alloc(PGSIZE);</span><br><span class="line">	<span class="built_in">memset</span>(kern_pgdir, <span class="number">0</span>, PGSIZE);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 把`kern_pgdir`所在的 page 的低位物理地址插入到`kern_pgdir`对应的槽中，</span></span><br><span class="line">	<span class="comment">// 并设置权限。Permissions: kernel R, user R</span></span><br><span class="line">	kern_pgdir[PDX(UVPT)] = PADDR(kern_pgdir) | PTE_U | PTE_P;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 为`PageInfo`申请空间，物理内存有多少就申请多少个`PageInfo`，这个链表在`kern_pgdir`之后</span></span><br><span class="line">	<span class="comment">// 这些`PageInfo`是为了新的内存管理机制做准备的，用以跟踪各`page`的使用情况。</span></span><br><span class="line">	pages = (<span class="keyword">struct</span> PageInfo *)boot_alloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> PageInfo) * npages);</span><br><span class="line">	<span class="comment">// 等等。。。</span></span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line">此时的物理内存的使用情况是这样的：</span><br></pre></td></tr></table></figure>
-<pre><code>[BASEMEM] &lt;------------- 0x00000000
-...
-...   640KB
-...
-[IOPHYSMEM] &lt;----------- 0x000A0000
-...
-...   I/O hole
-...
-[EXTPHYSMEM] &lt;---------- 0x00100000
-...
-extern char entry[]; &lt;-- 0x0010000c
-...
-...   kernel
-...
-extern char end[]; &lt;---- 0x00113970
-...
-...   由于4KB对齐，这会有空白
-...
-`kern_pgdir`
-...
-....  one page gap
-...
-`pages` itself!
-...   used!
-...   ...
-...   used!
-...   unused!
-</code></pre><figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">之后的一些函数根据上面的图把已用的内存记录到`kern_pgdir`和`pagetable`中并设置权限。记录的方法大致是这样的：</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line"><span class="comment">// addr &gt;&gt; 22 取前10位</span></span><br><span class="line"><span class="comment">// (addr &gt;&gt;12) &amp; 0x3FF 取中间10位</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// log virtual_addr</span></span><br><span class="line">pagetable_phys_addr = kern_pgdir[virtual_addr&gt;&gt;<span class="number">22</span>]</span><br><span class="line">pagetable_phys_addr[<span class="params">(virtual_addr&gt;&gt;<span class="number">12</span>)</span> &amp; <span class="number">0</span>x3FF] = page_phys_addr</span><br><span class="line"></span><br><span class="line"><span class="comment">// `MMU` workflow</span></span><br><span class="line"><span class="comment">// virtual_addr to physical_addr</span></span><br><span class="line">pagetable_phys_addr = kern_pgdir[<span class="params">(virtual_addr)</span>&gt;&gt;<span class="number">22</span>]</span><br><span class="line">page_phys_addr = pagetable[<span class="params">(virtual_addr&gt;&gt;<span class="number">12</span>)</span> &amp; <span class="number">0</span>x3FF]</span><br><span class="line">physical_addr = <span class="params">(page_phy_addr &amp; <span class="number">0</span>x3FF)</span> | <span class="params">(virtual_addr &amp; <span class="number">0</span>xFFFFFC00)</span></span><br></pre></td></tr></table></figure>
-<p>最后，内核实现了虚拟内存，并能动态分配，可以多个虚拟地址指向同一物理地址。JOS 这种的管理方式使得<code>page</code>只有在被使用时才会记录到<code>pagetable</code>中，类似于 lazy initialization。<br>这种虚拟地址的记录方式也同样解释了为什么程序在使用一个野指针的时候会退出，因为这个野指针指向的地址该程序无权访问的可能性很大，一旦访问<code>MMU</code>会报<code>pagefault</code>，从而使程序退出。</p>
-<p>完整的 pmap.c 文件在<a href="/asset/code/pmap.c">这可以获取</a>，里面有比较完整的注释。</p>
-<p>##总结</p>
+
+<pre><code class="language-c">void mem_init(void) {
+	// Find out how much memory the machine has (npages &amp; npages_basemem).
+	// 首先探测所有的机器有多少内存
+	i386_detect_memory();
+	//////////////////////////////////////////////////////////////////////
+	// create initial page directory.
+	// 用一个简易的 alloc 函数为变量`kern_pgdir`申请一个`page`，
+	// 此`page`在kernel之后。`kern_pgdir`指向一个高位的虚拟地址。
+	kern_pgdir = (pde_t *) boot_alloc(PGSIZE);
+	memset(kern_pgdir, 0, PGSIZE);
+
+	// 把`kern_pgdir`所在的 page 的低位物理地址插入到`kern_pgdir`对应的槽中，
+	// 并设置权限。Permissions: kernel R, user R
+	kern_pgdir[PDX(UVPT)] = PADDR(kern_pgdir) | PTE_U | PTE_P;
+
+	// 为`PageInfo`申请空间，物理内存有多少就申请多少个`PageInfo`，这个链表在`kern_pgdir`之后
+	// 这些`PageInfo`是为了新的内存管理机制做准备的，用以跟踪各`page`的使用情况。
+	pages = (struct PageInfo *)boot_alloc(sizeof(struct PageInfo) * npages);
+	// 等等。。。
+</code></pre>
+
+<p>此时的物理内存的使用情况是这样的：</p>
+
+<pre><code>    [BASEMEM] &lt;------------- 0x00000000
+    ...
+    ...   640KB
+    ...
+    [IOPHYSMEM] &lt;----------- 0x000A0000
+    ...
+    ...   I/O hole
+    ...
+    [EXTPHYSMEM] &lt;---------- 0x00100000
+    ...
+    extern char entry[]; &lt;-- 0x0010000c
+    ...
+    ...   kernel
+    ...
+    extern char end[]; &lt;---- 0x00113970
+    ...
+    ...   由于4KB对齐，这会有空白
+    ...
+    `kern_pgdir`
+    ...
+    ....  one page gap
+    ...
+    `pages` itself!
+    ...   used!
+    ...   ...
+    ...   used!
+    ...   unused!
+</code></pre>
+
+<p>之后的一些函数根据上面的图把已用的内存记录到<code>kern_pgdir</code>和<code>pagetable</code>中并设置权限。记录的方法大致是这样的：</p>
+
+<pre><code class="language-c">// addr &gt;&gt; 22 取前10位
+// (addr &gt;&gt;12) &amp; 0x3FF 取中间10位
+
+// log virtual_addr
+pagetable_phys_addr = kern_pgdir[virtual_addr&gt;&gt;22]
+pagetable_phys_addr[(virtual_addr&gt;&gt;12) &amp; 0x3FF] = page_phys_addr
+
+// `MMU` workflow
+// virtual_addr to physical_addr
+pagetable_phys_addr = kern_pgdir[(virtual_addr)&gt;&gt;22]
+page_phys_addr = pagetable[(virtual_addr&gt;&gt;12) &amp; 0x3FF]
+physical_addr = (page_phy_addr &amp; 0x3FF) | (virtual_addr &amp; 0xFFFFFC00)
+
+</code></pre>
+
+<p>最后，内核实现了虚拟内存，并能动态分配，可以多个虚拟地址指向同一物理地址。JOS 这种的管理方式使得<code>page</code>只有在被使用时才会记录到<code>pagetable</code>中，类似于 lazy initialization。
+这种虚拟地址的记录方式也同样解释了为什么程序在使用一个野指针的时候会退出，因为这个野指针指向的地址该程序无权访问的可能性很大，一旦访问<code>MMU</code>会报<code>pagefault</code>，从而使程序退出。</p>
+
+<p>完整的 pmap.c 文件在<a href="/assets/code/pmap.c">这可以获取</a>，里面有比较完整的注释。</p>
+
+<h2 id="总结:4d7dde7d86a055790fb12700223cbbb1">总结</h2>
+
 <p>JOS 内核一启动就开启<code>MMU</code>，用的<code>page directory</code>是手写的预先编译在内核中的。之后再建立一个新的<code>page directory</code>，这个<code>page directory</code>是可以动态增加减少记录的，此时 JOS 内存的初始化算是完成了。</p>
-<p>个人笔记，难免有误，如有发现，还望指出。<br>END.</p>
 
-      
-    </div>
+<p>个人笔记，难免有误，如有发现，还望指出。
+END.</p>
 
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/C/" rel="tag">#C</a>
-          
-            <a href="/tags/C-S-笔记/" rel="tag">#C.S.笔记</a>
-          
-            <a href="/tags/MIT/" rel="tag">#MIT</a>
-          
-        </div>
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/06/29/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/07/04/goto_and_topological_sorting/" rel="prev" title="GOTO与拓扑排序">
-                GOTO与拓扑排序 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-  <div class="comments" id="comments">
+</article>
+<div class="article-tags">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </div>
+    <ul id="tags">
+  
+    <li><a href="tags/mit">#MIT</a></li>
+  
+    <li><a href="tags/os">#OS</a></li>
+  
+    <li><a href="tags/c">#C</a></li>
+  
+</ul>
+
+</div>
+
+
+<div class="comment-content">
+
     
-  </div>
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/asset/image/avatar.jpg"
-               alt="Neil Shen" />
-          <p class="site-author-name" itemprop="name">Neil Shen</p>
-          <p class="site-description motion-element" itemprop="description">It's now, or never.</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">posts</span>
-            </a>
-          </div>
-
-          
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">16</span>
-              <span class="site-state-item-name">tags</span>
-              </a>
-          </div>
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
         
 
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/Overvenus" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/idstn" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <p class="post-toc-empty">This post does not have a Table of Contents</p>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2015 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Neil Shen</span>
-</div>
-
-<div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
-</div>
-
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Muse
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top"></div>
-  </div>
-
-  
-
-
-  
-
-
-
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
-
-
-
-  
-  
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
-        });
-
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
-
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
-
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
-
-      if (CONFIG.sidebar === 'post') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
-        }
-      }
-    };
-  });
-</script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
-
-
-
-  
-
-
-
-  
-
-    <script type="text/javascript">
-      var disqus_shortname = 'neilsh';
-      var disqus_identifier = '2015/07/02/os_setup_and_virtual_memory_setup/';
-      var disqus_title = '内核的启动和建立虚拟内存';
-      var disqus_url = 'http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/';
-
-      function run_disqus_script(disqus_script){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.com\/2015\/07\/02\/os_setup_and_virtual_memory_setup\/';
+    var disqus_title = '内核的启动和建立虚拟内存';
+    var disqus_url = 'http:\/\/neilsh.com\/2015\/07\/02\/os_setup_and_virtual_memory_setup\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-      run_disqus_script('count.js');
-      
-        run_disqus_script('embed.js');
-      
-    </script>
-  
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        
+            Copyright 2015 <i class="fa fa-copyright fa-fw"></i> Neil Shen
+        
+         </br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+        </footer>
+        <script src="http://neilsh.com/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
 
 
 
-  
-  
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-        processEscapes: true,
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
   </script>
 
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-    });
-  </script>
 
-  
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-
-
-  
-  
-
-
-</body>
+    </body>
 </html>

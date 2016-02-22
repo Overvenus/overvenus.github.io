@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on Neil</title>
+    <link>http://neilsh.com/tags/c/</link>
+    <description>Recent content in C on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Sat, 04 Jul 2015 20:24:15 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.com/tags/c/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Goto 与拓扑排序</title>
+      <link>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</link>
+      <pubDate>Sat, 04 Jul 2015 20:24:15 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</guid>
+      <description>
+
+&lt;h2 id=&#34;goto-in-c:e47801faec949620d06a03161065dbeb&#34;&gt;goto in C&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt;在C语言中可以实现无限制跳转，现在有很多人都建议在实际编程中使用它，因为它会使程序的控制流程(control flow)变得混乱，难以阅读。&lt;/p&gt;
+
+&lt;h3 id=&#34;goto-break-continue:e47801faec949620d06a03161065dbeb&#34;&gt;goto, break, continue&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt;,&lt;code&gt;break&lt;/code&gt;,&lt;code&gt;continue&lt;/code&gt; 三者都可以打断控制流程，但后两者都是有限制的，只能打断当前的&lt;code&gt;{}&lt;/code&gt;(scope)。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;continue&lt;/code&gt; 只能写在loop里，不然编译报：continue statement not within loop，&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;break&lt;/code&gt; 只能写在loop或者switch中，不然编译报：break statement not within loop or switch。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt; 则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过,用的好当然也可以增加效率的同时提高可读性。
+&lt;!-- more --&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I think goto&amp;rsquo;s are fine, and they are often more readable than large
+amounts of indentation. That&amp;rsquo;s &lt;em&gt;especially&lt;/em&gt; true if the code flow isn&amp;rsquo;t
+actually naturally indented (in this case it is, so I don&amp;rsquo;t think using
+goto is in any way &lt;em&gt;clearer&lt;/em&gt; than not, but in general goto&amp;rsquo;s can be quite
+good for readability).
+&amp;mdash;Linus&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;拓扑排序:e47801faec949620d06a03161065dbeb&#34;&gt;拓扑排序&lt;/h2&gt;
+
+&lt;p&gt;《算法导论》中拓扑排序的例子，粉色的是各物件的依赖图，青色的是拓扑排序图。
+&lt;img src=&#34;http://ww4.sinaimg.cn/large/7f793092gw1ets46e3xppj20ok0kcq4d.jpg&#34; alt=&#34;&#34; /&gt;
+根据图，如果还没穿内裤，拿就必须要穿内裤那个节点开始走起；如果已经穿好内裤和裤子了，那从腰带开始走起便可。
+可以看出，拓扑排序图中的各物件的依赖关系与箭头相反，不管从哪点进入，最终的还是会到同一个节点。&lt;/p&gt;
+
+&lt;h2 id=&#34;内存管理引发的思考:e47801faec949620d06a03161065dbeb&#34;&gt;内存管理引发的思考&lt;/h2&gt;
+
+&lt;p&gt;在JOS的内存管理模块中，有一个&lt;code&gt;page_insert&lt;/code&gt;的函数，它负责记录&lt;code&gt;page&lt;/code&gt;的地址和权限，这个函数最终的结果只有一个，但输入有多种情况，为了处理这些情况，势必要写多个判断。
+插入的&lt;code&gt;pagetable&lt;/code&gt;中对应该&lt;code&gt;page&lt;/code&gt;的条目是否有旧纪录？如果没有直接插入，设置权限，结束；如果有，是否同一个&lt;code&gt;page&lt;/code&gt;，如果同一个，设置新权限，结束；如果不是同一个，删掉旧记录，插入该&lt;code&gt;page&lt;/code&gt;地址，设置权限，结束。
+大致的逻辑请看下图：
+&lt;img src=&#34;http://ww3.sinaimg.cn/large/7f793092gw1etufs6cjxnj20av0m1gmq.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从描述可知，只有条件跳转来处理这些情况会有许多重复的代码，而且不直观，难以理解。&lt;/p&gt;
+
+&lt;h3 id=&#34;不用-goto-的-page-insert:e47801faec949620d06a03161065dbeb&#34;&gt;不用&lt;code&gt;goto&lt;/code&gt;的&lt;code&gt;page_insert&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;无&lt;code&gt;goto&lt;/code&gt;，但代码重复，判断层级过多，不易理解。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm) {
+	pte_t *va_pte = pgdir_walk(pgdir, va, 1);
+	if (! va_pte)
+		// E_NO_MEM, if page table couldn&#39;t be allocated
+		return -E_NO_MEM;
+
+	physaddr_t pp_pa = page2pa(pp);
+
+	if ((*va_pte) &amp;amp; PTE_P) {
+		// There is something in this pte.
+		if (PTE_ADDR(*va_pte) == pp_pa) {
+			// Re-insert
+			*va_pte = pp_pa | perm | PTE_P;
+			if (perm | PTE_U)
+				// Changes to User Table
+				pgdir[PDX(va)] |= PTE_U;
+			return 0;
+		}
+		// Different page
+		page_remove(pgdir, va);
+	}
+
+	// Nothing in this PTE
+	*va_pte = pp_pa | perm | PTE_P;
+	if (perm | PTE_U)
+		// Changes to User Table
+		pgdir[PDX(va)] |= PTE_U;
+
+	pp-&amp;gt;pp_ref += 1;
+
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;使用-goto-的-page-insert:e47801faec949620d06a03161065dbeb&#34;&gt;使用&lt;code&gt;goto&lt;/code&gt;的&lt;code&gt;page_insert&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;有&lt;code&gt;goto&lt;/code&gt;，但代码不重复，跳转层级少，直观。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm) {
+	pte_t *va_pte = pgdir_walk(pgdir, va, 1);
+	if (! va_pte)
+		// E_NO_MEM, if page table couldn&#39;t be allocated
+		return -E_NO_MEM;
+
+	physaddr_t pp_pa = page2pa(pp);
+
+	if (! (*va_pte) &amp;amp; PTE_P)
+		// Nothing in this PTE
+		goto nonpresent;
+
+	// There is something in this pte.
+	if (PTE_ADDR(*va_pte) == pp_pa)
+		// Re-insert
+		goto present_same;
+	else
+		// Different page
+		goto present_different;
+
+	present_different:
+		page_remove(pgdir, va);
+
+	nonpresent:
+		*va_pte = pp_pa;
+		pp-&amp;gt;pp_ref += 1;
+		tlb_invalidate(pgdir, va);
+
+	present_same:
+		*va_pte = pp_pa | perm | PTE_P;
+		if (perm &amp;amp; PTE_U)
+			// Commits to User Table
+			pgdir[PDX(va)] |= PTE_U;
+		if (perm &amp;amp; PTE_W)
+			pgdir[PDX(va)] |= PTE_W;
+
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;总结:e47801faec949620d06a03161065dbeb&#34;&gt;总结&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;goto&lt;/code&gt;最好与判断写在一起，方便从语意理解此语句。&lt;/li&gt;
+&lt;li&gt;如果出口只有一个，进口有多个，可适当用&lt;code&gt;goto&lt;/code&gt;，符合DRY。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;another-fancy-case:e47801faec949620d06a03161065dbeb&#34;&gt;Another fancy case&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// error handler
+swith(i) {
+    case 1:
+        foo();
+        break;
+    case 2:
+        bar();
+        break;
+    case 3:
+        n = dosth_1();
+        if (n)
+            goto bad;
+        n = dosth_2();
+        if (n)
+            goto bad:
+        break;
+
+    default:
+    bad:
+        report();
+        end_this();
+        break;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;更多资料:e47801faec949620d06a03161065dbeb&#34;&gt;更多资料&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto&#34;&gt;https://en.wikipedia.org/wiki/Gotohttps://en.wikipedia.org/wiki/Goto&lt;/a&gt;
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Topological_sorting&#34;&gt;https://en.wikipedia.org/wiki/Topological_sorting&lt;/a&gt;
+&lt;a href=&#34;https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131&#34;&gt;https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131&lt;/a&gt;
+Knuth, Donald E. &amp;ldquo;Structured Programming with go to Statements.&amp;rdquo; ACM Computing Surveys (CSUR) 6, no. 4 (1974): 261-301.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>内核的启动和建立虚拟内存</title>
+      <link>http://neilsh.com/2015/07/02/os_setup_and_virtual_memory_setup/</link>
+      <pubDate>Thu, 02 Jul 2015 14:57:41 +0800</pubDate>
+      
+      <guid>http://neilsh.com/2015/07/02/os_setup_and_virtual_memory_setup/</guid>
+      <description>
+
+&lt;h2 id=&#34;引言:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;引言&lt;/h2&gt;
+
+&lt;p&gt;这篇博文写 JOS 如何建立虚拟内存，同时也是 MIT6.828 Lab2 的答案。
+JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS 是一个 X86 平台的32位操作系统，它是根据 Unix 第6版 设计的，也就是这篇paper &lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/readings/ritchie78unix.pdf&#34;&gt;The UNIX Time-Sharing System&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;mmu的工作机制:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;MMU的工作机制&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;MMU&lt;/code&gt;是 x86 CPU 集成的一个硬件，负责把虚拟地址翻译成物理地址。增加一层翻译不是会降低性能，那为什么不直接用物理地址？这是因为设计 Computer 和 OS 的 Scientists 为了实现不同应用程序之间的 isolation 以增加 safety 和降低应用程序的 Complexity。
+&lt;code&gt;MMU&lt;/code&gt;在计算机启动初期是不工作的，只有寄存器&lt;code&gt;cr0&lt;/code&gt;中的flag打开，它才会工作。&lt;/p&gt;
+
+&lt;p&gt;本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。
+先祭出一张神图，这张图生动形象的说明了&lt;code&gt;MMU&lt;/code&gt;的工作流程：
+&lt;!-- more --&gt;
+&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg&#34; alt=&#34;&#34; /&gt;
+术语说明：
+&amp;gt; &lt;code&gt;page&lt;/code&gt;: &lt;code&gt;MMU&lt;/code&gt; 在逻辑上把内存分割为一个一个4KB大小的块。
+&amp;gt; &lt;code&gt;page table&lt;/code&gt;: 一个 &lt;code&gt;page&lt;/code&gt;，大小4KB，内容是*1024个*指向不同 &lt;code&gt;page&lt;/code&gt; 的地址及其权限。
+&amp;gt; &lt;code&gt;page directory&lt;/code&gt;：一个 &lt;code&gt;page&lt;/code&gt;，大小4KB，内容是*1024个*指向不同 &lt;code&gt;page table&lt;/code&gt; 的地址及其权限。
+&amp;gt; &lt;code&gt;cr3&lt;/code&gt;: x86 CPU 中的一个寄存器，存有一个32位的地址，指向一个 &lt;code&gt;page directory&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;单个&lt;code&gt;page&lt;/code&gt;的寻址：
+&amp;gt; 4KB = 4096 = 0x1000&lt;/p&gt;
+
+&lt;p&gt;由于每一个 &lt;code&gt;page&lt;/code&gt; 都是4KB，它们的起始地址是*0x?????000*，以3个0x0结尾，所以*真正有效*的数据是前20bits。之后的12bits可用来设置该 &lt;code&gt;page&lt;/code&gt;的权限。这也解释了为什么神图中仅靠前20bits的&lt;code&gt;PPN&lt;/code&gt;就能找到对应的&lt;code&gt;page&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;一个&lt;code&gt;page directory&lt;/code&gt;足以映射4GB的内存：
+&amp;gt; 1 x 1024 x 1024 x (4 x 1024) = 4GB
+&amp;gt; one &lt;code&gt;cr3&lt;/code&gt; points to one &lt;code&gt;page directory&lt;/code&gt;
+&amp;gt; one &lt;code&gt;page directory&lt;/code&gt; has 1024 &lt;code&gt;page tables&lt;/code&gt;
+&amp;gt; one &lt;code&gt;page table&lt;/code&gt; has 1024 &lt;code&gt;pages&lt;/code&gt;
+&amp;gt; one &lt;code&gt;page&lt;/code&gt; has 4KB memory&lt;/p&gt;
+
+&lt;h2 id=&#34;bootloader-到内核:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;BootLoader 到内核&lt;/h2&gt;
+
+&lt;p&gt;BIOS 把硬盘第一个扇区的数据(BootLoader)加载到内存物理地址&lt;code&gt;0x7c00&lt;/code&gt;后，便把&lt;code&gt;eip = 7c00&lt;/code&gt;，CPU 开始执行内存&lt;code&gt;7c00&lt;/code&gt;处(BootLoader)的代码，此时 CPU 还未开启 &lt;code&gt;PAGING&lt;/code&gt;，并处于16位模式。BootLoager要做的就是关闭中断，开启保护模式，进入32位工作状态，并且把硬盘中的内核加载代内存&lt;code&gt;0x10000&lt;/code&gt;处，然后把硬件的使用权移交给内核。&lt;/p&gt;
+
+&lt;h2 id=&#34;内核初期的内存映射:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;内核初期的内存映射&lt;/h2&gt;
+
+&lt;h3 id=&#34;开启-mmu:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;开启 MMU&lt;/h3&gt;
+
+&lt;p&gt;内核接管硬件后，所有的地址都是物理地址，&lt;code&gt;eip&lt;/code&gt;寄存器指向物理地址的内核指令。之后，内核第一时间开启了&lt;code&gt;MMU&lt;/code&gt;。下面是 JOS 内核启动的头几条汇编代码，在&lt;code&gt;entry.S&lt;/code&gt;文件中。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;.text
+# The Multiboot header
+.align 4
+.long MULTIBOOT_HEADER_MAGIC
+.long MULTIBOOT_HEADER_FLAGS
+.long CHECKSUM
+
+# &#39;_start&#39; specifies the ELF entry point.  Since we haven&#39;t set up
+# virtual memory when the bootloader enters this code, we need the
+# bootloader to jump to the *physical* address of the entry point.
+.globl		_start
+_start = RELOC(entry)
+
+.globl entry
+entry:
+	movw	$0x1234,0x472			# warm boot
+
+    # entry_pgdir 是 page directory，被硬编码在内核中。
+	movl	$(RELOC(entry_pgdir)), %eax
+	movl	%eax, %cr3
+	# Turn on paging.  开启 PAGING
+	movl	%cr0, %eax
+	orl	$(CR0_PE|CR0_PG|CR0_WP), %eax
+	movl	%eax, %cr0
+#接下面的汇编代码
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;但此时虚拟内存还没有建立，代码操作的地址还是物理地址，所用的 page directory 及 page table 硬编码在内核中，虚拟地址和物理地址是*一对一且连续映射*的。
+下面是硬编码在内核中的 page directory。大意就是虚拟地址&lt;code&gt;0x0000 0000～0x0040 0000&lt;/code&gt;和&lt;code&gt;0xF000 0000～0xF040 0000&lt;/code&gt;都映射到物理地址&lt;code&gt;0x0000 0000～0x0040 0000&lt;/code&gt;，且是*连续一对一映射*。换句话说，整个内核的虚拟地址就是物理地址加上&lt;code&gt;KERNBASE&lt;/code&gt;，详细下面内核结构会解释。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;#define KERNBASE 0xF0000000
+__attribute__((__aligned__(PGSIZE)))  // 4KB 对齐
+pde_t entry_pgdir[1024] = {
+	// Map VA&#39;s [0, 4MB) to PA&#39;s [0, 4MB)
+	[0]
+		= ((uintptr_t)entry_pgtable - KERNBASE) + PTE_P,
+	// Map VA&#39;s [KERNBASE, KERNBASE+4MB) to PA&#39;s [0, 4MB)
+	[KERNBASE&amp;gt;&amp;gt;22]
+		= ((uintptr_t)entry_pgtable - KERNBASE) + PTE_P + PTE_W
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;不过这样做还是有问题，这个 page directory 及其 page table 必须要在内存开始的头4MB之内，不然MMU就会报错。不过幸好，我们的内核还不大，4MB足够装下，实际上还有许多空闲的空间。&lt;/p&gt;
+
+&lt;h3 id=&#34;工作在虚拟地址:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;工作在虚拟地址&lt;/h3&gt;
+
+&lt;p&gt;开启&lt;code&gt;MMU&lt;/code&gt;后，所有对内存的操作都会经过翻译，CPU 的&lt;code&gt;eip&lt;/code&gt;寄存器还是指向低位的物理地址，为了后续代码的正常工作，我们要把它转化为指向高位的虚拟地址，在 JOS 这个转化很简单，其实质就是加上&lt;code&gt;KERNBASE&lt;/code&gt;，理由见上面&lt;code&gt;entry_pgdir&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;#接上面的汇编代码。
+	# Now paging is enabled, but we&#39;re still running at a low EIP
+	# (why is this okay?).  Jump up above KERNBASE before entering
+	# C code.
+	mov	$relocated, %eax
+	jmp	*%eax
+relocated:  # 此处的虚拟地址=物理地址+KERNBASE
+    # ... 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;jmp&lt;/code&gt;之后内存就正式工作完成初期的&lt;code&gt;PAGING&lt;/code&gt;。
+为什么要&lt;code&gt;jmp&lt;/code&gt;一下（疑惑脸）？请看&lt;code&gt;内核的结构&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;内核的结构:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;内核的结构&lt;/h3&gt;
+
+&lt;p&gt;我*认为（可能有错，还没学过编译）*：
+&amp;gt; JOS 的内核是虚拟按地址链接的，所有&lt;code&gt;symbol&lt;/code&gt;（，代码和静态变量？）的地址都是虚拟地址（对于内核初期来说）。&lt;/p&gt;
+
+&lt;p&gt;这句话是什么意思？请看内核的链接文件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ENTRY(_start)
+SECTIONS
+{
+	/* Link the kernel at this address: &amp;quot;.&amp;quot; means the current address */
+	. = 0xF0100000;
+
+	/* AT(...) gives the load address of this section, which tells
+	   the boot loader where to load the kernel in physical memory */
+	.text : AT(0x100000) {
+		*(.text .stub .text.* .gnu.linkonce.t.*)
+	}
+
+	PROVIDE(etext = .);	/* Define the &#39;etext&#39; symbol to this value */
+    /* ... */
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用这链接文件编译出的内核的 section headers 如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;$ objdump -h obj/kern/kernel
+
+obj/kern/kernel:     file format elf32-i386
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00001947  f0100000  00100000  00001000  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .rodata       00000770  f0101960  00101960  00002960  2**5
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .stab         00003919  f01020d0  001020d0  000030d0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .stabstr      00001907  f01059e9  001059e9  000069e9  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .data         0000a300  f0108000  00108000  00009000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  5 .bss          00000644  f0112300  00112300  00013300  2**5
+                  ALLOC
+  6 .comment      00000024  00000000  00000000  00013300  2**0
+                  CONTENTS, READONLY
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;VMA&lt;/code&gt;：virtual memory address | &lt;code&gt;LMA&lt;/code&gt;：load memory address
+&lt;code&gt;0 .text         00001947  f0100000  00100000  00001000  2**4&lt;/code&gt;，
+&lt;code&gt;.text&lt;/code&gt;的虚拟地址是&lt;code&gt;0xf0100000&lt;/code&gt;，加载地址（执行地址）&lt;code&gt;0x00100000&lt;/code&gt;。
+内核的第一条指令在内存&lt;code&gt;0x00100000&lt;/code&gt;处，&lt;code&gt;eip = 0x00100000&lt;/code&gt;，虚拟地址是&lt;code&gt;0xf0100000&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;再看内核的 symbol table：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;$ objdump -t obj/kern/kernel | sed &#39;1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d&#39;
+addr.      sym.
+0010000c T _start
+f010000c T entry
+f010002f t relocated
+f010003e t spin
+f0100040 T i386_init
+f0100094 T _panic
+f01000f3 T _warn
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;0010000c T _start&lt;/code&gt; 和 &lt;code&gt;f010000c T entry&lt;/code&gt; 它们就是上面的汇编代码中的&lt;code&gt;_start&lt;/code&gt; 和 &lt;code&gt;entry&lt;/code&gt;。
+这意味着 &lt;code&gt;0010000c&lt;/code&gt; 和 &lt;code&gt;f010000c&lt;/code&gt; 指向的是同一处。因为内核从&lt;code&gt;f010000c&lt;/code&gt;开始链接，所以&lt;code&gt;relocated&lt;/code&gt;处于高位（即虚拟地址）。&lt;code&gt;jmp&lt;/code&gt;是为了使&lt;code&gt;eip&lt;/code&gt;指向虚拟地址的内核代码。&lt;code&gt;mov&lt;/code&gt;是为了防止 assembler 把&lt;code&gt;jmp&lt;/code&gt;“优化”掉。&lt;/p&gt;
+
+&lt;h3 id=&#34;内核建立虚拟内存:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;内核建立虚拟内存&lt;/h3&gt;
+
+&lt;p&gt;完成上面的工作之后，内核开始建立虚拟内存。
+&lt;code&gt;pmap.c&lt;/code&gt;是 JOS 的内存管理的源码文件。下面是一些关键的全局变量。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;// These variables are set by i386_detect_memory()
+size_t npages;			// Amount of physical memory (in pages)
+static size_t npages_basemem;	// Amount of base memory (in pages)
+
+// These variables are set in mem_init()
+pde_t *kern_pgdir;		// Kernel&#39;s initial page directory
+// 用来代表`page`的结构体
+struct PageInfo *pages;		// Physical page state array
+static struct PageInfo *page_free_list;	// Free list of physical pages
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;void mem_init(void);&lt;/code&gt;这函数初始化硬件的全部内存并建立虚拟内存。下面我节选了部分代码。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void mem_init(void) {
+	// Find out how much memory the machine has (npages &amp;amp; npages_basemem).
+	// 首先探测所有的机器有多少内存
+	i386_detect_memory();
+	//////////////////////////////////////////////////////////////////////
+	// create initial page directory.
+	// 用一个简易的 alloc 函数为变量`kern_pgdir`申请一个`page`，
+	// 此`page`在kernel之后。`kern_pgdir`指向一个高位的虚拟地址。
+	kern_pgdir = (pde_t *) boot_alloc(PGSIZE);
+	memset(kern_pgdir, 0, PGSIZE);
+
+	// 把`kern_pgdir`所在的 page 的低位物理地址插入到`kern_pgdir`对应的槽中，
+	// 并设置权限。Permissions: kernel R, user R
+	kern_pgdir[PDX(UVPT)] = PADDR(kern_pgdir) | PTE_U | PTE_P;
+
+	// 为`PageInfo`申请空间，物理内存有多少就申请多少个`PageInfo`，这个链表在`kern_pgdir`之后
+	// 这些`PageInfo`是为了新的内存管理机制做准备的，用以跟踪各`page`的使用情况。
+	pages = (struct PageInfo *)boot_alloc(sizeof(struct PageInfo) * npages);
+	// 等等。。。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此时的物理内存的使用情况是这样的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    [BASEMEM] &amp;lt;------------- 0x00000000
+    ...
+    ...   640KB
+    ...
+    [IOPHYSMEM] &amp;lt;----------- 0x000A0000
+    ...
+    ...   I/O hole
+    ...
+    [EXTPHYSMEM] &amp;lt;---------- 0x00100000
+    ...
+    extern char entry[]; &amp;lt;-- 0x0010000c
+    ...
+    ...   kernel
+    ...
+    extern char end[]; &amp;lt;---- 0x00113970
+    ...
+    ...   由于4KB对齐，这会有空白
+    ...
+    `kern_pgdir`
+    ...
+    ....  one page gap
+    ...
+    `pages` itself!
+    ...   used!
+    ...   ...
+    ...   used!
+    ...   unused!
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;之后的一些函数根据上面的图把已用的内存记录到&lt;code&gt;kern_pgdir&lt;/code&gt;和&lt;code&gt;pagetable&lt;/code&gt;中并设置权限。记录的方法大致是这样的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// addr &amp;gt;&amp;gt; 22 取前10位
+// (addr &amp;gt;&amp;gt;12) &amp;amp; 0x3FF 取中间10位
+
+// log virtual_addr
+pagetable_phys_addr = kern_pgdir[virtual_addr&amp;gt;&amp;gt;22]
+pagetable_phys_addr[(virtual_addr&amp;gt;&amp;gt;12) &amp;amp; 0x3FF] = page_phys_addr
+
+// `MMU` workflow
+// virtual_addr to physical_addr
+pagetable_phys_addr = kern_pgdir[(virtual_addr)&amp;gt;&amp;gt;22]
+page_phys_addr = pagetable[(virtual_addr&amp;gt;&amp;gt;12) &amp;amp; 0x3FF]
+physical_addr = (page_phy_addr &amp;amp; 0x3FF) | (virtual_addr &amp;amp; 0xFFFFFC00)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后，内核实现了虚拟内存，并能动态分配，可以多个虚拟地址指向同一物理地址。JOS 这种的管理方式使得&lt;code&gt;page&lt;/code&gt;只有在被使用时才会记录到&lt;code&gt;pagetable&lt;/code&gt;中，类似于 lazy initialization。
+这种虚拟地址的记录方式也同样解释了为什么程序在使用一个野指针的时候会退出，因为这个野指针指向的地址该程序无权访问的可能性很大，一旦访问&lt;code&gt;MMU&lt;/code&gt;会报&lt;code&gt;pagefault&lt;/code&gt;，从而使程序退出。&lt;/p&gt;
+
+&lt;p&gt;完整的 pmap.c 文件在&lt;a href=&#34;http://neilsh.com/assets/code/pmap.c&#34;&gt;这可以获取&lt;/a&gt;，里面有比较完整的注释。&lt;/p&gt;
+
+&lt;h2 id=&#34;总结:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;JOS 内核一启动就开启&lt;code&gt;MMU&lt;/code&gt;，用的&lt;code&gt;page directory&lt;/code&gt;是手写的预先编译在内核中的。之后再建立一个新的&lt;code&gt;page directory&lt;/code&gt;，这个&lt;code&gt;page directory&lt;/code&gt;是可以动态增加减少记录的，此时 JOS 内存的初始化算是完成了。&lt;/p&gt;
+
+&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
+END.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

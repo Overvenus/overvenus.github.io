@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="protocol and finite-state machine">
+<meta name="keywords" content="protocol, finite-state machine, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="protocol and finite-state machine"/>
+<meta property="og:title" content="Protocol and FSM &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.com/2015/10/23/protocol-and-fsm/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-10-23"/>
+<meta property="article:modified_time" content="2015-10-23"/>
+
+
+<meta property="article:tag" content="protocol">
+<meta property="article:tag" content="finite-state machine">
+
+
+
+        <link rel="icon" href="http://neilsh.com/assets/favicon.png" type="image/x-icon">
+        
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-font.css">
+        
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-base.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/highlight-9.1.0-default.min.css">
+        <title>
+            
+                Protocol and FSM &middot; Neil
+            
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">Protocol and FSM</h1>
+                    <aside>
+                        <p>on <strong>Fri, Oct 23, 2015</strong></p>
+                    </aside>
+                
+            </header>
+
+
+<div id="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#protocol:1dc0ee46b9edee2e1b8795e1ccd0910d">Protocol</a></li>
+<li><a href="#finite-state-machines-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d">Finite State Machines (FSM)</a></li>
+<li><a href="#protocol-and-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d">Protocol and FSM</a></li>
+<li><a href="#implement-a-protocol:1dc0ee46b9edee2e1b8795e1ccd0910d">Implement a Protocol</a></li>
+<li><a href="#viewservice:1dc0ee46b9edee2e1b8795e1ccd0910d">Viewservice</a></li>
+<li><a href="#viewservice-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d">Viewservice FSM</a></li>
+<li><a href="#后话:1dc0ee46b9edee2e1b8795e1ccd0910d">后话</a></li>
+<li><a href="#ref:1dc0ee46b9edee2e1b8795e1ccd0910d">Ref.</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+
+<article class="article-content">
+    
+
+<h2 id="protocol:1dc0ee46b9edee2e1b8795e1ccd0910d">Protocol</h2>
+
+<p>本文中 Protocol 特指通讯协议。
+首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
+
+<blockquote>
+<p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  &ndash;<a href="https://en.wikipedia.org/wiki/Protocol">WIKI#Protocol</a></p>
+</blockquote>
+
+<p>简单的来说，协议是规范数据传输的一套规则。</p>
+
+<h2 id="finite-state-machines-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d">Finite State Machines (FSM)</h2>
+
+<p>下面是摘自 WIKI 的对有限状态机的说明：</p>
+
+<blockquote>
+<p>It is conceived as an abstract machine that can be in one of a finite number of states. The machine is in only one state at a time; the state it is in at any given time is called the current state. It can change from one state to another when initiated by a triggering event or condition; this is called a transition. A particular FSM is defined by a list of its states, and the triggering condition for each transition.    &ndash;<a href="https://en.wikipedia.org/wiki/Finite-state_machine">WIKI#FSM</a></p>
+</blockquote>
+
+<p>有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。
+有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。
+<!-- more --></p>
+
+<h2 id="protocol-and-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d">Protocol and FSM</h2>
+
+<p>把 Protocol 和 FSM 写在一起自然是因为它们有着紧密的联系。不准确的来说， Protocol 就是 FSM 的行为，遵循 Protocol 的实体（们）构成了这个 FSM 的抽象机器。</p>
+
+<h2 id="implement-a-protocol:1dc0ee46b9edee2e1b8795e1ccd0910d">Implement a Protocol</h2>
+
+<p>实现协议不简单，特别是复杂的，持续状态的协议，TCP 算其中一个😂。
+列一下实现协议的困难点：</p>
+
+<ol>
+<li>状态可能有多种。</li>
+<li>条件可能有多种。</li>
+<li>1, 2组合产生的情况更多！</li>
+<li>因逻辑不清而产生的 BUG 难以排查。</li>
+<li>复杂协议容易产生高耦合的代码。</li>
+</ol>
+
+<p>说了困难点，当然要题解决思路：</p>
+
+<ol>
+<li>编写代码前画出状态转移图，理清思路。</li>
+<li>编写代码前定好各个函数的作用，及调用范围。</li>
+<li>编写代码时避免过早的优化， premature optimization is the root of all evil， Knuth</li>
+<li>有 Test case 那自然是极好的。</li>
+</ol>
+
+<p>这四点，箭箭射中我膝盖。唉，人啊，为什么痛过之后才知道悔改！（严肃脸）</p>
+
+<h2 id="viewservice:1dc0ee46b9edee2e1b8795e1ccd0910d">Viewservice</h2>
+
+<p>6.824 的 lab2 Part A 让我们实现一个具体的协议。计算机有随时宕机的可能，一旦发生它提供的服务就不可得了。该协议引入主机（Primary）和从机（Backup）机制并及时检查两者的存活状态，使系统服务具有高可用性，下面称这个协议为 <strong>Viewservice</strong>。
+Viewservice 在某些条件下会产生一个 <strong>View</strong>。View 是一个数据结构，包含主机和从机的地址。
+下面说一下这个协议要关键的几个点：</p>
+
+<ol>
+<li>持续状态协议，当前状态会影响到下一状态。</li>
+<li>每次更新 View， Primary 不能为空。</li>
+<li>下一个 View 中的 Primary 必须为当前 View 的 Primary 或 Backup。</li>
+<li>每个活动的服务器都保存在 viewserver 中，状态是 Primary, Backup, Idle 其中的一种。</li>
+<li>当前 View 中的 Primary 和 Backup 同时出错时，服务结束。</li>
+</ol>
+
+<p>上面几点并没有完整地描述 Viewservice，但已足够用来阐述 Protocol 和 FSM 之前的关系，想看完整的协议请访问<a href="http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html">lab2#Part A</a>.</p>
+
+<h2 id="viewservice-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d">Viewservice FSM</h2>
+
+<p>不难发现 View 就是状态，条件就是 Primary，Backup，Idle三者的存活状态。
+注意，为了便于理解，这里的 FSM 只是完整的 Viewservice 中的<strong>关键部分（错误处理）</strong>，我去掉了一些无关痛痒的内容，并且我对 Idle 多了一个限制：每个时刻要没有 Idle，要么只有一个，不会有多个存在。但就算这个限制不存在也不会影响最后的正确性。这样做的好处是 Idle 只有两种状态，简化了条件的同时还便于表示（0 or 1） ;-)</p>
+
+<p>由此设三位二进制数：XXX， 分别代表 Primary，Backup和Idle。1为存活，0为出错。</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th align="center">Primary</th>
+<th align="center">Backup</th>
+<th align="center">Idle</th>
+<th align="right">XXX</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Alive</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="right">111</td>
+</tr>
+
+<tr>
+<td>Dead</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="right">000</td>
+</tr>
+</tbody>
+</table>
+
+<p>可能输出的状态有四种：</p>
+
+<ol>
+<li>100，只有 Primary 存活。</li>
+<li>110，Primary 和 Backup 存活，没有 Idle。</li>
+<li>111，Primary，Backup 和 Idle 都存活。</li>
+<li>00X，Primary 和 Backup， 服务结束。</li>
+</ol>
+
+<p>注意： X 代表 0 和 1，00X 就是 000 和 001 的合集</p>
+
+<p>所有可能的条件：</p>
+
+<p>1.100
+ 2.101
+ 3.110
+ 4.111
+ 5.010
+ 6.011
+ 7.00X</p>
+
+<p>两者产生的状态转移表： 竖为当前状态，横为条件，<code>\</code> 为不会出现的情况</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th align="center">100</th>
+<th align="center">101</th>
+<th align="center">110</th>
+<th align="center">111</th>
+<th align="center">010</th>
+<th align="center">011</th>
+<th align="center">00X</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>100</td>
+<td align="center">110</td>
+<td align="center"></td>
+<td align="center">100</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">00X</td>
+</tr>
+
+<tr>
+<td>110</td>
+<td align="center">110</td>
+<td align="center">110</td>
+<td align="center">100</td>
+<td align="center">111</td>
+<td align="center">100</td>
+<td align="center">110</td>
+<td align="center">00X</td>
+</tr>
+
+<tr>
+<td>111</td>
+<td align="center">110</td>
+<td align="center">110</td>
+<td align="center">100</td>
+<td align="center">111</td>
+<td align="center">100</td>
+<td align="center">110</td>
+<td align="center">00X</td>
+</tr>
+
+<tr>
+<td>00X</td>
+<td align="center">00X</td>
+<td align="center">00X</td>
+<td align="center">00X</td>
+<td align="center">00X</td>
+<td align="center">00X</td>
+<td align="center">00X</td>
+<td align="center">00X</td>
+</tr>
+</tbody>
+</table>
+
+<p>根据上面的表可以画出状态转移图，更直观地说明这个 FSM</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1exdcpwse63j21kw15madn.jpg" alt="" /></p>
+
+<p>清楚了这个 FSM，各种情况了然于心，设计数据结构，编写代码，实现协议 so easy。</p>
+
+<h2 id="后话:1dc0ee46b9edee2e1b8795e1ccd0910d">后话</h2>
+
+<p>Part A部分我花了不少时间，主要还是当初没有理清协议，有多个 Test 通不过，代码结构推到了一遍又一遍。在机缘巧合下（debug下）发现协议和数电中的状态转移图有紧密的联系。然后尝试用状态转移图来表示协议，没想到还真可以。根据状态转移图改善了一下代码，通过各种 Test 快得飞起！这么好的方法不可能没有人比我先想到，查了 google 才知道有个概念叫*有限状态机*，有门课叫 *Protocol Engineering*，我的视野还太小。最后发一张 TCP 的状态转移图，感受下 TCP 的复杂性。</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Tcp_state_diagram_fixed_new.svg" alt="" /></p>
+
+<h2 id="ref:1dc0ee46b9edee2e1b8795e1ccd0910d">Ref.</h2>
+
+<blockquote>
+<p><a href="http://nil.csail.mit.edu/6.824/2015/labs/lab-2.html">lab2#Part A</a></p>
+
+<p><a href="https://en.wikipedia.org/wiki/Protocol">WIKI#Protocol</a></p>
+
+<p><a href="https://en.wikipedia.org/wiki/Finite-state_machine">WIKI#FSM</a></p>
+
+<p><a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol">WIKI#TCP</a></p>
+
+<p><a href="http://pet.ece.iisc.ernet.in/course/E2223/ch.pdf">Specification of Protocol Using FSM</a></p>
+
+<p><a href="http://cs.uccs.edu/~cs522/pe/pe.htm">Protocol Specification using Sequence Chart or Message Flow DiagramApply Formal Method To Protocol Specification</a></p>
+</blockquote>
+
+<p>End.</p>
+
+</article>
+<div class="article-tags">
+    
+    <ul id="tags">
+  
+    <li><a href="tags/algorithms">#Algorithms</a></li>
+  
+</ul>
+
+</div>
+
+
+<div class="comment-content">
+
+    
+        
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.com\/2015\/10\/23\/protocol-and-fsm\/';
+    var disqus_title = 'Protocol and FSM';
+    var disqus_url = 'http:\/\/neilsh.com\/2015\/10\/23\/protocol-and-fsm\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        
+            Copyright 2015 <i class="fa fa-copyright fa-fw"></i> Neil Shen
+        
+         </br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+        </footer>
+        <script src="http://neilsh.com/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+    </body>
+</html>

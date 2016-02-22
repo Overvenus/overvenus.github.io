@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="A note about golang memory.">
+<meta name="keywords" content="golang, memory, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="A note about golang memory."/>
+<meta property="og:title" content="Go Note &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.com/2015/10/08/golang-note/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-10-08"/>
+<meta property="article:modified_time" content="2015-10-08"/>
+
+
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="memory">
+
+
+
+        <link rel="icon" href="http://neilsh.com/assets/favicon.png" type="image/x-icon">
+        
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-font.css">
+        
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-base.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="http://neilsh.com/css/highlight-9.1.0-default.min.css">
+        <title>
+            
+                Go Note &middot; Neil
+            
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">Go Note</h1>
+                    <aside>
+                        <p>on <strong>Thu, Oct 08, 2015</strong></p>
+                    </aside>
+                
+            </header>
+
+
+<div id="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#new-make-and-local-variable:29d085475296ad0ae0e08e9c74a587d0"><code>new</code>, <code>make</code> and Local variable</a></li>
+<li><a href="#stack-or-heap:29d085475296ad0ae0e08e9c74a587d0">Stack or Heap?</a></li>
+<li><a href="#happen-before-and-channel:29d085475296ad0ae0e08e9c74a587d0">Happen before and Channel</a></li>
+<li><a href="#concurrency:29d085475296ad0ae0e08e9c74a587d0">Concurrency</a>
+<ul>
+<li><a href="#main-exits:29d085475296ad0ae0e08e9c74a587d0"><code>main</code> exits</a></li>
+<li><a href="#generator-in-go:29d085475296ad0ae0e08e9c74a587d0">Generator in Go</a></li>
+<li><a href="#tricky-keyword-select:29d085475296ad0ae0e08e9c74a587d0">Tricky Keyword, <code>select</code></a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+
+<article class="article-content">
+    
+
+<!--
+TODO:
+   - ...
+-->
+
+<h2 id="new-make-and-local-variable:29d085475296ad0ae0e08e9c74a587d0"><code>new</code>, <code>make</code> and Local variable</h2>
+
+<p>In short: new allocates memory; make initializes the slice, map, and channel types; local variable may be not <em>local</em> at all.</p>
+
+<blockquote>
+<p><code>new</code>: new(T) allocates zeroed storage for a new item of type T and returns its address, a value of type *T. In Go terminology, it returns a pointer to a newly allocated zero value of type T.</p>
+
+<p><code>make</code>: creates slices, maps, and channels only, and it returns an <em>initialized (not zeroed)</em> value of type T (not *T).</p>
+
+<p>Local variable: unlike in C, it&rsquo;s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., <code>return &amp;File{fd: fd, name: name}</code>)
+ &ndash; <a href="https://golang.org/doc/effective_go.html#allocation_new">Effective GO#allocation_new</a>
+<!-- more --></p>
+</blockquote>
+
+<h2 id="stack-or-heap:29d085475296ad0ae0e08e9c74a587d0">Stack or Heap?</h2>
+
+<p><a href="https://golang.org/doc/faq#stack_or_heap">Golang FAQ#stackheap</a>
+<strong>How do I know whether a variable is allocated on the heap or the stack?</strong></p>
+
+<p>From a correctness standpoint, you don&rsquo;t need to know. Each variable in Go exists as long as there are <em>references</em> to it. The storage location chosen by the implementation is irrelevant to the semantics of the language.</p>
+
+<p>The storage location does have an effect on writing efficient programs. When possible, the Go compilers will allocate variables that are local to a function in that function&rsquo;s stack frame. However, if the compiler cannot prove that the variable is not referenced after the function returns, then the compiler must allocate the variable on the garbage-collected heap to avoid dangling pointer errors. Also, if a local variable is very large, it might make more sense to store it on the heap rather than the stack.</p>
+
+<p>In the current compilers, if a variable has its address taken, that variable is a candidate for allocation on the heap. However, a basic escape analysis recognizes some cases when such variables will not live past the return from the function and can reside on the stack.</p>
+
+<p>An excellent talk about stack and heap of Go. <a href="http://dave.cheney.net/2014/06/07/five-things-that-make-go-fast">Five things that make Go fast</a></p>
+
+<h2 id="happen-before-and-channel:29d085475296ad0ae0e08e9c74a587d0">Happen before and Channel</h2>
+
+<p><a href="https://golang.org/ref/mem#tmp_7">Golang Memory Model#channel</a>
+&gt; A send on a channel happens before the corresponding receive from that channel completes.</p>
+
+<p>An interesting case where <em>Happen Before</em> will take place.</p>
+
+<pre><code class="language-go">var c = make(chan int)
+var a string
+
+func f() {
+    a = &quot;hello, world&quot;
+    &lt;-c
+}
+func main() {
+    go f()
+    c &lt;- 0
+    print(a)
+}
+</code></pre>
+
+<p>This snippet guarantes to print &ldquo;hello, world&rdquo;. The write to a happens before the receive on c, which happens before the corresponding send on c completes, which happens before the print.
+If the channel were buffered (e.g., <code>c = make(chan int, 1)</code>) then the program would not be guaranteed to print &ldquo;hello, world&rdquo;. (It might print the empty string, crash, or do something else.)</p>
+
+<h2 id="concurrency:29d085475296ad0ae0e08e9c74a587d0">Concurrency</h2>
+
+<p><a href="https://talks.golang.org/2012/concurrency.slide">Go Concurrency Patterns</a></p>
+
+<h3 id="main-exits:29d085475296ad0ae0e08e9c74a587d0"><code>main</code> exits</h3>
+
+<p>What happens to goroutines that running background when main function returns?</p>
+
+<blockquote>
+<p>When the main returns, the programm goes away.
+       &ndash; <a href="https://youtu.be/f6kdp27TYZs?t=7m46s">Rob Pike#main_exit</a></p>
+</blockquote>
+
+<p>It confused me for a long time, now I get a concrete answer.</p>
+
+<h3 id="generator-in-go:29d085475296ad0ae0e08e9c74a587d0">Generator in Go</h3>
+
+<blockquote>
+<p>Generator: function that returns a channel.
+Channels are first-class values, just like strings or integers.</p>
+</blockquote>
+
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+import &quot;time&quot;
+import &quot;math/rand&quot;
+
+func main() {
+    // Python-like usage
+    for s := range boring(&quot;generator&quot;) {
+        fmt.Println(s)
+    }
+
+    fmt.Println(&quot;func main exits&quot;)
+}
+
+// ### Generator ###
+func boring(msg string) &lt;-chan string { // Returns receive-only channel of strings.
+    c := make(chan string)
+    go func() { // We launch the goroutine from inside the function.
+        for i := 0; i &lt; 10; i++ {
+            c &lt;- fmt.Sprintf(&quot;%s %d&quot;, msg, i)
+            time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
+        }
+        close(c) // close channel c, otherwise for-range will be blocked.
+    }()
+    return c // Return the channel to the caller.
+}
+</code></pre>
+
+<p>Unlike <strong>Generator</strong> in Python, the concept in Go is simple: <em>Generator: function that returns a channel</em>.</p>
+
+<ul>
+<li>Python Generator: generates data in time.</li>
+<li>Go Generator: return a channel, reveives data in time.</li>
+</ul>
+
+<h3 id="tricky-keyword-select:29d085475296ad0ae0e08e9c74a587d0">Tricky Keyword, <code>select</code></h3>
+
+<blockquote>
+<p>Select</p>
+
+<p>The select statement provides another way to handle multiple channels.
+It&rsquo;s like a switch, but each case is a communication:</p>
+
+<ul>
+<li><p>All channels are evaluated.</p></li>
+
+<li><p>Selection blocks until one communication can proceed, which then does.</p></li>
+
+<li><p>If multiple can proceed, select chooses pseudo-randomly.</p></li>
+
+<li><p>A default clause, if present, executes immediately if no channel is ready.</p></li>
+</ul>
+</blockquote>
+
+<pre><code class="language-go">select {
+    case v1 := &lt;-c1:
+        fmt.Printf(&quot;received %v from c1\n&quot;, v1)
+    case v2 := &lt;-c2:
+        fmt.Printf(&quot;received %v from c2\n&quot;, v1)
+    case c3 &lt;- 23:
+        fmt.Printf(&quot;sent %v to c3\n&quot;, 23)
+    default:
+        fmt.Printf(&quot;no one was ready to communicate\n&quot;)
+}
+</code></pre>
+
+<p>Select with <strong>default</strong> is a non-blocking statement, even if no other case can be processed. Without <strong>default</strong>, select block forever if no other case can be processed.</p>
+
+<p>END.</p>
+
+</article>
+<div class="article-tags">
+    
+    <ul id="tags">
+  
+    <li><a href="tags/go">#Go</a></li>
+  
+</ul>
+
+</div>
+
+
+<div class="comment-content">
+
+    
+        
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.com\/2015\/10\/08\/golang-note\/';
+    var disqus_title = 'Go Note';
+    var disqus_url = 'http:\/\/neilsh.com\/2015\/10\/08\/golang-note\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        
+            Copyright 2015 <i class="fa fa-copyright fa-fw"></i> Neil Shen
+        
+         </br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+        </footer>
+        <script src="http://neilsh.com/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+    </body>
+</html>
