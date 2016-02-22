@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Career on Neil</title>
-    <link>http://neilsh.com/tags/career/</link>
+    <link>http://neilsh.me/tags/career/</link>
     <description>Recent content in Career on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Sat, 29 Aug 2015 20:54:10 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/career/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/career/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>第一份实习</title>
-      <link>http://neilsh.com/2015/08/29/my-frist-internship/</link>
+      <link>http://neilsh.me/2015/08/29/my-frist-internship/</link>
       <pubDate>Sat, 29 Aug 2015 20:54:10 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/08/29/my-frist-internship/</guid>
+      <guid>http://neilsh.me/2015/08/29/my-frist-internship/</guid>
       <description>&lt;p&gt;两个月一晃而过，暑假结束了，第一份实习也结束了。&lt;/p&gt;
 
 &lt;p&gt;这段时间，我在 EasyLinking 实习，得到了 FULL TIME 的安卓开发工作经历，真真切切地认识到&lt;strong&gt;文档和注释&lt;/strong&gt;重要性，同时还结识了一帮前辈：重视人才的纪总，平和的游总，自学成才的 iOS 大牛老王，后台开发大牛老邹和小胡，开发资历第一丁老师，全栈的北大高材生超哥，等等。&lt;/p&gt;
 
 &lt;p&gt;实习中给我印象最深的还是团队协作。不得不说，这个技术团队成员之间协助效率非常高，一个问题发现之后，马上就能得到反馈，我想这应该得利于扁平化的管理模式。&lt;/p&gt;
 
-&lt;p&gt;既然我实习的是安卓开发，那就说一下关于安卓的事吧。广播是一个安卓应用的重要组成部分，之前没有开发过业务逻辑复杂的应用，对本地广播的理解也就停留在 &lt;a href=&#34;https://developer.android.com/reference/android/support/v4/content/LocalBroadcastManager.html&#34;&gt;文档&lt;/a&gt; 上面，经过这次实习，我已经 understand from practice ，它很强大，也很危险，不愧被称为安卓中的 &lt;code&gt;goto&lt;/code&gt;(泪目，掉过坑)。对安卓的触屏事件也有了&lt;a href=&#34;http://neilsh.com/2015/08/13/dispatch_and_handle_motionevent_in_android/&#34;&gt;进一步的认识&lt;/a&gt;。我还成功地劝服了安卓开发组，把 IDE 从 Eclipse 迁移到 AndroidStudio。:-)&lt;/p&gt;
+&lt;p&gt;既然我实习的是安卓开发，那就说一下关于安卓的事吧。广播是一个安卓应用的重要组成部分，之前没有开发过业务逻辑复杂的应用，对本地广播的理解也就停留在 &lt;a href=&#34;https://developer.android.com/reference/android/support/v4/content/LocalBroadcastManager.html&#34;&gt;文档&lt;/a&gt; 上面，经过这次实习，我已经 understand from practice ，它很强大，也很危险，不愧被称为安卓中的 &lt;code&gt;goto&lt;/code&gt;(泪目，掉过坑)。对安卓的触屏事件也有了&lt;a href=&#34;http://neilsh.me/2015/08/13/dispatch_and_handle_motionevent_in_android/&#34;&gt;进一步的认识&lt;/a&gt;。我还成功地劝服了安卓开发组，把 IDE 从 Eclipse 迁移到 AndroidStudio。:-)&lt;/p&gt;
 
 &lt;p&gt;在工作之余，我实现了一个小型的操作系统 &lt;a href=&#34;https://bitbucket.org/overvenus/jos/&#34;&gt;JOS&lt;/a&gt;。由于白天没有空，JOS 的代码大部分是在晚上写的，每天都写到凌晨，导致 Work-life balance 很糟糕，脸上冒出了一些痘痘。&lt;/p&gt;
 

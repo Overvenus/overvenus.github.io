@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Algorithms on Neil</title>
-    <link>http://neilsh.com/tags/algorithms/</link>
+    <link>http://neilsh.me/tags/algorithms/</link>
     <description>Recent content in Algorithms on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Wed, 25 Nov 2015 19:25:23 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/algorithms/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/algorithms/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>paxos digest</title>
-      <link>http://neilsh.com/2015/11/25/paxos-digest/</link>
+      <link>http://neilsh.me/2015/11/25/paxos-digest/</link>
       <pubDate>Wed, 25 Nov 2015 19:25:23 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/11/25/paxos-digest/</guid>
+      <guid>http://neilsh.me/2015/11/25/paxos-digest/</guid>
       <description>
 
 &lt;h2 id=&#34;paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Paxos&lt;/h2&gt;
@@ -175,10 +175,10 @@ Later, Learner will find out Y is the chosen value, and then send decided(Y) to 
     
     <item>
       <title>Protocol and FSM</title>
-      <link>http://neilsh.com/2015/10/23/protocol-and-fsm/</link>
+      <link>http://neilsh.me/2015/10/23/protocol-and-fsm/</link>
       <pubDate>Fri, 23 Oct 2015 21:17:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/10/23/protocol-and-fsm/</guid>
+      <guid>http://neilsh.me/2015/10/23/protocol-and-fsm/</guid>
       <description>
 
 &lt;h2 id=&#34;protocol:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol&lt;/h2&gt;
@@ -403,10 +403,10 @@ Viewservice 在某些条件下会产生一个 &lt;strong&gt;View&lt;/strong&gt;�
     
     <item>
       <title>Goto 与拓扑排序</title>
-      <link>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</link>
+      <link>http://neilsh.me/2015/07/04/goto-and-topological-sorting/</link>
       <pubDate>Sat, 04 Jul 2015 20:24:15 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</guid>
+      <guid>http://neilsh.me/2015/07/04/goto-and-topological-sorting/</guid>
       <description>
 
 &lt;h2 id=&#34;goto-in-c:e47801faec949620d06a03161065dbeb&#34;&gt;goto in C&lt;/h2&gt;

@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Neil</title>
-    <link>http://neilsh.com/</link>
+    <link>http://neilsh.me/</link>
     <description>Recent content on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Wed, 20 Jan 2016 20:54:10 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Debian Packaging 教程</title>
-      <link>http://neilsh.com/2016/01/20/debian-packaging-step-by-step/</link>
+      <link>http://neilsh.me/2016/01/20/debian-packaging-step-by-step/</link>
       <pubDate>Wed, 20 Jan 2016 20:54:10 +0800</pubDate>
       
-      <guid>http://neilsh.com/2016/01/20/debian-packaging-step-by-step/</guid>
+      <guid>http://neilsh.me/2016/01/20/debian-packaging-step-by-step/</guid>
       <description>
 
 &lt;h2 id=&#34;新手之痛:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;新手之痛&lt;/h2&gt;
@@ -58,7 +58,7 @@
 
 &lt;h2 id=&#34;打包-deb:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;打包 DEB&lt;/h2&gt;
 
-&lt;p&gt;这儿以我的最近写的 &lt;a href=&#34;http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt; 为例。TButton 关键就 3 个文件：&lt;/p&gt;
+&lt;p&gt;这儿以我的最近写的 &lt;a href=&#34;http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt; 为例。TButton 关键就 3 个文件：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;➜  indicator-tbutton-0.1  tree
 .
@@ -560,7 +560,7 @@ sudo apt-get install indicator-tbutton
 &lt;h2 id=&#34;参考链接:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;参考链接&lt;/h2&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://github.com/overvenus/tbutton/tree/master/packagebuild/indicator-tbutton-template/debian&#34;&gt;TButton/debian&lt;/a&gt;&lt;/p&gt;
 
@@ -583,10 +583,10 @@ sudo apt-get install indicator-tbutton
     
     <item>
       <title>TButton 命令行快捷按钮</title>
-      <link>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</link>
+      <link>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</link>
       <pubDate>Wed, 20 Jan 2016 12:02:36 +0800</pubDate>
       
-      <guid>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</guid>
+      <guid>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</guid>
       <description>&lt;p&gt;众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。
 比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：&lt;/p&gt;
 
@@ -623,10 +623,10 @@ sudo apt-get install indicator-tbutton
     
     <item>
       <title>2015年总结</title>
-      <link>http://neilsh.com/2015/12/31/summary-2015/</link>
+      <link>http://neilsh.me/2015/12/31/summary-2015/</link>
       <pubDate>Thu, 31 Dec 2015 11:12:58 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/12/31/summary-2015/</guid>
+      <guid>http://neilsh.me/2015/12/31/summary-2015/</guid>
       <description>
 
 &lt;h2 id=&#34;公开课:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;公开课&lt;/h2&gt;
@@ -637,7 +637,7 @@ sudo apt-get install indicator-tbutton
 
 &lt;h2 id=&#34;项目:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;项目&lt;/h2&gt;
 
-&lt;p&gt;JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中&lt;a href=&#34;http://neilsh.com/2015/08/30/few_words_about_6_828/&#34;&gt;学到了很多&lt;/a&gt;。
+&lt;p&gt;JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中&lt;a href=&#34;http://neilsh.me/2015/08/30/few_words_about_6_828/&#34;&gt;学到了很多&lt;/a&gt;。
 其他的几个小项目倒更像是玩具，不在这显摆了。&lt;/p&gt;
 
 &lt;h2 id=&#34;阅读:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;阅读&lt;/h2&gt;
@@ -725,10 +725,10 @@ sudo apt-get install indicator-tbutton
     
     <item>
       <title>最小二乘法的矩阵形式</title>
-      <link>http://neilsh.com/2015/12/25/least-square-in-matrix/</link>
+      <link>http://neilsh.me/2015/12/25/least-square-in-matrix/</link>
       <pubDate>Fri, 25 Dec 2015 10:10:28 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/12/25/least-square-in-matrix/</guid>
+      <guid>http://neilsh.me/2015/12/25/least-square-in-matrix/</guid>
       <description>
 
 &lt;h2 id=&#34;拟合曲线与最小二乘法:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;拟合曲线与最小二乘法&lt;/h2&gt;
@@ -902,10 +902,10 @@ $$
     
     <item>
       <title>解除尔雅公开课暂停</title>
-      <link>http://neilsh.com/2015/11/29/erya-no-pause/</link>
+      <link>http://neilsh.me/2015/11/29/erya-no-pause/</link>
       <pubDate>Sun, 29 Nov 2015 22:04:04 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/11/29/erya-no-pause/</guid>
+      <guid>http://neilsh.me/2015/11/29/erya-no-pause/</guid>
       <description>
 
 &lt;h2 id=&#34;恶心的暂停:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;恶心的暂停&lt;/h2&gt;
@@ -964,10 +964,10 @@ $$
     
     <item>
       <title>paxos digest</title>
-      <link>http://neilsh.com/2015/11/25/paxos-digest/</link>
+      <link>http://neilsh.me/2015/11/25/paxos-digest/</link>
       <pubDate>Wed, 25 Nov 2015 19:25:23 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/11/25/paxos-digest/</guid>
+      <guid>http://neilsh.me/2015/11/25/paxos-digest/</guid>
       <description>
 
 &lt;h2 id=&#34;paxos:8aa297440e030e6ae04600c7109020a5&#34;&gt;Paxos&lt;/h2&gt;
@@ -1128,10 +1128,10 @@ Later, Learner will find out Y is the chosen value, and then send decided(Y) to 
     
     <item>
       <title>make slice map channel</title>
-      <link>http://neilsh.com/2015/11/09/make-slice-map-channel/</link>
+      <link>http://neilsh.me/2015/11/09/make-slice-map-channel/</link>
       <pubDate>Mon, 09 Nov 2015 15:16:55 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/11/09/make-slice-map-channel/</guid>
+      <guid>http://neilsh.me/2015/11/09/make-slice-map-channel/</guid>
       <description>
 
 &lt;h2 id=&#34;where-is-the-make-implemention:f54eeb4205b24658133f3791bb00140a&#34;&gt;Where is the make implemention?&lt;/h2&gt;
@@ -1455,10 +1455,10 @@ abci:   sizeof: 8
     
     <item>
       <title>Protocol and FSM</title>
-      <link>http://neilsh.com/2015/10/23/protocol-and-fsm/</link>
+      <link>http://neilsh.me/2015/10/23/protocol-and-fsm/</link>
       <pubDate>Fri, 23 Oct 2015 21:17:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/10/23/protocol-and-fsm/</guid>
+      <guid>http://neilsh.me/2015/10/23/protocol-and-fsm/</guid>
       <description>
 
 &lt;h2 id=&#34;protocol:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol&lt;/h2&gt;
@@ -1683,10 +1683,10 @@ Viewservice 在某些条件下会产生一个 &lt;strong&gt;View&lt;/strong&gt;�
     
     <item>
       <title>Go Note</title>
-      <link>http://neilsh.com/2015/10/08/golang-note/</link>
+      <link>http://neilsh.me/2015/10/08/golang-note/</link>
       <pubDate>Thu, 08 Oct 2015 22:03:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/10/08/golang-note/</guid>
+      <guid>http://neilsh.me/2015/10/08/golang-note/</guid>
       <description>
 
 &lt;!--
@@ -1842,10 +1842,10 @@ It&amp;rsquo;s like a switch, but each case is a communication:&lt;/p&gt;
     
     <item>
       <title>ReadingFragment Structured Computer Organization</title>
-      <link>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</link>
+      <link>http://neilsh.me/2015/09/21/fragment_structured_computer_organization/</link>
       <pubDate>Mon, 21 Sep 2015 19:44:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</guid>
+      <guid>http://neilsh.me/2015/09/21/fragment_structured_computer_organization/</guid>
       <description>
 
 &lt;h1 id=&#34;parallelism-in-computer-organization:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in Computer Organization&lt;/h1&gt;
@@ -1950,10 +1950,10 @@ END.&lt;/p&gt;
     
     <item>
       <title>jupyter-core 4.0.6 的发布</title>
-      <link>http://neilsh.com/2015/09/18/jupyter-core-406/</link>
+      <link>http://neilsh.me/2015/09/18/jupyter-core-406/</link>
       <pubDate>Fri, 18 Sep 2015 20:39:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/09/18/jupyter-core-406/</guid>
+      <guid>http://neilsh.me/2015/09/18/jupyter-core-406/</guid>
       <description>
 
 &lt;h1 id=&#34;jupyter-与-ipython:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Jupyter 与 IPython&lt;/h1&gt;
@@ -2037,10 +2037,10 @@ END.&lt;/p&gt;
     
     <item>
       <title>Few words about 6.828</title>
-      <link>http://neilsh.com/2015/08/30/about-6828/</link>
+      <link>http://neilsh.me/2015/08/30/about-6828/</link>
       <pubDate>Sun, 30 Aug 2015 15:39:38 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/08/30/about-6828/</guid>
+      <guid>http://neilsh.me/2015/08/30/about-6828/</guid>
       <description>
 
 &lt;p&gt;Recently I&amp;rsquo;ve been working on JOS, which is part of &lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;6.828: Operating System Engineering&lt;/a&gt;. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.&lt;/p&gt;
@@ -2123,7 +2123,7 @@ int bar(void) {
 &lt;/blockquote&gt;
 
 &lt;p&gt;引用指出 volatile 是为了防止编译“优化”对该变量的一系列读写操作。上面抛出一大段结论，还是挺令人疑惑的。什么叫 may change between different accesses， 什么叫 optimizing away subsequent reads or writes？这一切用“底层“的汇编来解释反而容易。
-&lt;a href=&#34;http://neilsh.com/assets/code/v_int.c&#34;&gt;带有 volatile&lt;/a&gt;&lt;/p&gt;
+&lt;a href=&#34;http://neilsh.me/assets/code/v_int.c&#34;&gt;带有 volatile&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// volatile_int.c
 volatile int foo;
@@ -2164,7 +2164,7 @@ $ objdump -S volatile_int &amp;gt; v.asm
   4005ae:	66 90                	xchg   %ax,%ax
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://neilsh.com/assets/code/nv_int.c&#34;&gt;不带 volatile&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://neilsh.me/assets/code/nv_int.c&#34;&gt;不带 volatile&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-asm&#34;&gt;000000000040055d &amp;lt;main&amp;gt;:
   40055d:	48 83 ec 08          	sub    $0x8,%rsp
@@ -2235,17 +2235,17 @@ END.&lt;/p&gt;
     
     <item>
       <title>第一份实习</title>
-      <link>http://neilsh.com/2015/08/29/my-frist-internship/</link>
+      <link>http://neilsh.me/2015/08/29/my-frist-internship/</link>
       <pubDate>Sat, 29 Aug 2015 20:54:10 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/08/29/my-frist-internship/</guid>
+      <guid>http://neilsh.me/2015/08/29/my-frist-internship/</guid>
       <description>&lt;p&gt;两个月一晃而过，暑假结束了，第一份实习也结束了。&lt;/p&gt;
 
 &lt;p&gt;这段时间，我在 EasyLinking 实习，得到了 FULL TIME 的安卓开发工作经历，真真切切地认识到&lt;strong&gt;文档和注释&lt;/strong&gt;重要性，同时还结识了一帮前辈：重视人才的纪总，平和的游总，自学成才的 iOS 大牛老王，后台开发大牛老邹和小胡，开发资历第一丁老师，全栈的北大高材生超哥，等等。&lt;/p&gt;
 
 &lt;p&gt;实习中给我印象最深的还是团队协作。不得不说，这个技术团队成员之间协助效率非常高，一个问题发现之后，马上就能得到反馈，我想这应该得利于扁平化的管理模式。&lt;/p&gt;
 
-&lt;p&gt;既然我实习的是安卓开发，那就说一下关于安卓的事吧。广播是一个安卓应用的重要组成部分，之前没有开发过业务逻辑复杂的应用，对本地广播的理解也就停留在 &lt;a href=&#34;https://developer.android.com/reference/android/support/v4/content/LocalBroadcastManager.html&#34;&gt;文档&lt;/a&gt; 上面，经过这次实习，我已经 understand from practice ，它很强大，也很危险，不愧被称为安卓中的 &lt;code&gt;goto&lt;/code&gt;(泪目，掉过坑)。对安卓的触屏事件也有了&lt;a href=&#34;http://neilsh.com/2015/08/13/dispatch_and_handle_motionevent_in_android/&#34;&gt;进一步的认识&lt;/a&gt;。我还成功地劝服了安卓开发组，把 IDE 从 Eclipse 迁移到 AndroidStudio。:-)&lt;/p&gt;
+&lt;p&gt;既然我实习的是安卓开发，那就说一下关于安卓的事吧。广播是一个安卓应用的重要组成部分，之前没有开发过业务逻辑复杂的应用，对本地广播的理解也就停留在 &lt;a href=&#34;https://developer.android.com/reference/android/support/v4/content/LocalBroadcastManager.html&#34;&gt;文档&lt;/a&gt; 上面，经过这次实习，我已经 understand from practice ，它很强大，也很危险，不愧被称为安卓中的 &lt;code&gt;goto&lt;/code&gt;(泪目，掉过坑)。对安卓的触屏事件也有了&lt;a href=&#34;http://neilsh.me/2015/08/13/dispatch_and_handle_motionevent_in_android/&#34;&gt;进一步的认识&lt;/a&gt;。我还成功地劝服了安卓开发组，把 IDE 从 Eclipse 迁移到 AndroidStudio。:-)&lt;/p&gt;
 
 &lt;p&gt;在工作之余，我实现了一个小型的操作系统 &lt;a href=&#34;https://bitbucket.org/overvenus/jos/&#34;&gt;JOS&lt;/a&gt;。由于白天没有空，JOS 的代码大部分是在晚上写的，每天都写到凌晨，导致 Work-life balance 很糟糕，脸上冒出了一些痘痘。&lt;/p&gt;
 
@@ -2257,10 +2257,10 @@ END.&lt;/p&gt;
     
     <item>
       <title>Android 触屏事件处理分发--以 SwipeRefreshLayout 为例</title>
-      <link>http://neilsh.com/2015/08/13/dispatch-and-handle-motionevent-in-android/</link>
+      <link>http://neilsh.me/2015/08/13/dispatch-and-handle-motionevent-in-android/</link>
       <pubDate>Thu, 13 Aug 2015 20:40:00 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/08/13/dispatch-and-handle-motionevent-in-android/</guid>
+      <guid>http://neilsh.me/2015/08/13/dispatch-and-handle-motionevent-in-android/</guid>
       <description>
 
 &lt;h2 id=&#34;pulltorefresh-与-swiperefreshlayout:123fe8e46418ce87f36f17756a395264&#34;&gt;PullToRefresh 与 SwipeRefreshLayout&lt;/h2&gt;
@@ -2592,10 +2592,10 @@ END.&lt;/p&gt;
     
     <item>
       <title>Goto 与拓扑排序</title>
-      <link>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</link>
+      <link>http://neilsh.me/2015/07/04/goto-and-topological-sorting/</link>
       <pubDate>Sat, 04 Jul 2015 20:24:15 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/07/04/goto-and-topological-sorting/</guid>
+      <guid>http://neilsh.me/2015/07/04/goto-and-topological-sorting/</guid>
       <description>
 
 &lt;h2 id=&#34;goto-in-c:e47801faec949620d06a03161065dbeb&#34;&gt;goto in C&lt;/h2&gt;

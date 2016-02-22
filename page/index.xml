@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pages on Neil</title>
-    <link>http://neilsh.com/page/</link>
+    <link>http://neilsh.me/page/</link>
     <description>Recent content in Pages on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Mon, 29 Jun 2015 14:13:25 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/page/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/page/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>About</title>
-      <link>http://neilsh.com/about/</link>
+      <link>http://neilsh.me/about/</link>
       <pubDate>Mon, 29 Jun 2015 14:13:25 +0800</pubDate>
       
-      <guid>http://neilsh.com/about/</guid>
+      <guid>http://neilsh.me/about/</guid>
       <description>
 
 &lt;h2 id=&#34;关于我:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;关于我&lt;/h2&gt;

@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Android on Neil</title>
-    <link>http://neilsh.com/tags/android/</link>
+    <link>http://neilsh.me/tags/android/</link>
     <description>Recent content in Android on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Thu, 13 Aug 2015 20:40:00 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/android/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Android 触屏事件处理分发--以 SwipeRefreshLayout 为例</title>
-      <link>http://neilsh.com/2015/08/13/dispatch-and-handle-motionevent-in-android/</link>
+      <link>http://neilsh.me/2015/08/13/dispatch-and-handle-motionevent-in-android/</link>
       <pubDate>Thu, 13 Aug 2015 20:40:00 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/08/13/dispatch-and-handle-motionevent-in-android/</guid>
+      <guid>http://neilsh.me/2015/08/13/dispatch-and-handle-motionevent-in-android/</guid>
       <description>
 
 &lt;h2 id=&#34;pulltorefresh-与-swiperefreshlayout:123fe8e46418ce87f36f17756a395264&#34;&gt;PullToRefresh 与 SwipeRefreshLayout&lt;/h2&gt;

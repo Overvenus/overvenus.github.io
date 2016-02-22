@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Reading on Neil</title>
-    <link>http://neilsh.com/tags/reading/</link>
+    <link>http://neilsh.me/tags/reading/</link>
     <description>Recent content in Reading on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Mon, 21 Sep 2015 19:44:01 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/reading/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/reading/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>ReadingFragment Structured Computer Organization</title>
-      <link>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</link>
+      <link>http://neilsh.me/2015/09/21/fragment_structured_computer_organization/</link>
       <pubDate>Mon, 21 Sep 2015 19:44:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/09/21/fragment_structured_computer_organization/</guid>
+      <guid>http://neilsh.me/2015/09/21/fragment_structured_computer_organization/</guid>
       <description>
 
 &lt;h1 id=&#34;parallelism-in-computer-organization:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;Parallelism in Computer Organization&lt;/h1&gt;

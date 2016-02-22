@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Summary on Neil</title>
-    <link>http://neilsh.com/tags/summary/</link>
+    <link>http://neilsh.me/tags/summary/</link>
     <description>Recent content in Summary on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Thu, 31 Dec 2015 11:12:58 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/summary/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/summary/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>2015年总结</title>
-      <link>http://neilsh.com/2015/12/31/summary-2015/</link>
+      <link>http://neilsh.me/2015/12/31/summary-2015/</link>
       <pubDate>Thu, 31 Dec 2015 11:12:58 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/12/31/summary-2015/</guid>
+      <guid>http://neilsh.me/2015/12/31/summary-2015/</guid>
       <description>
 
 &lt;h2 id=&#34;公开课:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;公开课&lt;/h2&gt;
@@ -25,7 +25,7 @@
 
 &lt;h2 id=&#34;项目:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;项目&lt;/h2&gt;
 
-&lt;p&gt;JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中&lt;a href=&#34;http://neilsh.com/2015/08/30/few_words_about_6_828/&#34;&gt;学到了很多&lt;/a&gt;。
+&lt;p&gt;JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中&lt;a href=&#34;http://neilsh.me/2015/08/30/few_words_about_6_828/&#34;&gt;学到了很多&lt;/a&gt;。
 其他的几个小项目倒更像是玩具，不在这显摆了。&lt;/p&gt;
 
 &lt;h2 id=&#34;阅读:f7f78efa2947b615033306c6fc2dd7d2&#34;&gt;阅读&lt;/h2&gt;

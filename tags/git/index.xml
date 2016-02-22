@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Git on Neil</title>
-    <link>http://neilsh.com/tags/git/</link>
+    <link>http://neilsh.me/tags/git/</link>
     <description>Recent content in Git on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Fri, 18 Sep 2015 20:39:01 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/git/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>jupyter-core 4.0.6 的发布</title>
-      <link>http://neilsh.com/2015/09/18/jupyter-core-406/</link>
+      <link>http://neilsh.me/2015/09/18/jupyter-core-406/</link>
       <pubDate>Fri, 18 Sep 2015 20:39:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/09/18/jupyter-core-406/</guid>
+      <guid>http://neilsh.me/2015/09/18/jupyter-core-406/</guid>
       <description>
 
 &lt;h1 id=&#34;jupyter-与-ipython:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Jupyter 与 IPython&lt;/h1&gt;

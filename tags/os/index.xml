@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Os on Neil</title>
-    <link>http://neilsh.com/tags/os/</link>
+    <link>http://neilsh.me/tags/os/</link>
     <description>Recent content in Os on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Thu, 02 Jul 2015 14:57:41 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/os/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/os/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>内核的启动和建立虚拟内存</title>
-      <link>http://neilsh.com/2015/07/02/os_setup_and_virtual_memory_setup/</link>
+      <link>http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/</link>
       <pubDate>Thu, 02 Jul 2015 14:57:41 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/07/02/os_setup_and_virtual_memory_setup/</guid>
+      <guid>http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/</guid>
       <description>
 
 &lt;h2 id=&#34;引言:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;引言&lt;/h2&gt;
@@ -278,7 +278,7 @@ physical_addr = (page_phy_addr &amp;amp; 0x3FF) | (virtual_addr &amp;amp; 0xFFFF
 &lt;p&gt;最后，内核实现了虚拟内存，并能动态分配，可以多个虚拟地址指向同一物理地址。JOS 这种的管理方式使得&lt;code&gt;page&lt;/code&gt;只有在被使用时才会记录到&lt;code&gt;pagetable&lt;/code&gt;中，类似于 lazy initialization。
 这种虚拟地址的记录方式也同样解释了为什么程序在使用一个野指针的时候会退出，因为这个野指针指向的地址该程序无权访问的可能性很大，一旦访问&lt;code&gt;MMU&lt;/code&gt;会报&lt;code&gt;pagefault&lt;/code&gt;，从而使程序退出。&lt;/p&gt;
 
-&lt;p&gt;完整的 pmap.c 文件在&lt;a href=&#34;http://neilsh.com/assets/code/pmap.c&#34;&gt;这可以获取&lt;/a&gt;，里面有比较完整的注释。&lt;/p&gt;
+&lt;p&gt;完整的 pmap.c 文件在&lt;a href=&#34;http://neilsh.me/assets/code/pmap.c&#34;&gt;这可以获取&lt;/a&gt;，里面有比较完整的注释。&lt;/p&gt;
 
 &lt;h2 id=&#34;总结:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;总结&lt;/h2&gt;
 

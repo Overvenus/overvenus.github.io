@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Go on Neil</title>
-    <link>http://neilsh.com/tags/go/</link>
+    <link>http://neilsh.me/tags/go/</link>
     <description>Recent content in Go on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Mon, 09 Nov 2015 15:16:55 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/go/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>make slice map channel</title>
-      <link>http://neilsh.com/2015/11/09/make-slice-map-channel/</link>
+      <link>http://neilsh.me/2015/11/09/make-slice-map-channel/</link>
       <pubDate>Mon, 09 Nov 2015 15:16:55 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/11/09/make-slice-map-channel/</guid>
+      <guid>http://neilsh.me/2015/11/09/make-slice-map-channel/</guid>
       <description>
 
 &lt;h2 id=&#34;where-is-the-make-implemention:f54eeb4205b24658133f3791bb00140a&#34;&gt;Where is the make implemention?&lt;/h2&gt;
@@ -338,10 +338,10 @@ abci:   sizeof: 8
     
     <item>
       <title>Go Note</title>
-      <link>http://neilsh.com/2015/10/08/golang-note/</link>
+      <link>http://neilsh.me/2015/10/08/golang-note/</link>
       <pubDate>Thu, 08 Oct 2015 22:03:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/10/08/golang-note/</guid>
+      <guid>http://neilsh.me/2015/10/08/golang-note/</guid>
       <description>
 
 &lt;!--

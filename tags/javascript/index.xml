@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Javascript on Neil</title>
-    <link>http://neilsh.com/tags/javascript/</link>
+    <link>http://neilsh.me/tags/javascript/</link>
     <description>Recent content in Javascript on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Sun, 29 Nov 2015 22:04:04 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>解除尔雅公开课暂停</title>
-      <link>http://neilsh.com/2015/11/29/erya-no-pause/</link>
+      <link>http://neilsh.me/2015/11/29/erya-no-pause/</link>
       <pubDate>Sun, 29 Nov 2015 22:04:04 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/11/29/erya-no-pause/</guid>
+      <guid>http://neilsh.me/2015/11/29/erya-no-pause/</guid>
       <description>
 
 &lt;h2 id=&#34;恶心的暂停:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;恶心的暂停&lt;/h2&gt;

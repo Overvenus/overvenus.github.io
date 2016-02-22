@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on Neil</title>
-    <link>http://neilsh.com/tags/python/</link>
+    <link>http://neilsh.me/tags/python/</link>
     <description>Recent content in Python on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Wed, 20 Jan 2016 12:02:36 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>TButton 命令行快捷按钮</title>
-      <link>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</link>
+      <link>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</link>
       <pubDate>Wed, 20 Jan 2016 12:02:36 +0800</pubDate>
       
-      <guid>http://neilsh.com/2016/01/20/tbutton-mini-commands-launcher/</guid>
+      <guid>http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/</guid>
       <description>&lt;p&gt;众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。
 比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：&lt;/p&gt;
 
@@ -51,10 +51,10 @@ sudo apt-get install indicator-tbutton
     
     <item>
       <title>jupyter-core 4.0.6 的发布</title>
-      <link>http://neilsh.com/2015/09/18/jupyter-core-406/</link>
+      <link>http://neilsh.me/2015/09/18/jupyter-core-406/</link>
       <pubDate>Fri, 18 Sep 2015 20:39:01 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/09/18/jupyter-core-406/</guid>
+      <guid>http://neilsh.me/2015/09/18/jupyter-core-406/</guid>
       <description>
 
 &lt;h1 id=&#34;jupyter-与-ipython:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Jupyter 与 IPython&lt;/h1&gt;

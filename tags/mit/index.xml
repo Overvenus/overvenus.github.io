@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mit on Neil</title>
-    <link>http://neilsh.com/tags/mit/</link>
+    <link>http://neilsh.me/tags/mit/</link>
     <description>Recent content in Mit on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Sun, 30 Aug 2015 15:39:38 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.com/tags/mit/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/mit/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Few words about 6.828</title>
-      <link>http://neilsh.com/2015/08/30/about-6828/</link>
+      <link>http://neilsh.me/2015/08/30/about-6828/</link>
       <pubDate>Sun, 30 Aug 2015 15:39:38 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/08/30/about-6828/</guid>
+      <guid>http://neilsh.me/2015/08/30/about-6828/</guid>
       <description>
 
 &lt;p&gt;Recently I&amp;rsquo;ve been working on JOS, which is part of &lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;6.828: Operating System Engineering&lt;/a&gt;. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.&lt;/p&gt;
@@ -97,7 +97,7 @@ int bar(void) {
 &lt;/blockquote&gt;
 
 &lt;p&gt;引用指出 volatile 是为了防止编译“优化”对该变量的一系列读写操作。上面抛出一大段结论，还是挺令人疑惑的。什么叫 may change between different accesses， 什么叫 optimizing away subsequent reads or writes？这一切用“底层“的汇编来解释反而容易。
-&lt;a href=&#34;http://neilsh.com/assets/code/v_int.c&#34;&gt;带有 volatile&lt;/a&gt;&lt;/p&gt;
+&lt;a href=&#34;http://neilsh.me/assets/code/v_int.c&#34;&gt;带有 volatile&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// volatile_int.c
 volatile int foo;
@@ -138,7 +138,7 @@ $ objdump -S volatile_int &amp;gt; v.asm
   4005ae:	66 90                	xchg   %ax,%ax
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://neilsh.com/assets/code/nv_int.c&#34;&gt;不带 volatile&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://neilsh.me/assets/code/nv_int.c&#34;&gt;不带 volatile&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-asm&#34;&gt;000000000040055d &amp;lt;main&amp;gt;:
   40055d:	48 83 ec 08          	sub    $0x8,%rsp
@@ -209,10 +209,10 @@ END.&lt;/p&gt;
     
     <item>
       <title>内核的启动和建立虚拟内存</title>
-      <link>http://neilsh.com/2015/07/02/os_setup_and_virtual_memory_setup/</link>
+      <link>http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/</link>
       <pubDate>Thu, 02 Jul 2015 14:57:41 +0800</pubDate>
       
-      <guid>http://neilsh.com/2015/07/02/os_setup_and_virtual_memory_setup/</guid>
+      <guid>http://neilsh.me/2015/07/02/os_setup_and_virtual_memory_setup/</guid>
       <description>
 
 &lt;h2 id=&#34;引言:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;引言&lt;/h2&gt;
@@ -476,7 +476,7 @@ physical_addr = (page_phy_addr &amp;amp; 0x3FF) | (virtual_addr &amp;amp; 0xFFFF
 &lt;p&gt;最后，内核实现了虚拟内存，并能动态分配，可以多个虚拟地址指向同一物理地址。JOS 这种的管理方式使得&lt;code&gt;page&lt;/code&gt;只有在被使用时才会记录到&lt;code&gt;pagetable&lt;/code&gt;中，类似于 lazy initialization。
 这种虚拟地址的记录方式也同样解释了为什么程序在使用一个野指针的时候会退出，因为这个野指针指向的地址该程序无权访问的可能性很大，一旦访问&lt;code&gt;MMU&lt;/code&gt;会报&lt;code&gt;pagefault&lt;/code&gt;，从而使程序退出。&lt;/p&gt;
 
-&lt;p&gt;完整的 pmap.c 文件在&lt;a href=&#34;http://neilsh.com/assets/code/pmap.c&#34;&gt;这可以获取&lt;/a&gt;，里面有比较完整的注释。&lt;/p&gt;
+&lt;p&gt;完整的 pmap.c 文件在&lt;a href=&#34;http://neilsh.me/assets/code/pmap.c&#34;&gt;这可以获取&lt;/a&gt;，里面有比较完整的注释。&lt;/p&gt;
 
 &lt;h2 id=&#34;总结:4d7dde7d86a055790fb12700223cbbb1&#34;&gt;总结&lt;/h2&gt;
 
