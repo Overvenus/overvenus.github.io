@@ -29,12 +29,12 @@
 
         <link rel="icon" href="http://neilsh.me/assets/favicon.ico" type="image/x-icon">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-font.css">
+        <link rel="stylesheet" href="/css/slender-font.css">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-base.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-color-schemes.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/slender-base.css">
+        <link rel="stylesheet" href="/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
         <title>
             
                 Neil
@@ -89,49 +89,163 @@
     
     
     <article>
-        <h1 class="article-title"><a href="/2016/02/23/migrating-to-hugo/">博客搬家了</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2016/02/23/migrating-to-hugo/">博客搬家了</a></h1>
         <p class="article-info">
             on <strong>Tue, Feb 23, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>2 min reading time</strong>
         </p>
-        <p class="article-summary">没错，这又是一篇无聊的“搬家”博文（等等，为什么是“又”）。但这次有点特殊，并不是博客托管方的改变，而是博客生成器的变动。 本博正式从 Hexo 搬到 Hugo</p>
-        <p class="article-read-more"><a href="/2016/02/23/migrating-to-hugo/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><p>没错，这又是一篇无聊的“搬家”博文（等等，为什么是“又”）。但这次有点特殊，并不是博客托管方的改变，而是博客生成器的变动。</p>
+
+<blockquote>
+<p>本博正式从 [Hexo][1] 搬到 [Hugo][2] 了。</p>
+</blockquote>
+
+<p>最初促使我抛弃 Hexo 的原因是 Hexo 的文件监视有点问题（至少在我电脑上），开启 hexo 后，文件改动 2-8 次后，hexo 就再也无法观察到文件的变动了。还别说这是个小 feature，它对博文发表最后的微调阶段有很大的影响。</p>
+
+<p>在多次尝试从外部解决失败后，其中包括重启，升级 Hexo 等，正好看到 golang 也有[博客生成器][2]，一拍脑袋，决定搬家了。</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2016/02/23/migrating-to-hugo/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2016/02/23/introducing-slender-next/">Introducing Slender-Next</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2016/02/23/introducing-slender-next/">Introducing Slender-Next</a></h1>
         <p class="article-info">
             on <strong>Tue, Feb 23, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>3 min reading time</strong>
         </p>
-        <p class="article-summary">Slender-Next Yet another sample theme for Hugo with base16 color schemes. Based on slender, inspired by hexo-theme-next Screenshot Features Responsive Pagination base16 color schemes Code/syntax highlighting with highlight.js 9.1.0 Proper meta tags for SEO Optimized for China Google Analytics And Baidu Tongji integration Disqus And Duoshuo integration MathJax support Table of Content Tags + Archive Color Schemes Installation Make a new Hugo site $ hugo new site your_site/ Install Slender $ cd your_site/ $ mkdir themes $ cd themes $ git clone https://github.com/overvenus/slender-next Configuration # config.toml # https://github.com/overvenus/slender-next baseurl = &quot;http://url-to-your-site.com/&quot; title = &quot;Your Title&quot; # set &quot;zh-Hans&quot;, turn on optimization.</p>
-        <p class="article-read-more"><a href="/2016/02/23/introducing-slender-next/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="slender-next:3c4e2d208ca79d5efa86c04d997b2fbe">Slender-Next</h2>
+
+<p>Yet another sample theme for <a href="http://gohugo.io/">Hugo</a> with <a href="https://github.com/chriskempson/base16">base16</a> color schemes.</p>
+
+<p>Based on <a href="https://github.com/CrimsonRay/slender">slender</a>, inspired by <a href="https://github.com/iissnan/hexo-theme-next">hexo-theme-next</a></p>
+
+<h2 id="screenshot:3c4e2d208ca79d5efa86c04d997b2fbe">Screenshot</h2>
+
+<p><img src="/assets/img/slender-next/screenshot.png" alt="screenshot" /></p>
+
+<h2 id="features:3c4e2d208ca79d5efa86c04d997b2fbe">Features</h2>
+
+<ul>
+<li>Responsive</li>
+<li>Pagination</li>
+<li><a href="https://github.com/chriskempson/base16">base16</a> color schemes</li>
+<li>Code/syntax highlighting with <a href="https://highlightjs.org/">highlight.js 9.1.0</a></li>
+<li>Proper meta tags for SEO</li>
+<li><strong>Optimized for China</strong></li>
+<li>Google Analytics And Baidu Tongji integration</li>
+<li>Disqus And Duoshuo integration</li>
+<li>MathJax support</li>
+<li>Table of Content</li>
+<li>Tags + Archive</li>
+</ul>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2016/02/23/introducing-slender-next/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2016/01/20/debian-packaging-step-by-step/">Debian Packaging 教程</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2016/01/20/debian-packaging-step-by-step/">Debian Packaging 教程</a></h1>
         <p class="article-info">
             on <strong>Wed, Jan 20, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>7 min reading time</strong>
         </p>
-        <p class="article-summary">新手之痛 说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令： sudo apt-get install build-essential devscripts ubuntu-dev-tools debhelper dh-make</p>
-        <p class="article-read-more"><a href="/2016/01/20/debian-packaging-step-by-step/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="新手之痛:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07">新手之痛</h2>
+
+<p>说实话把自己的程序打包成 deb， 对新手来说，真的不容易。网上的文档都太烦，烦到看不懂，涉及到很多工具，比如这句命令：</p>
+
+<pre><code>sudo apt-get install build-essential devscripts ubuntu-dev-tools debhelper dh-make diff patch cdbs quilt gnupg fakeroot lintian pbuilder piuparts
+</code></pre>
+
+<p>这些文档写得也是如何打包别人的源码，但关键别人的 debian 配置文件多，每个文件的代码也都很多，还不如看文档。还有的项目更过分，连 debian 的配置文件都不给出。（迷之眼泪 (╥﹏╥)</p>
+
+<p>有志者事竟成，我倒腾了几天终于有成功了，打包出了 deb，Launchpad 上也有了我的 PPA。这儿记录一下，防止自己忘记，也方便新人入门。</p>
+
+<p>我<strong>没有</strong>严格遵守 Debian 社区打包的步骤，这记录的是一个 quick and dirty way not the Debian way!这是大概的过程:</p>
+
+<ol>
+<li>创建 GPG: 用于给 deb 签名</li>
+<li>打包 DEB: 有点麻烦，规矩多，步骤多</li>
+<li>上传 Launchpad: 添加到 PPA，以后安装就方便了</li>
+</ol>
+
+<h2 id="创建-gpg:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07">创建 GPG</h2>
+
+<p>阮一峰有一篇非常棒的 [GPG入门教程]，里面涵盖了新手上手 GPG 所需的基本步骤。</p>
+
+<p>我在这补充一下，他的文章中上传公钥使用的是 <code>hkp://subkeys.pgp.net</code>，我这试了几次都出现了连接错误。所以，我推荐 <code>hkp://keyserver.ubuntu.com</code>，使用它，不仅是因为连得上，还因为在 Launchpad 创建 PPA 也要用它。</p>
+
+<h2 id="创建-ppa:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07">创建 PPA</h2>
+
+<p>摘自 [How do I create a PPA?]</p>
+
+<blockquote>
+<p><a href="https://login.launchpad.net/+new_account">创建 Launchpad 帐号</a></p>
+
+<p><a href="https://launchpad.net/people/+me/">激活 PPA</a></p>
+
+<p>用 GPG 签约 <a href="https://launchpad.net/codeofconduct">the Ubuntu code of conduct</a></p>
+</blockquote>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2016/01/20/debian-packaging-step-by-step/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2016/01/20/tbutton-mini-commands-launcher/">TButton 命令行快捷按钮</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/">TButton 命令行快捷按钮</a></h1>
         <p class="article-info">
             on <strong>Wed, Jan 20, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>2 min reading time</strong>
         </p>
-        <p class="article-summary">众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。 比如说，在虚拟机里跑 windows，用 word 来写一些报</p>
-        <p class="article-read-more"><a href="/2016/01/20/tbutton-mini-commands-launcher/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。
+比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：</p>
+
+<pre><code class="language-sh">killall -s STOP vmware-vmx
+</code></pre>
+
+<p>过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：</p>
+
+<pre><code class="language-sh">killall -s CONT vmware-vmx
+</code></pre>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2015/12/31/summary-2015/">2015年总结</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2015/12/31/summary-2015/">2015年总结</a></h1>
         <p class="article-info">
             on <strong>Thu, Dec 31, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>5 min reading time</strong>
         </p>
-        <p class="article-summary">公开课 2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。 等等 6.824 不是 Graduate 课程吗？管他呢，学了再</p>
-        <p class="article-read-more"><a href="/2015/12/31/summary-2015/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="公开课:f7f78efa2947b615033306c6fc2dd7d2">公开课</h2>
+
+<p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。
+等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。
+论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
+
+<h2 id="项目:f7f78efa2947b615033306c6fc2dd7d2">项目</h2>
+
+<p>JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中<a href="/2015/08/30/few_words_about_6_828/">学到了很多</a>。
+其他的几个小项目倒更像是玩具，不在这显摆了。</p>
+
+<h2 id="阅读:f7f78efa2947b615033306c6fc2dd7d2">阅读</h2>
+
+<p>在 2015 一年里，书看得不是很多。我很难想象别人是怎么看完那长长的书单的。</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2015/12/31/summary-2015/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     
     
@@ -181,7 +295,7 @@
     </p>
 </div>
         </footer>
-        <script src="http://neilsh.me/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight-9.1.0.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 

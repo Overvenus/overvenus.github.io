@@ -18,7 +18,7 @@
       <description>&lt;p&gt;没错，这又是一篇无聊的“搬家”博文（等等，为什么是“又”）。但这次有点特殊，并不是博客托管方的改变，而是博客生成器的变动。&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;本博正式从 &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; 搬到 &lt;a href=&#34;https://hexo.io&#34;&gt;Hugo&lt;/a&gt; 了。&lt;/p&gt;
+&lt;p&gt;本博正式从 &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; 搬到 &lt;a href=&#34;https://gohugo.io&#34;&gt;Hugo&lt;/a&gt; 了。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;最初促使我抛弃 Hexo 的原因是 Hexo 的文件监视有点问题（至少在我电脑上），开启 hexo 后，文件改动 2-8 次后，hexo 就再也无法观察到文件的变动了。还别说这是个小 feature，它对博文发表最后的微调阶段有很大的影响。&lt;/p&gt;
@@ -58,7 +58,7 @@
 
 &lt;p&gt;Slender-Next 的制作过程也是有惊无险(´≖◞౪◟≖)，Golang 已经学了一段时间了，对 Hugo 文档有什么不明白的，直接看源码，哈哈，事倍功半啊。&lt;/p&gt;
 
-&lt;p&gt;把博文迁移到 Hugo 并不复杂但就怕多，搬家前我有 18 篇，算不上多，但还是花了不少时间。我习惯一篇博文一个分支，这很方便搬家，&lt;code&gt;git cherry-pick&lt;/code&gt;就行了，还保留文章编辑的记录，哈哈哈，太机智了。&lt;/p&gt;
+&lt;p&gt;把博文迁移到 Hugo 并不复杂但就怕多，搬家前我有 18 篇，算不上多，但还是花了不少时间。我习惯一篇博文一个分支，这很方便搬家，&lt;code&gt;git cherry-pick&lt;/code&gt;就行了，还保留了文章的历史记录，哈哈哈，太机智了。&lt;/p&gt;
 </description>
     </item>
     

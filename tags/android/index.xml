@@ -33,8 +33,6 @@
 
 &lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1ytgovwpj20u01hcgve.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;!-- more --&gt;
-
 &lt;h2 id=&#34;swiperefreshlayout-刷新的细节:123fe8e46418ce87f36f17756a395264&#34;&gt;SwipeRefreshLayout 刷新的细节&lt;/h2&gt;
 
 &lt;p&gt;SwipeRefreshLayout 有个自定义接口 SwipeRefreshLayout.OnRefreshListener，里面的函数&lt;code&gt;onRefresh()&lt;/code&gt;会在下拉刷新时执行。SwipeRefreshLayout 把 OnRefreshListener 包装进了&lt;code&gt;AnimationListener mRefreshListener&lt;/code&gt;，并且&lt;code&gt;onRefresh()&lt;/code&gt;方法只会在&lt;code&gt;onAnimationEnd()&lt;/code&gt;中执行。&lt;/p&gt;

@@ -29,12 +29,12 @@
 
         <link rel="icon" href="http://neilsh.me/assets/favicon.ico" type="image/x-icon">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-font.css">
+        <link rel="stylesheet" href="/css/slender-font.css">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-base.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-color-schemes.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/slender-base.css">
+        <link rel="stylesheet" href="/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
         <title>
             
                 Neil
@@ -89,49 +89,178 @@
     
     
     <article>
-        <h1 class="article-title"><a href="/2015/12/25/least-square-in-matrix/">最小二乘法的矩阵形式</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2015/12/25/least-square-in-matrix/">最小二乘法的矩阵形式</a></h1>
         <p class="article-info">
             on <strong>Fri, Dec 25, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>3 min reading time</strong>
         </p>
-        <p class="article-summary">拟合曲线与最小二乘法 曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使</p>
-        <p class="article-read-more"><a href="/2015/12/25/least-square-in-matrix/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="拟合曲线与最小二乘法:7da2dc83c8d8e9ad8c6717b64208ddaf">拟合曲线与最小二乘法</h2>
+
+<p>曲线拟合指：已知 m 个数据点 $(x_i,y_i ),i=1,2,3⋯,m$ 其中 m 不全相同，寻求函数 $f(x; \beta_0, \beta_1, \dots, \beta_n)$ 的待定参数 $\beta_0, \beta_1, \dots, \beta_n$ 的一组取值，使得在这组取值之下，函数 $f(x; \beta_0, \beta_1, \dots,\beta_n)$ 与已知 m 个数据点整体上最为接近。</p>
+
+<p>最小二乘曲线拟合方法：根据已知数据，首先构造出能够反映含有回归参数的回归方程 $f(x; \beta_i),i = 0, 1, 2, …, n$ :</p>
+
+<p>$$
+\begin{align}
+\hat{y} &amp;= \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_n x^n \\
+y &amp;= \hat{y} + \delta
+\end{align}
+$$</p>
+
+<p>$\delta$ 是残差，这是回归方程与真实值存在出入的原因[1]。</p>
+
+<p>根据 m 个数据点 $(x_i, y_i),i=1,2,3⋯,m$ 可以定义一个代表偏离程度的函数:</p>
+
+<p>$$
+S(\beta_0, \beta_1, \dots, \beta_n) = \sum_{j = 1}^m [y_i - f(x; \beta_0, \beta_1, \dots,\beta_n)]^2 = \sum \delta
+$$</p>
+
+<p>当 $S(\beta_0, \beta_1, \dots,\beta_n)$ 取得最小值时，此时的 $\beta_0, \beta_1, \dots,\beta_n$ 即为回归方程的回归系数，也是最小二乘解。</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2015/12/25/least-square-in-matrix/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2015/11/29/erya-no-pause/">解除尔雅公开课暂停</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2015/11/29/erya-no-pause/">解除尔雅公开课暂停</a></h1>
         <p class="article-info">
             on <strong>Sun, Nov 29, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>1 min reading time</strong>
         </p>
-        <p class="article-summary">恶心的暂停 这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本</p>
-        <p class="article-read-more"><a href="/2015/11/29/erya-no-pause/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="恶心的暂停:e99fde2bd1ab83d1dc4d02061c03ef67">恶心的暂停</h2>
+
+<p>这学期，我参加了尔雅公开课，要完成公开课必须先看完课程视频，但是在看视频的时候，尔雅会限制电脑的当前窗口必须为浏览器，否则暂停。本来公开课要求看完视频，这并不过分，但是非要加上这么个限制，我的黑客心就不安份了。 :-P</p>
+
+<h2 id="过程:e99fde2bd1ab83d1dc4d02061c03ef67">过程</h2>
+
+<p>对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[[1]]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2015/11/29/erya-no-pause/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2015/11/25/paxos-digest/">paxos digest</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2015/11/25/paxos-digest/">paxos digest</a></h1>
         <p class="article-info">
             on <strong>Wed, Nov 25, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>3 min reading time</strong>
         </p>
-        <p class="article-summary">Paxos Paxos is one of the most important algorithms in distributed system.[1] Here are some notes about Basic Paxos. Three roles in Paxos Proposers Acceptor Learners General view: Proposers send proposals to Acceptors, Acceptors accept a proposal and forward to Learners, Learners decided the proposal. In real world, a single server acts two or more roles. Requirements An acceptor must accept the first proposal that it receives. 1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.</p>
-        <p class="article-read-more"><a href="/2015/11/25/paxos-digest/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="paxos:8aa297440e030e6ae04600c7109020a5">Paxos</h2>
+
+<p>Paxos is one of the most important algorithms in distributed system.[[1]]
+Here are some notes about Basic Paxos.</p>
+
+<h2 id="three-roles-in-paxos:8aa297440e030e6ae04600c7109020a5">Three roles in Paxos</h2>
+
+<ol>
+<li>Proposers</li>
+<li>Acceptor</li>
+<li>Learners</li>
+</ol>
+
+<p>General view:  <strong><em>Proposers</em></strong> send proposals to <strong><em>Acceptors</em></strong>, <strong><em>Acceptors</em></strong> accept a proposal and forward to <strong><em>Learners</em></strong>, <strong><em>Learners</em></strong> decided the proposal.
+In real world, a single server acts <strong>two or more</strong> roles.</p>
+
+<h2 id="requirements:8aa297440e030e6ae04600c7109020a5">Requirements</h2>
+
+<ol>
+<li>An acceptor must accept the first proposal that it receives.
+1a. An acceptor can accept a proposal numbered n iff it has not responded to a prepare request having a number greater than n.</li>
+<li>If a proposal with value v is chosen, then every higher-numbered proposal that is chosen has value v.
+2a. If a proposal with value v is chosen, then every higher-numbered proposal accepted by any acceptor has value v.
+2b. If a proposal with value v is chosen, then every higher-numbered proposal issued by any proposer has value v.
+2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.</li>
+</ol>
+
+<p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2015/11/25/paxos-digest/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2015/11/09/make-slice-map-channel/">make slice map channel</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2015/11/09/make-slice-map-channel/">make slice map channel</a></h1>
         <p class="article-info">
             on <strong>Mon, Nov 09, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>8 min reading time</strong>
         </p>
-        <p class="article-summary">Where is the make implemention? package runtime By the way, new, map, slice, channel, goroutine and garbage collector[1] are also implemented in this package. Slices Source file: go/src/runtime/slice.go Data structure type slice struct { array unsafe.Pointer len int cap int } Underlying data structure of slice is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of unsafe.Pointer // Pointer represents a pointer to an arbitrary type.</p>
-        <p class="article-read-more"><a href="/2015/11/09/make-slice-map-channel/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="where-is-the-make-implemention:f54eeb4205b24658133f3791bb00140a">Where is the make implemention?</h2>
+
+<p>package <strong>runtime</strong>
+By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[[1]] are also implemented in this package.</p>
+
+<h2 id="slices:f54eeb4205b24658133f3791bb00140a">Slices</h2>
+
+<p>Source file: go/src/runtime/slice.go</p>
+
+<h3 id="data-structure:f54eeb4205b24658133f3791bb00140a">Data structure</h3>
+
+<pre><code class="language-go">type slice struct {
+    array unsafe.Pointer
+    len   int
+    cap   int
+}
+</code></pre>
+
+<p>Underlying data structure of <strong>slice</strong> is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of <code>unsafe.Pointer</code></p>
+
+<pre><code>// Pointer represents a pointer to an arbitrary type.  There are four special operations
+// available for type Pointer that are not available for other types.
+//  1) A pointer value of any type can be converted to a Pointer.
+//  2) A Pointer can be converted to a pointer value of any type.  &lt;-- here!
+//  3) A uintptr can be converted to a Pointer.
+//  4) A Pointer can be converted to a uintptr.
+// Pointer therefore allows a program to defeat the type system and read and write
+// arbitrary memory. It should be used with extreme care.
+</code></pre>
+
+<p>So, <strong>Pointer</strong> in Go is <strong>*void</strong> in C. <em>Pointer</em> anesthetizes the type system and read and write arbitrary memory in Go. <em>*void</em> can be converted to any type without warning in C.</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2015/11/09/make-slice-map-channel/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     <article>
-        <h1 class="article-title"><a href="/2015/10/23/protocol-and-fsm/">Protocol and FSM</a></h1>
+        <h1 class="article-title"><a href="http://neilsh.me/2015/10/23/protocol-and-fsm/">Protocol and FSM</a></h1>
         <p class="article-info">
             on <strong>Fri, Oct 23, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>4 min reading time</strong>
         </p>
-        <p class="article-summary">Protocol 本文中 Protocol 特指通讯协议。 首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的： Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking &ndash;WIKI#Protocol 简单的</p>
-        <p class="article-read-more"><a href="/2015/10/23/protocol-and-fsm/">Read more &rarr;</a></p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="protocol:1dc0ee46b9edee2e1b8795e1ccd0910d">Protocol</h2>
+
+<p>本文中 Protocol 特指通讯协议。
+首先简单的介绍一下什么是 Protocol，来看看 WIKI 上是怎么定义它的：</p>
+
+<blockquote>
+<p>Communications protocol, a defined set of rules and regulations that determine how data is transmitted in telecommunications and computer networking  &ndash;[WIKI#Protocol]</p>
+</blockquote>
+
+<p>简单的来说，协议是规范数据传输的一套规则。</p>
+
+<h2 id="finite-state-machines-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d">Finite State Machines (FSM)</h2>
+
+<p>下面是摘自 WIKI 的对有限状态机的说明：</p>
+
+<blockquote>
+<p>It is conceived as an abstract machine that can be in one of a finite number of states. The machine is in only one state at a time; the state it is in at any given time is called the current state. It can change from one state to another when initiated by a triggering event or condition; this is called a transition. A particular FSM is defined by a list of its states, and the triggering condition for each transition.    &ndash;[WIKI#FSM]</p>
+</blockquote>
+
+<p>有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。
+有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2015/10/23/protocol-and-fsm/">Read more &rarr;</a></p>
     </article>
+    <div class="article-eof"></div>
     
     
     
@@ -181,7 +310,7 @@
     </p>
 </div>
         </footer>
-        <script src="http://neilsh.me/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight-9.1.0.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 

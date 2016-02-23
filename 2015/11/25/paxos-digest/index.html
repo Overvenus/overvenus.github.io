@@ -36,12 +36,12 @@
 
         <link rel="icon" href="http://neilsh.me/assets/favicon.ico" type="image/x-icon">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-font.css">
+        <link rel="stylesheet" href="/css/slender-font.css">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-base.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-color-schemes.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/slender-base.css">
+        <link rel="stylesheet" href="/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
         <title>
             
                 paxos digest &middot; Neil
@@ -147,8 +147,7 @@ In real world, a single server acts <strong>two or more</strong> roles.</p>
 2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.</li>
 </ol>
 
-<p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.
-<!-- more --></p>
+<p>1a is stronger then 1, and 2c =&gt; 2b =&gt; 2a =&gt; 2.</p>
 
 <h2 id="rpcs-and-phases:8aa297440e030e6ae04600c7109020a5">RPCs and Phases</h2>
 
@@ -324,7 +323,7 @@ Later, Learner will find out Y is the chosen value, and then send decided(Y) to 
     </p>
 </div>
         </footer>
-        <script src="http://neilsh.me/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight-9.1.0.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 

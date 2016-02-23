@@ -69,9 +69,9 @@ sudo apt-get install indicator-tbutton
 &lt;p&gt;&lt;a href=&#34;https://ipython.org/&#34;&gt;Jupyter and the future of IPython - IPython&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)
-&lt;!-- more --&gt;
-按照教程，&lt;code&gt;pip install jupyter&lt;/code&gt;，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。&lt;/p&gt;
+&lt;p&gt;一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)&lt;/p&gt;
+
+&lt;p&gt;按照教程，&lt;code&gt;pip install jupyter&lt;/code&gt;，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。&lt;/p&gt;
 
 &lt;p&gt;果不其然，安装完之后，一运行 &lt;code&gt;jupter notebook&lt;/code&gt; 就报错了。&lt;/p&gt;
 

@@ -44,8 +44,7 @@ In real world, a single server acts &lt;strong&gt;two or more&lt;/strong&gt; rol
 2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.
-&lt;!-- more --&gt;&lt;/p&gt;
+&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.&lt;/p&gt;
 
 &lt;h2 id=&#34;rpcs-and-phases:8aa297440e030e6ae04600c7109020a5&#34;&gt;RPCs and Phases&lt;/h2&gt;
 
@@ -201,8 +200,7 @@ Later, Learner will find out Y is the chosen value, and then send decided(Y) to 
 &lt;/blockquote&gt;
 
 &lt;p&gt;有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。
-有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。
-&lt;!-- more --&gt;&lt;/p&gt;
+有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。&lt;/p&gt;
 
 &lt;h2 id=&#34;protocol-and-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol and FSM&lt;/h2&gt;
 
@@ -421,8 +419,7 @@ Viewservice 在某些条件下会产生一个 &lt;strong&gt;View&lt;/strong&gt;�
 
 &lt;p&gt;&lt;code&gt;break&lt;/code&gt; 只能写在loop或者switch中，不然编译报：break statement not within loop or switch。&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;goto&lt;/code&gt; 则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过,用的好当然也可以增加效率的同时提高可读性。
-&lt;!-- more --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt; 则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过,用的好当然也可以增加效率的同时提高可读性。&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;I think goto&amp;rsquo;s are fine, and they are often more readable than large

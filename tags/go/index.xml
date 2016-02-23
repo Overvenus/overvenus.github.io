@@ -237,20 +237,17 @@ By the way, &lt;em&gt;new&lt;/em&gt;, &lt;em&gt;map&lt;/em&gt;, &lt;em&gt;slice&
 
 &lt;p&gt;Underlying data structure of &lt;strong&gt;slice&lt;/strong&gt; is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of &lt;code&gt;unsafe.Pointer&lt;/code&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;
-&lt;p&gt;// Pointer represents a pointer to an arbitrary type.  There are four special operations
+&lt;pre&gt;&lt;code&gt;// Pointer represents a pointer to an arbitrary type.  There are four special operations
 // available for type Pointer that are not available for other types.
 //  1) A pointer value of any type can be converted to a Pointer.
-//  2) A Pointer can be converted to a pointer value of any type.  &amp;lt;&amp;ndash; here!
+//  2) A Pointer can be converted to a pointer value of any type.  &amp;lt;-- here!
 //  3) A uintptr can be converted to a Pointer.
 //  4) A Pointer can be converted to a uintptr.
 // Pointer therefore allows a program to defeat the type system and read and write
-// arbitrary memory. It should be used with extreme care.&lt;/p&gt;
-&lt;/blockquote&gt;
+// arbitrary memory. It should be used with extreme care.
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;In my opinion, &lt;strong&gt;Pointer&lt;/strong&gt; in Go and &lt;strong&gt;*void&lt;/strong&gt; in C are very like. &lt;em&gt;Pointer&lt;/em&gt; anesthetizes the type system and read and write arbitrary memory in Go. &lt;em&gt;*void&lt;/em&gt; can be converted to any type without warning in C.&lt;/p&gt;
-
-&lt;!-- more --&gt;
+&lt;p&gt;So, &lt;strong&gt;Pointer&lt;/strong&gt; in Go is &lt;strong&gt;*void&lt;/strong&gt; in C. &lt;em&gt;Pointer&lt;/em&gt; anesthetizes the type system and read and write arbitrary memory in Go. &lt;em&gt;*void&lt;/em&gt; can be converted to any type without warning in C.&lt;/p&gt;
 
 &lt;h3 id=&#34;make-slices:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make slices&lt;/h3&gt;
 
@@ -559,8 +556,7 @@ TODO:
 &lt;p&gt;&lt;code&gt;make&lt;/code&gt;: creates slices, maps, and channels only, and it returns an &lt;em&gt;initialized (not zeroed)&lt;/em&gt; value of type T (not *T).&lt;/p&gt;
 
 &lt;p&gt;Local variable: unlike in C, it&amp;rsquo;s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., &lt;code&gt;return &amp;amp;File{fd: fd, name: name}&lt;/code&gt;)
- &amp;ndash; &lt;a href=&#34;https://golang.org/doc/effective_go.html#allocation_new&#34;&gt;Effective GO#allocation_new&lt;/a&gt;
-&lt;!-- more --&gt;&lt;/p&gt;
+ &amp;ndash; &lt;a href=&#34;https://golang.org/doc/effective_go.html#allocation_new&#34;&gt;Effective GO#allocation_new&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h2 id=&#34;stack-or-heap:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Stack or Heap?&lt;/h2&gt;

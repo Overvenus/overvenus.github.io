@@ -36,12 +36,12 @@
 
         <link rel="icon" href="http://neilsh.me/assets/favicon.ico" type="image/x-icon">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-font.css">
+        <link rel="stylesheet" href="/css/slender-font.css">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-base.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-color-schemes.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/slender-base.css">
+        <link rel="stylesheet" href="/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
         <title>
             
                 内核的启动和建立虚拟内存 &middot; Neil
@@ -128,9 +128,9 @@ JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS �
 <code>MMU</code>在计算机启动初期是不工作的，只有寄存器<code>cr0</code>中的flag打开，它才会工作。</p>
 
 <p>本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。
-先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：
-<!-- more -->
-<img src="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg" alt="" />
+先祭出一张神图，这张图生动形象的说明了<code>MMU</code>的工作流程：</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg" alt="" />
 术语说明：
 &gt; <code>page</code>: <code>MMU</code> 在逻辑上把内存分割为一个一个4KB大小的块。
 &gt; <code>page table</code>: 一个 <code>page</code>，大小4KB，内容是*1024个*指向不同 <code>page</code> 的地址及其权限。
@@ -439,7 +439,7 @@ END.</p>
     </p>
 </div>
         </footer>
-        <script src="http://neilsh.me/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight-9.1.0.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 

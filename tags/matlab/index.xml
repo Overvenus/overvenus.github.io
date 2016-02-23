@@ -40,8 +40,6 @@ $$&lt;/p&gt;
 
 &lt;p&gt;当 $S(\beta_0, \beta_1, \dots,\beta_n)$ 取得最小值时，此时的 $\beta_0, \beta_1, \dots,\beta_n$ 即为回归方程的回归系数，也是最小二乘解。&lt;/p&gt;
 
-&lt;!-- more --&gt;
-
 &lt;h2 id=&#34;最小二乘矩阵形式:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;最小二乘矩阵形式&lt;/h2&gt;
 
 &lt;p&gt;多组测量数据 $(x_i,y_i),i=1,2,3⋯,m$ 可以构成两个行列式[2]：&lt;/p&gt;

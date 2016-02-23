@@ -44,8 +44,7 @@ In real world, a single server acts &lt;strong&gt;two or more&lt;/strong&gt; rol
 2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.
-&lt;!-- more --&gt;&lt;/p&gt;
+&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.&lt;/p&gt;
 
 &lt;h2 id=&#34;rpcs-and-phases:8aa297440e030e6ae04600c7109020a5&#34;&gt;RPCs and Phases&lt;/h2&gt;
 

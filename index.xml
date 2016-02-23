@@ -18,7 +18,7 @@
       <description>&lt;p&gt;没错，这又是一篇无聊的“搬家”博文（等等，为什么是“又”）。但这次有点特殊，并不是博客托管方的改变，而是博客生成器的变动。&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;本博正式从 &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; 搬到 &lt;a href=&#34;https://hexo.io&#34;&gt;Hugo&lt;/a&gt; 了。&lt;/p&gt;
+&lt;p&gt;本博正式从 &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; 搬到 &lt;a href=&#34;https://gohugo.io&#34;&gt;Hugo&lt;/a&gt; 了。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;最初促使我抛弃 Hexo 的原因是 Hexo 的文件监视有点问题（至少在我电脑上），开启 hexo 后，文件改动 2-8 次后，hexo 就再也无法观察到文件的变动了。还别说这是个小 feature，它对博文发表最后的微调阶段有很大的影响。&lt;/p&gt;
@@ -58,7 +58,7 @@
 
 &lt;p&gt;Slender-Next 的制作过程也是有惊无险(´≖◞౪◟≖)，Golang 已经学了一段时间了，对 Hugo 文档有什么不明白的，直接看源码，哈哈，事倍功半啊。&lt;/p&gt;
 
-&lt;p&gt;把博文迁移到 Hugo 并不复杂但就怕多，搬家前我有 18 篇，算不上多，但还是花了不少时间。我习惯一篇博文一个分支，这很方便搬家，&lt;code&gt;git cherry-pick&lt;/code&gt;就行了，还保留文章编辑的记录，哈哈哈，太机智了。&lt;/p&gt;
+&lt;p&gt;把博文迁移到 Hugo 并不复杂但就怕多，搬家前我有 18 篇，算不上多，但还是花了不少时间。我习惯一篇博文一个分支，这很方便搬家，&lt;code&gt;git cherry-pick&lt;/code&gt;就行了，还保留了文章的历史记录，哈哈哈，太机智了。&lt;/p&gt;
 </description>
     </item>
     
@@ -306,8 +306,6 @@ toc: &amp;quot;off&amp;quot;
 
 &lt;p&gt;用 GPG 签约 &lt;a href=&#34;https://launchpad.net/codeofconduct&#34;&gt;the Ubuntu code of conduct&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;!-- more --&gt;
 
 &lt;h2 id=&#34;打包-deb:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;打包 DEB&lt;/h2&gt;
 
@@ -1007,8 +1005,6 @@ $$&lt;/p&gt;
 
 &lt;p&gt;当 $S(\beta_0, \beta_1, \dots,\beta_n)$ 取得最小值时，此时的 $\beta_0, \beta_1, \dots,\beta_n$ 即为回归方程的回归系数，也是最小二乘解。&lt;/p&gt;
 
-&lt;!-- more --&gt;
-
 &lt;h2 id=&#34;最小二乘矩阵形式:7da2dc83c8d8e9ad8c6717b64208ddaf&#34;&gt;最小二乘矩阵形式&lt;/h2&gt;
 
 &lt;p&gt;多组测量数据 $(x_i,y_i),i=1,2,3⋯,m$ 可以构成两个行列式[2]：&lt;/p&gt;
@@ -1167,9 +1163,9 @@ $$
 
 &lt;h2 id=&#34;过程:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;过程&lt;/h2&gt;
 
-&lt;p&gt;对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[&lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;1&lt;/a&gt;]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：
-&lt;!-- more --&gt;
-&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[&lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;1&lt;/a&gt;]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg&#34; alt=&#34;&#34; /&gt;
 这个函数中的&lt;code&gt;pauseMovie()&lt;/code&gt;基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(&#39;#eryaPlayer&#39;).pauseMovie();
@@ -1250,8 +1246,7 @@ In real world, a single server acts &lt;strong&gt;two or more&lt;/strong&gt; rol
 2c. For any v and n, if a proposal with value v and number n is issued, then there is a set S consisting of a majority of acceptors such that either (a) no acceptor in S has accepted any proposal numbered less than n, or (b) v is the value of the highest-numbered proposal among all proposals numbered less than n accepted by the acceptors in S.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.
-&lt;!-- more --&gt;&lt;/p&gt;
+&lt;p&gt;1a is stronger then 1, and 2c =&amp;gt; 2b =&amp;gt; 2a =&amp;gt; 2.&lt;/p&gt;
 
 &lt;h2 id=&#34;rpcs-and-phases:8aa297440e030e6ae04600c7109020a5&#34;&gt;RPCs and Phases&lt;/h2&gt;
 
@@ -1407,20 +1402,17 @@ By the way, &lt;em&gt;new&lt;/em&gt;, &lt;em&gt;map&lt;/em&gt;, &lt;em&gt;slice&
 
 &lt;p&gt;Underlying data structure of &lt;strong&gt;slice&lt;/strong&gt; is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of &lt;code&gt;unsafe.Pointer&lt;/code&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;
-&lt;p&gt;// Pointer represents a pointer to an arbitrary type.  There are four special operations
+&lt;pre&gt;&lt;code&gt;// Pointer represents a pointer to an arbitrary type.  There are four special operations
 // available for type Pointer that are not available for other types.
 //  1) A pointer value of any type can be converted to a Pointer.
-//  2) A Pointer can be converted to a pointer value of any type.  &amp;lt;&amp;ndash; here!
+//  2) A Pointer can be converted to a pointer value of any type.  &amp;lt;-- here!
 //  3) A uintptr can be converted to a Pointer.
 //  4) A Pointer can be converted to a uintptr.
 // Pointer therefore allows a program to defeat the type system and read and write
-// arbitrary memory. It should be used with extreme care.&lt;/p&gt;
-&lt;/blockquote&gt;
+// arbitrary memory. It should be used with extreme care.
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;In my opinion, &lt;strong&gt;Pointer&lt;/strong&gt; in Go and &lt;strong&gt;*void&lt;/strong&gt; in C are very like. &lt;em&gt;Pointer&lt;/em&gt; anesthetizes the type system and read and write arbitrary memory in Go. &lt;em&gt;*void&lt;/em&gt; can be converted to any type without warning in C.&lt;/p&gt;
-
-&lt;!-- more --&gt;
+&lt;p&gt;So, &lt;strong&gt;Pointer&lt;/strong&gt; in Go is &lt;strong&gt;*void&lt;/strong&gt; in C. &lt;em&gt;Pointer&lt;/em&gt; anesthetizes the type system and read and write arbitrary memory in Go. &lt;em&gt;*void&lt;/em&gt; can be converted to any type without warning in C.&lt;/p&gt;
 
 &lt;h3 id=&#34;make-slices:f54eeb4205b24658133f3791bb00140a&#34;&gt;Make slices&lt;/h3&gt;
 
@@ -1734,8 +1726,7 @@ abci:   sizeof: 8
 &lt;/blockquote&gt;
 
 &lt;p&gt;有限状态机是一种抽象的机器，拥有有限个状态。它在每个确定的时刻有且只有一个状态（当前状态），它的状态会由于输入条件而发生变化。一个状态转移表可以定义一个有限状态机。
-有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。
-&lt;!-- more --&gt;&lt;/p&gt;
+有点绕，不过按我的理解，有限状态机有两个关键点，状态和输入条件。这两者之间有一套规则束缚着，规则就这个 FSM 的行为。&lt;/p&gt;
 
 &lt;h2 id=&#34;protocol-and-fsm:1dc0ee46b9edee2e1b8795e1ccd0910d&#34;&gt;Protocol and FSM&lt;/h2&gt;
 
@@ -1957,8 +1948,7 @@ TODO:
 &lt;p&gt;&lt;code&gt;make&lt;/code&gt;: creates slices, maps, and channels only, and it returns an &lt;em&gt;initialized (not zeroed)&lt;/em&gt; value of type T (not *T).&lt;/p&gt;
 
 &lt;p&gt;Local variable: unlike in C, it&amp;rsquo;s perfectly OK to return the address of a local variable; the storage associated with the variable survives after the function returns. In fact, taking the address of a composite literal allocates a fresh instance each time it is evaluated, so we can combine these last two lines. (e.g., &lt;code&gt;return &amp;amp;File{fd: fd, name: name}&lt;/code&gt;)
- &amp;ndash; &lt;a href=&#34;https://golang.org/doc/effective_go.html#allocation_new&#34;&gt;Effective GO#allocation_new&lt;/a&gt;
-&lt;!-- more --&gt;&lt;/p&gt;
+ &amp;ndash; &lt;a href=&#34;https://golang.org/doc/effective_go.html#allocation_new&#34;&gt;Effective GO#allocation_new&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h2 id=&#34;stack-or-heap:29d085475296ad0ae0e08e9c74a587d0&#34;&gt;Stack or Heap?&lt;/h2&gt;
@@ -2131,8 +2121,6 @@ It&amp;rsquo;s like a switch, but each case is a communication:&lt;/p&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;!-- more --&gt;
-
 &lt;h1 id=&#34;ijvm:6d7bed0c23ab487a1f7c5d950efc77a7&#34;&gt;IJVM&lt;/h1&gt;
 
 &lt;p&gt;&lt;strong&gt;IJVM&lt;/strong&gt; is short for &lt;em&gt;Integer instructions only Java Virtual Machine&lt;/em&gt;.&lt;/p&gt;
@@ -2221,9 +2209,9 @@ END.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://ipython.org/&#34;&gt;Jupyter and the future of IPython - IPython&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)
-&lt;!-- more --&gt;
-按照教程，&lt;code&gt;pip install jupyter&lt;/code&gt;，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。&lt;/p&gt;
+&lt;p&gt;一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)&lt;/p&gt;
+
+&lt;p&gt;按照教程，&lt;code&gt;pip install jupyter&lt;/code&gt;，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。&lt;/p&gt;
 
 &lt;p&gt;果不其然，安装完之后，一运行 &lt;code&gt;jupter notebook&lt;/code&gt; 就报错了。&lt;/p&gt;
 
@@ -2297,8 +2285,6 @@ END.&lt;/p&gt;
       <description>
 
 &lt;p&gt;Recently I&amp;rsquo;ve been working on JOS, which is part of &lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;6.828: Operating System Engineering&lt;/a&gt;. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.&lt;/p&gt;
-
-&lt;!-- more --&gt;
 
 &lt;h2 id=&#34;6-828简介:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;6.828简介&lt;/h2&gt;
 

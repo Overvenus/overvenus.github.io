@@ -29,8 +29,7 @@
 
 &lt;p&gt;&lt;code&gt;break&lt;/code&gt; 只能写在loop或者switch中，不然编译报：break statement not within loop or switch。&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;goto&lt;/code&gt; 则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过,用的好当然也可以增加效率的同时提高可读性。
-&lt;!-- more --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;goto&lt;/code&gt; 则不同，它可写在和跳转到函数的任意行，自由度极大，一个不小心就会有bug，这样的代码通常也难以维护。不过,用的好当然也可以增加效率的同时提高可读性。&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;I think goto&amp;rsquo;s are fine, and they are often more readable than large
@@ -206,9 +205,9 @@ JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS �
 &lt;code&gt;MMU&lt;/code&gt;在计算机启动初期是不工作的，只有寄存器&lt;code&gt;cr0&lt;/code&gt;中的flag打开，它才会工作。&lt;/p&gt;
 
 &lt;p&gt;本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。
-先祭出一张神图，这张图生动形象的说明了&lt;code&gt;MMU&lt;/code&gt;的工作流程：
-&lt;!-- more --&gt;
-&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg&#34; alt=&#34;&#34; /&gt;
+先祭出一张神图，这张图生动形象的说明了&lt;code&gt;MMU&lt;/code&gt;的工作流程：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg&#34; alt=&#34;&#34; /&gt;
 术语说明：
 &amp;gt; &lt;code&gt;page&lt;/code&gt;: &lt;code&gt;MMU&lt;/code&gt; 在逻辑上把内存分割为一个一个4KB大小的块。
 &amp;gt; &lt;code&gt;page table&lt;/code&gt;: 一个 &lt;code&gt;page&lt;/code&gt;，大小4KB，内容是*1024个*指向不同 &lt;code&gt;page&lt;/code&gt; 的地址及其权限。

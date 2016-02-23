@@ -23,9 +23,9 @@
 
 &lt;h2 id=&#34;过程:e99fde2bd1ab83d1dc4d02061c03ef67&#34;&gt;过程&lt;/h2&gt;
 
-&lt;p&gt;对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[&lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;1&lt;/a&gt;]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：
-&lt;!-- more --&gt;
-&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg&#34; alt=&#34;&#34; /&gt;
+&lt;p&gt;对于尔雅的这个限制，我的第一反应是 js 事件监听。js 的事件这么多，难道要一个个翻过去吗？NO, NO, NO. 去年火狐推出的新功能[&lt;a href=&#34;https://hacks.mozilla.org/2014/07/event-listeners-popup-media-sidebar-cubic-bezier-editor-more-firefox-developer-tools-episode-33/&#34;&gt;1&lt;/a&gt;]，使查看 js 事件监听变得极为容易。两三下功夫就找到了一个可以的事件，见下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/large/7f793092gw1eyp26kv1jpj20v50cxtd8.jpg&#34; alt=&#34;&#34; /&gt;
 这个函数中的&lt;code&gt;pauseMovie()&lt;/code&gt;基本就确定是这个搞得鬼了。为了进一步确定，我在 console 输入：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(&#39;#eryaPlayer&#39;).pauseMovie();

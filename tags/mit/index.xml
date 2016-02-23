@@ -19,8 +19,6 @@
 
 &lt;p&gt;Recently I&amp;rsquo;ve been working on JOS, which is part of &lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;6.828: Operating System Engineering&lt;/a&gt;. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.&lt;/p&gt;
 
-&lt;!-- more --&gt;
-
 &lt;h2 id=&#34;6-828简介:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;6.828简介&lt;/h2&gt;
 
 &lt;p&gt;好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。&lt;/p&gt;
@@ -226,9 +224,9 @@ JOS 是 MIT6.828 操作系统课程中给学生练习用的小型内核。JOS �
 &lt;code&gt;MMU&lt;/code&gt;在计算机启动初期是不工作的，只有寄存器&lt;code&gt;cr0&lt;/code&gt;中的flag打开，它才会工作。&lt;/p&gt;
 
 &lt;p&gt;本文写最简单的32位虚拟内存机制，同样也是 JOS 用的。
-先祭出一张神图，这张图生动形象的说明了&lt;code&gt;MMU&lt;/code&gt;的工作流程：
-&lt;!-- more --&gt;
-&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg&#34; alt=&#34;&#34; /&gt;
+先祭出一张神图，这张图生动形象的说明了&lt;code&gt;MMU&lt;/code&gt;的工作流程：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1etosykok6uj216o1kwdq0.jpg&#34; alt=&#34;&#34; /&gt;
 术语说明：
 &amp;gt; &lt;code&gt;page&lt;/code&gt;: &lt;code&gt;MMU&lt;/code&gt; 在逻辑上把内存分割为一个一个4KB大小的块。
 &amp;gt; &lt;code&gt;page table&lt;/code&gt;: 一个 &lt;code&gt;page&lt;/code&gt;，大小4KB，内容是*1024个*指向不同 &lt;code&gt;page&lt;/code&gt; 的地址及其权限。

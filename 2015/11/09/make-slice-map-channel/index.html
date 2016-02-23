@@ -36,12 +36,12 @@
 
         <link rel="icon" href="http://neilsh.me/assets/favicon.ico" type="image/x-icon">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-font.css">
+        <link rel="stylesheet" href="/css/slender-font.css">
         
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-base.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/slender-color-schemes.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="http://neilsh.me/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/slender-base.css">
+        <link rel="stylesheet" href="/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
         <title>
             
                 make slice map channel &middot; Neil
@@ -147,20 +147,17 @@ By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>go
 
 <p>Underlying data structure of <strong>slice</strong> is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of <code>unsafe.Pointer</code></p>
 
-<blockquote>
-<p>// Pointer represents a pointer to an arbitrary type.  There are four special operations
+<pre><code>// Pointer represents a pointer to an arbitrary type.  There are four special operations
 // available for type Pointer that are not available for other types.
 //  1) A pointer value of any type can be converted to a Pointer.
-//  2) A Pointer can be converted to a pointer value of any type.  &lt;&ndash; here!
+//  2) A Pointer can be converted to a pointer value of any type.  &lt;-- here!
 //  3) A uintptr can be converted to a Pointer.
 //  4) A Pointer can be converted to a uintptr.
 // Pointer therefore allows a program to defeat the type system and read and write
-// arbitrary memory. It should be used with extreme care.</p>
-</blockquote>
+// arbitrary memory. It should be used with extreme care.
+</code></pre>
 
-<p>In my opinion, <strong>Pointer</strong> in Go and <strong>*void</strong> in C are very like. <em>Pointer</em> anesthetizes the type system and read and write arbitrary memory in Go. <em>*void</em> can be converted to any type without warning in C.</p>
-
-<!-- more -->
+<p>So, <strong>Pointer</strong> in Go is <strong>*void</strong> in C. <em>Pointer</em> anesthetizes the type system and read and write arbitrary memory in Go. <em>*void</em> can be converted to any type without warning in C.</p>
 
 <h3 id="make-slices:f54eeb4205b24658133f3791bb00140a">Make slices</h3>
 
@@ -492,7 +489,7 @@ abci:   sizeof: 8
     </p>
 </div>
         </footer>
-        <script src="http://neilsh.me/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight-9.1.0.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 

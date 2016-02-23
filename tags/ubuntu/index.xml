@@ -54,8 +54,6 @@
 &lt;p&gt;用 GPG 签约 &lt;a href=&#34;https://launchpad.net/codeofconduct&#34;&gt;the Ubuntu code of conduct&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;!-- more --&gt;
-
 &lt;h2 id=&#34;打包-deb:9dbabb1bf2ebe1b2c5fa8a0fc6e26c07&#34;&gt;打包 DEB&lt;/h2&gt;
 
 &lt;p&gt;这儿以我的最近写的 &lt;a href=&#34;http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/&#34;&gt;TButton&lt;/a&gt; 为例。TButton 关键就 3 个文件：&lt;/p&gt;
