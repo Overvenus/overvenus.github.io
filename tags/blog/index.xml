@@ -6,8 +6,61 @@
     <description>Recent content in Blog on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Tue, 23 Feb 2016 14:25:32 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 23 Feb 2016 15:36:33 +0800</lastBuildDate>
     <atom:link href="http://neilsh.me/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>博客搬家了</title>
+      <link>http://neilsh.me/2016/02/23/migrating-to-hugo/</link>
+      <pubDate>Tue, 23 Feb 2016 15:36:33 +0800</pubDate>
+      
+      <guid>http://neilsh.me/2016/02/23/migrating-to-hugo/</guid>
+      <description>&lt;p&gt;没错，这又是一篇无聊的“搬家”博文（等等，为什么是“又”）。但这次有点特殊，并不是博客托管方的改变，而是博客生成器的变动。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;本博正式从 &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; 搬到 &lt;a href=&#34;https://hexo.io&#34;&gt;Hugo&lt;/a&gt; 了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;最初促使我抛弃 Hexo 的原因是 Hexo 的文件监视有点问题（至少在我电脑上），开启 hexo 后，文件改动 2-8 次后，hexo 就再也无法观察到文件的变动了。还别说这是个小 feature，它对博文发表最后的微调阶段有很大的影响。&lt;/p&gt;
+
+&lt;p&gt;在多次尝试从外部解决失败后，其中包括重启，升级 Hexo 等，正好看到 golang 也有&lt;a href=&#34;https://gohugo.io&#34;&gt;博客生成器&lt;/a&gt;，一拍脑袋，决定搬家了。&lt;/p&gt;
+
+&lt;p&gt;Hugo 的博文的结构和 Hexo 差不多（呵呵，连名字都错不多，文章结构还能差到哪里去），Markdown 主体，Yaml 元信息。&lt;/p&gt;
+
+&lt;p&gt;后来，渐渐的发现了 Hexo 和 Hugo 其他地方的不同。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;运行时占用内存
+
+&lt;ul&gt;
+&lt;li&gt;Hexo: 120M+， Node.js 的锅。&lt;/li&gt;
+&lt;li&gt;Hugo: 15M-&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;生成博客，启动 http 服务
+
+&lt;ul&gt;
+&lt;li&gt;Hexo: 5s+&lt;/li&gt;
+&lt;li&gt;Hugo: 500ms-&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;文档&amp;amp;社区
+
+&lt;ul&gt;
+&lt;li&gt;Hexo: English, 正體中文, 简体中文&lt;/li&gt;
+&lt;li&gt;Hugo: English only&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;上面第1和第2项在我电脑上测得，并没有黑 Hexo 的打算，我电脑硬盘是 HDD，对第2项的影响比较大。至于第3项，不得不说 Hexo 太适合国人了，比 Hugo 好很多。&lt;/p&gt;
+
+&lt;p&gt;Hugo 的主题有很多，但都不合我胃口。习惯了&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next&#34;&gt;Next&lt;/a&gt;的风格，想继续用在 Hugo 上，我在现成的主题中找了一圈，觉得 Slender 不错，就是功能少了点，干脆自己给它加上算了。&lt;/p&gt;
+
+&lt;p&gt;于是就有了 &lt;a href=&#34;https://github.com/overvenus/slender-next&#34;&gt;Slender-Next&lt;/a&gt;， 做完后自我感觉不错，干脆就开源吧，哈哈哈。&lt;/p&gt;
+
+&lt;p&gt;Slender-Next 的制作过程也是有惊无险(´≖◞౪◟≖)，Golang 已经学了一段时间了，对 Hugo 文档有什么不明白的，直接看源码，哈哈，事倍功半啊。&lt;/p&gt;
+
+&lt;p&gt;把博文迁移到 Hugo 并不复杂但就怕多，搬家前我有 18 篇，算不上多，但还是花了不少时间。我习惯一篇博文一个分支，这很方便搬家，&lt;code&gt;git cherry-pick&lt;/code&gt;就行了，还保留文章编辑的记录，哈哈哈，太机智了。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Introducing Slender-Next</title>

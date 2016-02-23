@@ -6,8 +6,61 @@
     <description>Recent content on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Tue, 23 Feb 2016 14:25:32 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 23 Feb 2016 15:36:33 +0800</lastBuildDate>
     <atom:link href="http://neilsh.me/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>博客搬家了</title>
+      <link>http://neilsh.me/2016/02/23/migrating-to-hugo/</link>
+      <pubDate>Tue, 23 Feb 2016 15:36:33 +0800</pubDate>
+      
+      <guid>http://neilsh.me/2016/02/23/migrating-to-hugo/</guid>
+      <description>&lt;p&gt;没错，这又是一篇无聊的“搬家”博文（等等，为什么是“又”）。但这次有点特殊，并不是博客托管方的改变，而是博客生成器的变动。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;本博正式从 &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; 搬到 &lt;a href=&#34;https://hexo.io&#34;&gt;Hugo&lt;/a&gt; 了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;最初促使我抛弃 Hexo 的原因是 Hexo 的文件监视有点问题（至少在我电脑上），开启 hexo 后，文件改动 2-8 次后，hexo 就再也无法观察到文件的变动了。还别说这是个小 feature，它对博文发表最后的微调阶段有很大的影响。&lt;/p&gt;
+
+&lt;p&gt;在多次尝试从外部解决失败后，其中包括重启，升级 Hexo 等，正好看到 golang 也有&lt;a href=&#34;https://gohugo.io&#34;&gt;博客生成器&lt;/a&gt;，一拍脑袋，决定搬家了。&lt;/p&gt;
+
+&lt;p&gt;Hugo 的博文的结构和 Hexo 差不多（呵呵，连名字都错不多，文章结构还能差到哪里去），Markdown 主体，Yaml 元信息。&lt;/p&gt;
+
+&lt;p&gt;后来，渐渐的发现了 Hexo 和 Hugo 其他地方的不同。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;运行时占用内存
+
+&lt;ul&gt;
+&lt;li&gt;Hexo: 120M+， Node.js 的锅。&lt;/li&gt;
+&lt;li&gt;Hugo: 15M-&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;生成博客，启动 http 服务
+
+&lt;ul&gt;
+&lt;li&gt;Hexo: 5s+&lt;/li&gt;
+&lt;li&gt;Hugo: 500ms-&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;文档&amp;amp;社区
+
+&lt;ul&gt;
+&lt;li&gt;Hexo: English, 正體中文, 简体中文&lt;/li&gt;
+&lt;li&gt;Hugo: English only&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;上面第1和第2项在我电脑上测得，并没有黑 Hexo 的打算，我电脑硬盘是 HDD，对第2项的影响比较大。至于第3项，不得不说 Hexo 太适合国人了，比 Hugo 好很多。&lt;/p&gt;
+
+&lt;p&gt;Hugo 的主题有很多，但都不合我胃口。习惯了&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next&#34;&gt;Next&lt;/a&gt;的风格，想继续用在 Hugo 上，我在现成的主题中找了一圈，觉得 Slender 不错，就是功能少了点，干脆自己给它加上算了。&lt;/p&gt;
+
+&lt;p&gt;于是就有了 &lt;a href=&#34;https://github.com/overvenus/slender-next&#34;&gt;Slender-Next&lt;/a&gt;， 做完后自我感觉不错，干脆就开源吧，哈哈哈。&lt;/p&gt;
+
+&lt;p&gt;Slender-Next 的制作过程也是有惊无险(´≖◞౪◟≖)，Golang 已经学了一段时间了，对 Hugo 文档有什么不明白的，直接看源码，哈哈，事倍功半啊。&lt;/p&gt;
+
+&lt;p&gt;把博文迁移到 Hugo 并不复杂但就怕多，搬家前我有 18 篇，算不上多，但还是花了不少时间。我习惯一篇博文一个分支，这很方便搬家，&lt;code&gt;git cherry-pick&lt;/code&gt;就行了，还保留文章编辑的记录，哈哈哈，太机智了。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Introducing Slender-Next</title>
@@ -2452,341 +2505,6 @@ END.&lt;/p&gt;
 &lt;p&gt;总的来说，这是一个有意义的暑假。&lt;/p&gt;
 
 &lt;p&gt;END.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Android 触屏事件处理分发--以 SwipeRefreshLayout 为例</title>
-      <link>http://neilsh.me/2015/08/13/dispatch-and-handle-motionevent-in-android/</link>
-      <pubDate>Thu, 13 Aug 2015 20:40:00 +0800</pubDate>
-      
-      <guid>http://neilsh.me/2015/08/13/dispatch-and-handle-motionevent-in-android/</guid>
-      <description>
-
-&lt;h2 id=&#34;pulltorefresh-与-swiperefreshlayout:123fe8e46418ce87f36f17756a395264&#34;&gt;PullToRefresh 与 SwipeRefreshLayout&lt;/h2&gt;
-
-&lt;p&gt;这段时间我在 Easyinking 公司实习， 做安卓开发。之前的 App 中大量使用 &lt;a href=&#34;https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh&#34;&gt;Android-PullToRefresh&lt;/a&gt;。这个轮子很经典，在较久版本的安卓上面也很好使，不过作者已经放弃维护了，在我们的 App 上也发现了一个诡异的BUG：与WebView配合使用时，在网络环境差的情况下会出现一次下拉多次刷新的情况，症状就是整个网页在那上下抽搐。在官方支持库 support-v4:22 中自带了一个类似的 SwipeRefreshLayout，效果也是一级棒。由于两者的 API 设计差不多，使用的情景也几乎一样，所以可以无痛地从 &lt;a href=&#34;https://github.com/chrisbanes/Android-PullToRefreshhttps://github.com/chrisbanes/Android-PullToRefresh&#34;&gt;PullToRefresh&lt;/a&gt; 转移过来。&lt;/p&gt;
-
-&lt;h2 id=&#34;敏感的-swiperefreshlayout:123fe8e46418ce87f36f17756a395264&#34;&gt;敏感的 SwipeRefreshLayout&lt;/h2&gt;
-
-&lt;p&gt;从 PullToRefresh 转移到 SwipeRefreshLayout 大概花了十来分钟，初步测试出来的效果也令人满意。但是，实际使用中总会有意想不到的问题。我们把一个WebView放在了 SwipeRefreshLayout 中， 该 WebView 呈现的网页中有一个图片轮播，可左右滑动，下面的问题是 SwipeRefreshLayout 过于敏感，它把稍有下拉倾向的左右滑动全部拦截掉，并把他们当作下拉的手势，典型的 False Positive ， 处理的思路也很简单，既然是误报，过滤之即可。&lt;/p&gt;
-
-&lt;h3 id=&#34;误报的手势:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;误报的手势&lt;/strong&gt;&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1xydoiwoj20u01hcwoe.jpg&#34; alt=&#34;&#34; /&gt;&lt;img src=&#34;http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev1ys28bm4j20u01hc12q.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;理想中的手势:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;理想中的手势&lt;/strong&gt;&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev1ytgovwpj20u01hcgve.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;swiperefreshlayout-刷新的细节:123fe8e46418ce87f36f17756a395264&#34;&gt;SwipeRefreshLayout 刷新的细节&lt;/h2&gt;
-
-&lt;p&gt;SwipeRefreshLayout 有个自定义接口 SwipeRefreshLayout.OnRefreshListener，里面的函数&lt;code&gt;onRefresh()&lt;/code&gt;会在下拉刷新时执行。SwipeRefreshLayout 把 OnRefreshListener 包装进了&lt;code&gt;AnimationListener mRefreshListener&lt;/code&gt;，并且&lt;code&gt;onRefresh()&lt;/code&gt;方法只会在&lt;code&gt;onAnimationEnd()&lt;/code&gt;中执行。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
-    @Override
-    public void onAnimationStart(Animation animation) {
-    }
-
-    @Override
-    public void onAnimationRepeat(Animation animation) {
-    }
-
-    @Override
-    public void onAnimationEnd(Animation animation) {
-        if (mRefreshing) {
-            // Make sure the progress view is fully visible
-            mProgress.setAlpha(MAX_ALPHA);
-            mProgress.start();
-            if (mNotify) {
-                if (mListener != null) {
-                    mListener.onRefresh();
-                }
-            }
-        } else {
-            mProgress.stop();
-            mCircleView.setVisibility(View.GONE);
-            setColorViewAlpha(MAX_ALPHA);
-            // Return the circle to its start position
-            if (mScale) {
-                setAnimationProgress(0 /* animation complete and view is hidden */);
-            } else {
-                setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop,
-                        true /* requires update */);
-            }
-        }
-        mCurrentTargetOffsetTop = mCircleView.getTop();
-    }
-};
-    
-// 创建刷新指示图标    
-private void createProgressView() {
-    mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER/2);
-    mProgress = new MaterialProgressDrawable(getContext(), this);
-    mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
-    mCircleView.setImageDrawable(mProgress);
-    mCircleView.setVisibility(View.GONE);
-    addView(mCircleView);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这个 listener 注册在&lt;code&gt;mCircleView&lt;/code&gt;，负责了&lt;strong&gt;两个动画&lt;/strong&gt;，一个是下拉回弹的动画，另一个是刷新转圈的动画。下拉回弹动画的完成，代表触发了刷新，接下来就执行&lt;code&gt;onRefresh()&lt;/code&gt;。刷新转圈的动画完成时，代表了&lt;code&gt;onRefresh()&lt;/code&gt;的完成，之后就让刷新图标消失。&lt;/p&gt;
-
-&lt;p&gt;下拉回弹的动画是由&lt;code&gt;animateOffsetToCorrectPosition()&lt;/code&gt;开始的，也就是说刷新也是由这个方法触发的。经过简单分析后不难发现触发刷新的是&lt;code&gt;onTouchEvent()&lt;/code&gt;方法。&lt;/p&gt;
-
-&lt;h2 id=&#34;onintercepttouchevent-v-s-ontouchevent:123fe8e46418ce87f36f17756a395264&#34;&gt;onInterceptTouchEvent() V.S. onTouchEvent()&lt;/h2&gt;
-
-&lt;p&gt;在安卓触屏事件分发处理过程中这两个是关键方法。在覆写这两个方法时需要遵守一定的规则，否则会有奇怪的事情发生，具体如下：&lt;/p&gt;
-
-&lt;h3 id=&#34;viewgroup-onintercepttouchevent:123fe8e46418ce87f36f17756a395264&#34;&gt;ViewGroup.onInterceptTouchEvent()&lt;/h3&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Implement this method to intercept all touch screen motion events. This allows you to watch events as they are dispatched to your children, and take ownership of the current gesture at any point.&lt;/p&gt;
-
-&lt;p&gt;Using this function takes some care, as it has a fairly complicated interaction with View.onTouchEvent(MotionEvent), and using it requires implementing that method as well as this one in the correct way. Events will be received in the following order:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;You will receive the down event here.&lt;/li&gt;
-&lt;li&gt;The down event will be handled either by a child of this view group, or given to your own onTouchEvent() method to handle; this means you should implement onTouchEvent() to return true, so you will continue to see the rest of the gesture (instead of looking for a parent view to handle it). Also, by returning true from onTouchEvent(), you will not receive any following events in onInterceptTouchEvent() and all touch processing must happen in onTouchEvent() like normal.&lt;/li&gt;
-&lt;li&gt;For as long as you return false from this function, each following event (up to and including the final up) will be delivered first here and then to the target&amp;rsquo;s onTouchEvent().&lt;/li&gt;
-&lt;li&gt;If you return true from here, you will not receive any following events: the target view will receive the same event but with the action ACTION_CANCEL, and all further events will be delivered to your onTouchEvent() method and no longer appear here.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&#34;view-ontouchevent:123fe8e46418ce87f36f17756a395264&#34;&gt;View.onTouchEvent()&lt;/h3&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Implement this method to handle touch screen motion events.&lt;/p&gt;
-
-&lt;p&gt;If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling performClick(). This will ensure consistent system behavior, including:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;obeying click sound preferences&lt;/li&gt;
-&lt;li&gt;dispatching OnClickListener calls&lt;/li&gt;
-&lt;li&gt;handling ACTION_CLICK when accessibility features are enabled&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;从文档上来看，当一个触屏事件发生时，安卓框架会先把事件发送到&lt;code&gt;ViewGroup.onInterceptTouchEvent()&lt;/code&gt;，再根据其返回的结果来决定该事件该份配给自己的&lt;code&gt;ViewGroup.onTouchEvent()&lt;/code&gt;，还是 target view 的&lt;code&gt;View.onTouchEvent()&lt;/code&gt;。（注意 target view 指的是 layout.xml 中嵌套在SwipeRefreshLayout里的View，或是处于SwipeRefreshLayout之下的View。）那么SwipeRefreshLayout在处理触屏事件的流程也应如此。&lt;/p&gt;
-
-&lt;h2 id=&#34;swiperefreshlayout-对触屏事件的反应:123fe8e46418ce87f36f17756a395264&#34;&gt;SwipeRefreshLayout 对触屏事件的反应&lt;/h2&gt;
-
-&lt;p&gt;在修改SwipeRefreshLayout前，就算不清楚它的代码，那至少也要了解它对触屏事件的反馈。最直观的方法是创建一个子类，覆写那两个方法，算是曲线救国吧。具体的代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class SSwipeRefreshLayout extends SwipeRefreshLayout {
-    private static final String TAG = &amp;quot;SSwipe&amp;quot;;
-
-    public SSwipeRefreshLayout(Context context) {
-        super(context);
-    }
-    public SSwipeRefreshLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        boolean b = super.onTouchEvent(ev);
-        Log.d(TAG + &amp;quot;BT&amp;quot;, String.valueOf(b));
-        return b;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        boolean b = super.onInterceptTouchEvent(ev);
-        Log.d(TAG + &amp;quot;BI&amp;quot;, String.valueOf(b));
-        return b;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;触发刷新:123fe8e46418ce87f36f17756a395264&#34;&gt;触发刷新&lt;/h3&gt;
-
-&lt;h4 id=&#34;向左下滑:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向左下滑&lt;/strong&gt;&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/bmiddle/7f793092gw1ev34kpb2ldj20u01hc7an.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;08-15 10:03:52.650  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:03:52.679  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:04:06.657  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:04:06.790  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ true
-08-15 10:04:06.808  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true  &amp;lt;--- onTouchEvent
-08-15 10:04:06.811  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
-08-15 10:04:06.831  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
-...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;向右下滑:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向右下滑&lt;/strong&gt;&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww4.sinaimg.cn/bmiddle/7f793092gw1ev34lnjl05j20u01hcn3v.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;08-15 10:25:27.546  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.700  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.717  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.726  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.743  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.760  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.777  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.794  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:25:27.812  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ true
-08-15 10:25:27.829  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true  &amp;lt;--- onTouchEvent
-08-15 10:25:27.845  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
-08-15 10:04:06.868  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
-08-15 10:04:06.893  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
-...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;笔直向下滑:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;笔直向下滑&lt;/strong&gt;&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww3.sinaimg.cn/bmiddle/7f793092gw1ev34m7lgjxj20u01hcdmi.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;08-15 10:29:13.798  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:29:14.115  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 10:29:14.132  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ true
-08-15 10:29:14.150  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true  &amp;lt;--- onTouchEvent
-08-15 10:29:14.166  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
-08-15 10:29:14.183  10606-10606/com.example.android.swiperefreshlayoutbasic D/SSwipeBT﹕ true
-...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;不触发刷新:123fe8e46418ce87f36f17756a395264&#34;&gt;不触发刷新&lt;/h3&gt;
-
-&lt;p&gt;注意查看&lt;strong&gt;滚动条&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;h4 id=&#34;向左下滑-1:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向左下滑&lt;/strong&gt;&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/bmiddle/7f793092gw1ev34y348moj20u01hc454.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;08-15 11:24:54.169  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.249  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.273  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.290  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.307  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.324  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.341  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.358  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.375  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:54.392  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-...                                                                                           &amp;lt;-- onTouchEvent() Never Called!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;向右下滑-1:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;向右下滑&lt;/strong&gt;&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww2.sinaimg.cn/bmiddle/7f793092gw1ev34xmt6cjj20u01hcn3w.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;08-15 11:24:01.868  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:02.028  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:02.050  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:02.067  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:02.084  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:02.102  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:02.119  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:24:02.136  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-...                                                                                           &amp;lt;-- onTouchEvent() Never Called!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;笔直向下滑-1:123fe8e46418ce87f36f17756a395264&#34;&gt;&lt;strong&gt;笔直向下滑&lt;/strong&gt;&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww4.sinaimg.cn/bmiddle/7f793092gw1ev34x7oe5fj20u01hcdm9.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;08-15 11:21:47.059  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:21:47.185  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:21:47.203  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:21:47.222  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:21:47.237  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:21:47.247  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-08-15 11:21:47.265  28406-28406/com.example.android.swiperefreshlayoutbasic D/SSwipeBI﹕ false
-...                                                                                           &amp;lt;-- onTouchEvent() Never Called!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;swiperefreshlayout-行为总结:123fe8e46418ce87f36f17756a395264&#34;&gt;SwipeRefreshLayout 行为总结&lt;/h3&gt;
-
-&lt;p&gt;从上面两类大情况，六种小情况来看，它的行为和文档写明的一致：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;触发刷新&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;当触屏发生时，事件先到达&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;收到事件后，返回&lt;code&gt;false&lt;/code&gt;，则此事件会向下传递到 &lt;strong&gt;target view&lt;/strong&gt; ,同时使得下一次事件也是也&lt;strong&gt;先经过此方法&lt;/strong&gt;。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;经过几次事件后&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;返回&lt;code&gt;true&lt;/code&gt;，之后的事件都&lt;strong&gt;不再经过此方法&lt;/strong&gt;，也不会传给 target view，&lt;strong&gt;直接传给&lt;/strong&gt;&lt;code&gt;SwipeRefreshLayout.onTouchEvent()&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;code&gt;SwipeRefreshLayout.onTouchEvent()&lt;/code&gt;接手事件， &lt;strong&gt;target view&lt;/strong&gt; 不再收到任何事件，下拉刷新的指示图标开始出现。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;不触发刷新&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;当触屏发生时，事件先到达&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;收到事件后，判读为此次手势没有刷新的意图，一直返回&lt;code&gt;false&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code&gt;onInterceptTouchEvent()&lt;/code&gt;返回的结果就是我们要的循环不变量，分析到此差不多就结束了，根据它的行为，可以很轻松的降低它的敏感度。&lt;/p&gt;
-
-&lt;h2 id=&#34;降低-swiperefreshlayout-的敏感度:123fe8e46418ce87f36f17756a395264&#34;&gt;降低 SwipeRefreshLayout 的敏感度&lt;/h2&gt;
-
-&lt;p&gt;&lt;em&gt;此小节部分内容有关 &lt;code&gt;MotionEvent&lt;/code&gt;, 由于篇幅原因不再赘述。详见参考资料。&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;返回我们碰到问题中来，现在有个 WebView 嵌在 SwipeRefreshLayout 中，该 WebView 呈现的网页中有个图片轮播，但我们想切换图片时经常会被 SwipeRefreshLayout 打断，使切换图片的动作成为下来刷新的动作，造成使用体验上的缺陷。&lt;/p&gt;
-
-&lt;p&gt;既然 SwipeRefreshLayout 真正接手触屏事件是从 &lt;code&gt;onInterceptTouchEvent()&lt;/code&gt; 返回 &lt;code&gt;true&lt;/code&gt; 开始的。那我们只要触屏事件开始时判断用户是想刷新还是像切换图片。解决的思路清晰了，接下来是判断的策略&lt;/p&gt;
-
-&lt;p&gt;如何判断用户的意图？我们可以简单一点，取从 &lt;code&gt;ACTION_DOWN&lt;/code&gt; 开始的两次 &lt;code&gt;ACTION_MOVE&lt;/code&gt;,并计算两点所构成的直线同屏幕 &lt;code&gt;X&lt;/code&gt; 轴所呈的角度：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;O                 X
-  +----------------+
-  |                |
-  |        M1 +    |
-  |         /      |
-  |       /ang     |
-  |  M2 + ----- X  |
-  |                |
-  |                |
-  |                |
-  |                |
-  |                |
-  |                |
-  |                |
-  |                |
-Y +----------------+
-  
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;当用户手势的头两次 &lt;code&gt;ACTION_MOVE&lt;/code&gt; 构成角度小于 &lt;code&gt;ang&lt;/code&gt; 时就让 &lt;code&gt;onInterceptTouchEvent()&lt;/code&gt; 一直返回 &lt;code&gt;false&lt;/code&gt; 直到 &lt;code&gt;ACTION_UP&lt;/code&gt; 为止。这样保证了 SwipeRefreshLayout 不会轻易地截断触屏事件，让 &lt;strong&gt;target view&lt;/strong&gt; 有机会处理该事件，同时也保证了循环不变式的成立，不会影响 SwipeRefreshLayout 的正常工作。&lt;/p&gt;
-
-&lt;h2 id=&#34;show-me-the-code:123fe8e46418ce87f36f17756a395264&#34;&gt;SHOW ME THE CODE&lt;/h2&gt;
-
-&lt;script src=&#34;https://gist.github.com/Overvenus/dc0ec5c4de5c27585c91.js&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;欢迎到我的&lt;a href=&#34;https://gist.github.com/Overvenus/dc0ec5c4de5c27585c91#file-numbswiperefreshlayout-java&#34;&gt;Gist&lt;/a&gt;查看代码。&lt;/p&gt;
-
-&lt;h3 id=&#34;numbswiperefreshlayout-效果:123fe8e46418ce87f36f17756a395264&#34;&gt;NumbSwipeRefreshLayout 效果&lt;/h3&gt;
-
-&lt;p&gt;注意查看&lt;strong&gt;上方阴影&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/bmiddle/7f793092gw1ev3c6eyty8j20u01hc0zi.jpg&#34; alt=&#34;&#34; /&gt;&lt;img src=&#34;http://ww4.sinaimg.cn/bmiddle/7f793092gw1ev3c6qlmwhj20u01hcwl4.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;参考资料:123fe8e46418ce87f36f17756a395264&#34;&gt;参考资料&lt;/h2&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://android.googlesource.com/platform/frameworks/support/+/d9df810a8e9ac28148c853249f0951329053c784/v4/java/android/support/v4/widget/SwipeRefreshLayout.java&#34;&gt;SwipeRefreshLayout 源码&lt;/a&gt;
-&lt;a href=&#34;https://developer.android.com/reference/android/support/v4/widget/SwipeRefreshLayout.html&#34;&gt;SwipeRefreshLayout 文档&lt;/a&gt;
-&lt;a href=&#34;https://developer.android.com/training/gestures/viewgroup.html&#34;&gt;Managing Touch Events in a ViewGroup&lt;/a&gt;
-[ViewGroup.onInterceptTouchEvent(MotionEvent)](&lt;a href=&#34;https://developer.android.com/reference/android/view/ViewGroup.html#onInterceptTouchEvent(android.view.MotionEvent&#34;&gt;https://developer.android.com/reference/android/view/ViewGroup.html#onInterceptTouchEvent(android.view.MotionEvent&lt;/a&gt;)
-[View.onTouchEvent(MotionEvent)](&lt;a href=&#34;https://developer.android.com/reference/android/view/View.html#onTouchEvent(android.view.MotionEvent&#34;&gt;https://developer.android.com/reference/android/view/View.html#onTouchEvent(android.view.MotionEvent&lt;/a&gt;)
-&lt;a href=&#34;https://developer.android.com/reference/android/view/MotionEvent.html&#34;&gt;MotionEvent&lt;/a&gt;
-&lt;a href=&#34;http://stackoverflow.com/a/12559204/3920448&#34;&gt;Calculate gesture distance in Android &amp;ndash; Stack Overflow&lt;/a&gt;
-&lt;a href=&#34;http://android-developers.blogspot.com/2010/06/making-sense-of-multitouch.html&#34;&gt;Making Sense of Multitouch&lt;/a&gt;
-&lt;a href=&#34;https://en.wikipedia.org/wiki/False_positives_and_false_negatives&#34;&gt;False positives and false negatives&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
-END.&lt;/p&gt;
 </description>
     </item>
     
