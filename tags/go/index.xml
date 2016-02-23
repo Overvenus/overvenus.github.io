@@ -6,8 +6,208 @@
     <description>Recent content in Go on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Mon, 09 Nov 2015 15:16:55 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 23 Feb 2016 14:25:32 +0800</lastBuildDate>
     <atom:link href="http://neilsh.me/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Introducing Slender-Next</title>
+      <link>http://neilsh.me/2016/02/23/introducing-slender-next/</link>
+      <pubDate>Tue, 23 Feb 2016 14:25:32 +0800</pubDate>
+      
+      <guid>http://neilsh.me/2016/02/23/introducing-slender-next/</guid>
+      <description>
+
+&lt;h2 id=&#34;slender-next:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Slender-Next&lt;/h2&gt;
+
+&lt;p&gt;Yet another sample theme for &lt;a href=&#34;http://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; with &lt;a href=&#34;https://github.com/chriskempson/base16&#34;&gt;base16&lt;/a&gt; color schemes.&lt;/p&gt;
+
+&lt;p&gt;Based on &lt;a href=&#34;https://github.com/CrimsonRay/slender&#34;&gt;slender&lt;/a&gt;, inspired by &lt;a href=&#34;https://github.com/iissnan/hexo-theme-next&#34;&gt;hexo-theme-next&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;screenshot:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Screenshot&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://neilsh.me/assets/img/slender-next/screenshot.png&#34; alt=&#34;screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;features:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Features&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Responsive&lt;/li&gt;
+&lt;li&gt;Pagination&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/chriskempson/base16&#34;&gt;base16&lt;/a&gt; color schemes&lt;/li&gt;
+&lt;li&gt;Code/syntax highlighting with &lt;a href=&#34;https://highlightjs.org/&#34;&gt;highlight.js 9.1.0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Proper meta tags for SEO&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Optimized for China&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Google Analytics And Baidu Tongji integration&lt;/li&gt;
+&lt;li&gt;Disqus And Duoshuo integration&lt;/li&gt;
+&lt;li&gt;MathJax support&lt;/li&gt;
+&lt;li&gt;Table of Content&lt;/li&gt;
+&lt;li&gt;Tags + Archive&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;color-schemes:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Color Schemes&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://neilsh.me/assets/img/slender-next/slender-color-schemes.png&#34; alt=&#34;slender-color-schemes&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;installation:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Installation&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Make a new Hugo site&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;$ hugo new site your_site/
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Install Slender&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;$ cd your_site/
+$ mkdir themes
+$ cd themes
+$ git clone https://github.com/overvenus/slender-next
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;configuration:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Configuration&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;# config.toml
+# https://github.com/overvenus/slender-next
+
+baseurl = &amp;quot;http://url-to-your-site.com/&amp;quot;
+title = &amp;quot;Your Title&amp;quot;
+# set &amp;quot;zh-Hans&amp;quot;, turn on optimization.
+languageCode = &amp;quot;en-US&amp;quot;
+MetaDataFormat = &amp;quot;yaml&amp;quot;
+theme = &amp;quot;slender-next&amp;quot;
+paginate = 5
+PaginatePath = &amp;quot;/page/&amp;quot;
+
+[author]
+    name = &amp;quot;Your Name&amp;quot;
+
+[permalinks]
+
+    # Permalink format for pages.
+    page = &amp;quot;/:title/&amp;quot;
+
+    # Permalink format for blog posts.
+    post = &amp;quot;/:year/:month/:day/:title/&amp;quot;
+
+[taxonomies]
+    # tags -&amp;gt; menu.main.tags
+    tag = &amp;quot;tags&amp;quot;
+    # archive -&amp;gt; menu.main.archive
+    archive = &amp;quot;archive&amp;quot;
+
+[params]
+
+    # Change the color scheme of Slender.
+    # See above for preview and list of color schemes.
+    colorscheme = &amp;quot;white&amp;quot;
+
+    # Tagline; HTML accepted here. Keep it concise.
+    tagline = &amp;quot;Your Tagline&amp;quot;
+
+    # copyright, see http://creativecommons.org/
+    licenses = &amp;quot;BY-NC-SA&amp;quot;
+
+    # Description and keywords for &amp;lt;meta&amp;gt; tags.
+    # Remember to set this for your main page.
+    # This will be overridden by whatever is set by the page or post,
+    # defined by `description` and `keywords` variables in the front matter
+    # of the markdown file.
+    description = &amp;quot;Default Page Description&amp;quot;
+    keywords = &amp;quot;default,page,keywords&amp;quot;
+
+    # Analytics
+    # Remove, comment, or leave it blank if you don&#39;t have one.
+    googleAnalytics = &amp;quot;GoogleAnalyticsParams&amp;quot;
+    baiduTongji = &amp;quot;BaiduTongji&amp;quot;
+
+    # Comment
+    # Remove or comment if you don&#39;t have one.
+    # if both set,
+    #    zh-Hans: duoshuoShortname &amp;gt; disqusShortname
+    #    else: disqusShortname &amp;gt; duoshuoShortname
+    duoshuoShortname = &amp;quot;your-duoshuo&amp;quot;
+    disqusShortname = &amp;quot;you-disqus&amp;quot;
+
+    # MathJax
+    # see: http://mathjax.readthedocs.org/en/latest/options/hub.html
+    mathjax = true # enable
+    mathHideMenu = false
+    mathZoom = &amp;quot;Double-Click&amp;quot;
+    mathRenderer = &amp;quot;SVG&amp;quot;
+
+[menu]
+
+    # Menu for the nav bar.
+    # There must always be one item present (e.g. home).
+    # identifier: Font Awesome icon name
+    [[menu.main]]
+    identifier = &amp;quot;fa-home&amp;quot;
+    name       = &amp;quot;Home&amp;quot;
+    url        = &amp;quot;/&amp;quot;
+    weight     = 0
+
+    [[menu.main]]
+    identifier = &amp;quot;fa-user&amp;quot;
+    name       = &amp;quot;About&amp;quot;
+    url        = &amp;quot;/about/&amp;quot;
+    weight     = 1
+
+    [[menu.main]]
+    identifier = &amp;quot;fa-archive&amp;quot;
+    name       = &amp;quot;Archive&amp;quot;
+    url        = &amp;quot;/archive/&amp;quot;
+    weight     = 2
+
+    [[menu.main]]
+    identifier = &amp;quot;fa-tags&amp;quot;
+    name       = &amp;quot;Tags&amp;quot;
+    url        = &amp;quot;/tags/&amp;quot;
+    weight     = 3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;usage:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Usage&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Making a new post / article&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;$ hugo new post/hello.md
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Making a new page&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;$ hugo new page/about.md
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add the new page to navbar in &lt;code&gt;config.toml&lt;/code&gt; under &lt;code&gt;[menu]&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Turn on MathJax&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Post&amp;rsquo;s front matter. Default: &amp;ldquo;off&amp;rdquo;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;---
+mathjax: &amp;quot;on&amp;quot;
+---
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Turn off TOC&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Post&amp;rsquo;s front matter. Default: &amp;ldquo;on&amp;rdquo;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;---
+toc: &amp;quot;off&amp;quot;
+---
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;license:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;License&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;LICENSE.md&#34;&gt;MIT&lt;/a&gt; &amp;copy; 2015 CrimsonRay&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;LICENSE.md&#34;&gt;MIT&lt;/a&gt; &amp;copy; 2016 Neil Shen&lt;/p&gt;
+
+&lt;h2 id=&#34;get-it-now:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Get it NOW!&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/overvenus/slender-next&#34;&gt;Slender-Next&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>make slice map channel</title>

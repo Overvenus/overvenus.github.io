@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Git on Neil</title>
-    <link>http://neilsh.me/tags/git/</link>
-    <description>Recent content in Git on Neil</description>
+    <title>Blog on Neil</title>
+    <link>http://neilsh.me/tags/blog/</link>
+    <description>Recent content in Blog on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Tue, 23 Feb 2016 14:25:32 +0800</lastBuildDate>
-    <atom:link href="http://neilsh.me/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://neilsh.me/tags/blog/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Introducing Slender-Next</title>
@@ -206,93 +206,6 @@ toc: &amp;quot;off&amp;quot;
 &lt;h2 id=&#34;get-it-now:3c4e2d208ca79d5efa86c04d997b2fbe&#34;&gt;Get it NOW!&lt;/h2&gt;
 
 &lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/overvenus/slender-next&#34;&gt;Slender-Next&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>jupyter-core 4.0.6 的发布</title>
-      <link>http://neilsh.me/2015/09/18/jupyter-core-406/</link>
-      <pubDate>Fri, 18 Sep 2015 20:39:01 +0800</pubDate>
-      
-      <guid>http://neilsh.me/2015/09/18/jupyter-core-406/</guid>
-      <description>
-
-&lt;h1 id=&#34;jupyter-与-ipython:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Jupyter 与 IPython&lt;/h1&gt;
-
-&lt;p&gt;Jupyter 是由 IPython 演化而来的，两者配合使用可提供交互式的编程体验，实现视觉化编程，写了什么，马上就能看见效果。Jupyter 类似于客户端，IPython 作为 Jupyter 的内核。之前 IPython 的杀手锏 notebook 现在转移到 Jupyter 中了。该神器不仅对 data science 有奇效，对于一般的 python 应用开发也有极大的帮助，它同样适合用于学习 python，其易用性直追 PyCharm。&lt;/p&gt;
-
-&lt;h1 id=&#34;bug:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;BUG？&lt;/h1&gt;
-
-&lt;p&gt;IPython 今年初的时候就有所接触，不过用了几天就卸载了，那时用的还是 IPython notebook。昨天由于课程需要，想在本地安装 IPython。习惯性地 GOOGLE， 打开 IPython 的官网，查看安装教程 &lt;a href=&#34;https://jupyter.readthedocs.org/en/latest/install.html&#34;&gt;Installation&lt;/a&gt; ，没想到居然跳转到了 Jupyter 的文档，当时就大吃一斤，再仔细一看，尼玛连 IPython 官网的名字都变了。&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://ipython.org/&#34;&gt;Jupyter and the future of IPython - IPython&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;一直以来就知道 python 的世界变化快，可没想到居然这么快，没几个月，项目的名称都变了。 ∑(￣□￣;)
-&lt;!-- more --&gt;
-按照教程，&lt;code&gt;pip install jupyter&lt;/code&gt;，一切都很顺利，顺利到让我不敢相信，安装 python 第三方模块在我印象中都是挺蛋疼的。&lt;/p&gt;
-
-&lt;p&gt;果不其然，安装完之后，一运行 &lt;code&gt;jupter notebook&lt;/code&gt; 就报错了。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;$ jupyter notebook
-
-Traceback (most recent call last):
-  File &amp;quot;/usr/local/bin/jupyter-notebook&amp;quot;, line 11, in &amp;lt;module&amp;gt;
-    sys.exit(main())
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py&amp;quot;, line 267, in launch_instance
-    return super(JupyterApp, cls).launch_instance(argv=argv, **kwargs)
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py&amp;quot;, line 591, in launch_instance
-    app.initialize(argv) File &amp;quot;&amp;lt;string&amp;gt;&amp;quot;, line 2, in initialize
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py&amp;quot;, line 75, in catch_config_error
-    return method(app, *args, **kwargs)
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/notebook/notebookapp.py&amp;quot;, line 1001, in initialize
-    super(NotebookApp, self).initialize(argv) File &amp;quot;&amp;lt;string&amp;gt;&amp;quot;, line 2, in initialize
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/traitlets/config/application.py&amp;quot;, line 75, in catch_config_error
-    return method(app, *args, **kwargs)
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py&amp;quot;, line 243, in initialize
-    self.migrate_config()
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/application.py&amp;quot;, line 169, in migrate_config
-    migrate() 
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py&amp;quot;, line 232, in migrate
-    if migrate_static_custom(custom_src, custom_dst): 
-  File &amp;quot;/usr/local/lib/python2.7/dist-packages/jupyter_core/migrate.py&amp;quot;, line 160, in migrate_static_custom
-    if custom_css_empty:
-UnboundLocalError: local variable &#39;custom_css_empty&#39; referenced before assignment
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;一看有 css，直觉告诉我，可能是 Jinjia2 之类关于网页处理的模块出错了，于是卸载再重装，还是有此错误。pip 试了几遍不行，apt-get 试了几遍也不行。谷歌来谷歌去都找不到答案，项目的 issus 也翻了一遍，同样没结果，前前后后花了一个多小时，挺沮丧的。&lt;/p&gt;
-
-&lt;h1 id=&#34;bug-fix:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;BUG fix&lt;/h1&gt;
-
-&lt;p&gt;连重装大法都不行，这该不会是 BUG 吧？细细看了一边 traceback，再配合源码一看，立刻就知道哪里可能出错了。&lt;/p&gt;
-
-&lt;p&gt;原来 Jupyter 在第一次运行时会检测之前是否用过 IPython，如果用过，那就把旧的配置转换成新的。把旧版 IPython 配置文件夹删了之后，再运行&lt;code&gt;jupyter notebook&lt;/code&gt;，一切正常。顺手修了这个 BUG。&lt;/p&gt;
-
-&lt;h1 id=&#34;create-a-pull-request:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Create a Pull Request&lt;/h1&gt;
-
-&lt;p&gt;既然修了 BUG，那肯定要向项目开发者反馈啊，要为开源世界做贡献！ Github 主页也能好看点。 (΄◞ิ౪◟ิ‵)
-过程也很简单：
- 1. 创建该 BUG 的 issus（可选，建议创建）
- 2. fork &lt;a href=&#34;https://github.com/jupyter/jupyter_core&#34;&gt;jupyter-core&lt;/a&gt;
- 3. clone 自己的项目到本地
- 4. 修补 BUG
- 5. git push origin
- 6. 点击项目右侧的 pull request ，创建 pull request&lt;/p&gt;
-
-&lt;p&gt;这成了我的第一个 Pull Request。现在 jupyter-core 最新的版本是 4.0.6， 感觉这就是为我发布的。我也成了 jupyter 核心模块的贡献者，呵呵。&lt;/p&gt;
-
-&lt;h1 id=&#34;ref:9efbcfe4e76745ed4d55523f6b11c597&#34;&gt;Ref.&lt;/h1&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;https://ipython.org/&#34;&gt;https://ipython.org/&lt;/a&gt;
-&lt;a href=&#34;https://jupyter.org/index.html&#34;&gt;https://jupyter.org/index.html&lt;/a&gt;
-&lt;a href=&#34;https://jupyter.readthedocs.org/en/latest/install.html&#34;&gt;https://jupyter.readthedocs.org/en/latest/install.html&lt;/a&gt;
-&lt;a href=&#34;https://yangsu.github.io/pull-request-tutorial/&#34;&gt;Pull Request Tutorial - A Visual Guide to Pull Requests&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
-END.&lt;/p&gt;
 </description>
     </item>
     
