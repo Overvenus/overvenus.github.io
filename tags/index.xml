@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Neil</title>
+    <link>http://neilsh.me/tags/</link>
+    <description>Recent content on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Thu, 03 Mar 2016 20:57:47 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>distribute system note</title>
+      <link>http://neilsh.me/2016/03/03/distribute-system-note/</link>
+      <pubDate>Thu, 03 Mar 2016 20:57:47 +0800</pubDate>
+      
+      <guid>http://neilsh.me/2016/03/03/distribute-system-note/</guid>
+      <description>&lt;p&gt;中间件：由于不同软件系统和硬件系统之间的差异，中间件提供了一个编程抽象，屏蔽了底层系统的异构性，&lt;/p&gt;
+
+&lt;p&gt;分布式软加设计上的8个透明性：
+ - &lt;strong&gt;访问&lt;/strong&gt;
+ - &lt;strong&gt;位置&lt;/strong&gt;
+ - 并发
+ - 复制
+ - 故障
+ - 移动
+ - 性能
+ - 伸缩&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
