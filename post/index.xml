@@ -6,8 +6,378 @@
     <description>Recent content in Posts on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Tue, 23 Feb 2016 15:36:33 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 16 Mar 2016 21:49:02 +0800</lastBuildDate>
     <atom:link href="http://neilsh.me/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>理解 Goroutine &amp; Gosched</title>
+      <link>http://neilsh.me/2016/03/16/understanding-of-runtime-goroutine/</link>
+      <pubDate>Wed, 16 Mar 2016 21:49:02 +0800</pubDate>
+      
+      <guid>http://neilsh.me/2016/03/16/understanding-of-runtime-goroutine/</guid>
+      <description>
+
+&lt;h2 id=&#34;goroutine:11e673671117c063adee6332c59abd2b&#34;&gt;Goroutine&lt;/h2&gt;
+
+&lt;p&gt;大家都知道一个编译好的 Go 程序一般都在 2MB 以上，那是因为 Go 编译器把 Go 的运行环境(runtime)也编译进去了。 一个完整的 Go 程序结构可以表示为下图:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1f225uewt4aj20dq0af74i.jpg&#34; alt=&#34;图1&#34; /&gt;
+出自 &lt;a href=&#34;http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-11_DeshpandeSponslerWeiss_GO.pdf&#34;&gt;7&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;在 &lt;a href=&#34;http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-11_DeshpandeSponslerWeiss_GO.pdf&#34;&gt;Analysis of the Go runtime scheduler&lt;/a&gt; 中作者们写道：&lt;/p&gt;
+
+&lt;p&gt;我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 rang3）。&lt;/p&gt;
+
+&lt;h3 id=&#34;g-m:11e673671117c063adee6332c59abd2b&#34;&gt;g &amp;amp; m&lt;/h3&gt;
+
+&lt;p&gt;Goroutine 与系统线程的对应关系是 &lt;strong&gt;N:M&lt;/strong&gt;，多个goroutine对应多个系统线程，一般来说 gouroutine 的数量远多于系统线程。Goroutine 的运行依托于系统线程，一个线程在这一时刻执行的这个 goroutine，在另一时刻由于 runtime 的调度执行的可能又是另外一个 goroutine。 从系统的角度看，一个 Go 程序就是一个进程，这个进程中都多个线程，系统不知道也不需要知道那些线程中发生 goroutine 的调度。&lt;/p&gt;
+
+&lt;p&gt;在 Golang-nuts 上有一篇贴子 &lt;a href=&#34;https://groups.google.com/forum/#!topic/golang-nuts/SSpxrCrfvyo&#34;&gt;Understanding of runtime goroutine struct G &amp;amp; M&lt;/a&gt;. 在这篇贴子里大家讨论了 runtime 中的 &lt;code&gt;g&lt;/code&gt; 和 &lt;code&gt;m&lt;/code&gt; 结构体，这两个结构体于与 goroutine 的实现相关，简单的来说：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;一个 &lt;strong&gt;g&lt;/strong&gt; 代表一个 &lt;strong&gt;goroutine&lt;/strong&gt;，一个 &lt;strong&gt;m&lt;/strong&gt; 代表一个&lt;strong&gt;系统线程&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;g 运行在 m 中， m 中有多个 g 等待执行。 当运行着的 g 堵塞时，该 m 中剩下的 g 会自动转移到没有被堵塞的 m 中， 这样其余的 goroutine 就不会被堵塞了。当然这一切对程序员是不可见的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;p:11e673671117c063adee6332c59abd2b&#34;&gt;p&lt;/h3&gt;
+
+&lt;p&gt;在 golang-nuts 中并没有提及另外一个重要的结构体 p， 在 &lt;a href=&#34;http://morsmachine.dk/go-scheduler&#34;&gt;morsmachine&lt;/a&gt; 的一篇博文中，他说 p 代表了处理器。
+他还说一个 g 要被运行必须要有 p，整个运行结构如下图所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1f24rq6bgjjj20b40avglr.jpg&#34; alt=&#34;&#34; /&gt;
+出自 &lt;a href=&#34;http://morsmachine.dk/go-scheduler&#34;&gt;8&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;每个 p 都有一个本地的 g 队列。 m + p + g 才是一个运行着的 goroutine.&lt;/p&gt;
+
+&lt;h2 id=&#34;gosched:11e673671117c063adee6332c59abd2b&#34;&gt;Gosched&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;runtime.Gosched&lt;/code&gt; 用于让出被执行的权利，使得其他等待中的 goroutine 有机会得以执行，但这并不会终止 Gosched 的 caller。&lt;/p&gt;
+
+&lt;p&gt;明了 Gosched 后，我们再看看它是怎么实现的。下面的 &lt;code&gt;mcall(gosched_m)&lt;/code&gt; 有点蹊跷， mcall 怎么只有一个函数签名，它的函数体在哪里？ &lt;code&gt;gosched_m&lt;/code&gt; 需要一个参数 &lt;code&gt;*g&lt;/code&gt;, 但又它在哪里呢？&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func Gosched() {
+	mcall(gosched_m)
+}
+
+func mcall(fn func(*g))
+
+// Gosched continuation on g0.
+func gosched_m(gp *g) {
+	if trace.enabled {
+		traceGoSched()
+	}
+	goschedImpl(gp)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;mcall:11e673671117c063adee6332c59abd2b&#34;&gt;mcall&lt;/h3&gt;
+
+&lt;p&gt;原来 mcall 是用汇编写的， 每个平台的 mcall 实现方式都不一样。它会提供 fn 当前 goroutine 的 *g。下面我先用伪代码表示 mcall：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// mcall switches from the g to the g0 stack and invokes fn(g),
+// where g is the goroutine that made the call.
+// mcall saves g&#39;s current PC/SP in g-&amp;gt;sched so that it can be restored later.
+// It is up to fn to arrange for that later execution, typically by recording
+// g in a data structure, causing something to call ready(g) later.
+// mcall returns to the original goroutine g later, when g has been rescheduled.
+// fn must not return at all; typically it ends by calling schedule, to let the m
+// run other goroutines.
+//
+// func mcall(fn func(*g))
+// Switch to m-&amp;gt;g0&#39;s stack, call fn(g).
+// Fn must never return.  It should gogo(&amp;amp;g-&amp;gt;sched)
+// to keep running g.
+func mcall(fn) {
+	g = current_g
+	switch stack from current_g to current_m.g0
+	call fn(g)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下面是 mcall 的真实代码，摘取自 asm_amd64.s 文件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;TEXT runtime·mcall(SB), NOSPLIT, $0-8
+	MOVQ	fn+0(FP), DI
+	
+	get_tls(CX)
+	MOVQ	g(CX), AX	// save state in g-&amp;gt;sched
+	MOVQ	0(SP), BX	// caller&#39;s PC
+	MOVQ	BX, (g_sched+gobuf_pc)(AX)
+	LEAQ	fn+0(FP), BX	// caller&#39;s SP
+	MOVQ	BX, (g_sched+gobuf_sp)(AX)
+	MOVQ	AX, (g_sched+gobuf_g)(AX)
+	MOVQ	BP, (g_sched+gobuf_bp)(AX)
+
+	// switch to m-&amp;gt;g0 &amp;amp; its stack, call fn
+	MOVQ	g(CX), BX
+	MOVQ	g_m(BX), BX
+	MOVQ	m_g0(BX), SI
+	CMPQ	SI, AX	// if g == m-&amp;gt;g0 call badmcall
+	JNE	3(PC)
+	MOVQ	$runtime·badmcall(SB), AX
+	JMP	AX
+	MOVQ	SI, g(CX)	// g = m-&amp;gt;g0
+	MOVQ	(g_sched+gobuf_sp)(SI), SP	// sp = m-&amp;gt;g0-&amp;gt;sched.sp
+	PUSHQ	AX
+	MOVQ	DI, DX
+	MOVQ	0(DI), DI
+	CALL	DI
+	POPQ	AX
+	MOVQ	$runtime·badmcall2(SB), AX
+	JMP	AX
+	RET
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;MOVQ&lt;/code&gt; 有点像 &lt;a href=&#34;https://en.wikibooks.org/wiki/X86_Assembly/GAS_Syntax&#34;&gt;GAS&lt;/a&gt; 汇编的风格，但为什么后面的跟着的不是 &lt;code&gt;r&lt;/code&gt; 系列的64位寄存器呢？ 还有 &lt;code&gt;FP&lt;/code&gt; 是什么东西？
+虽然对于汇编我算不上熟练，但看懂，会用的程度我还是有的，这难道不是 GAS？ 赶紧 google 一下。结果还真的不是，&lt;a href=&#34;https://golang.org/doc/asm&#34;&gt;golang&lt;/a&gt; 用的是 &lt;a href=&#34;http://doc.cat-v.org/plan_9/4th_edition/papers/asm&#34;&gt;Plan 9&lt;/a&gt; 的风格。&lt;/p&gt;
+
+&lt;p&gt;Plan 9 汇编风格和 GAS，Intel 风格最大的不同点是它有&lt;strong&gt;伪寄存器&lt;/strong&gt;，比如下面四个：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;FP: Frame pointer: arguments and locals.&lt;/li&gt;
+&lt;li&gt;PC: Program counter: jumps and branches.&lt;/li&gt;
+&lt;li&gt;SB: Static base pointer: global symbols.&lt;/li&gt;
+&lt;li&gt;SP: Stack pointer: top of stack.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;它们用于栈的操作，具体代表什么寄存器由编译链决定，并与 CPU 的架构有关。 FP 用于取函数的参数， &lt;code&gt;0(FP)&lt;/code&gt;， &lt;code&gt;8(FP)&lt;/code&gt;分别代表第一和第二个参数(64位系统)，&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;TEXT runtime·mcall(SB), NOSPLIT, $0-8&lt;/code&gt; 表示这里的可执行代码为 runtime.mcall， &lt;code&gt;NOSPLIT&lt;/code&gt; 是个 flag ， &lt;code&gt;$0-8&lt;/code&gt; 0代表这个函数的 stackframe 的大小，8 代表这个函数参数们的大小，中间的 &lt;code&gt;-&lt;/code&gt; 只用于分开两者，并没有其他特殊作用。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;MOVQ   fn+0(FP), DI&lt;/code&gt; 把 mcall 的参数 fn 的指针存放到 DI 中， DI 成了一个指向 fn 的指针的指针。 估计后面会有 &lt;code&gt;CALL 0(DI)&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h4 id=&#34;g-to-g0:11e673671117c063adee6332c59abd2b&#34;&gt;g to g0&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;大体上 mcall 先执行栈的切换，再把当前的 g 作为参数调用 fn。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;保存当前 goroutine 的状态保存到对应的 g 中:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-x86asm&#34;&gt;MOVQ	g(CX), BX
+MOVQ	g_m(BX), BX
+MOVQ	0(SP), BX	// caller&#39;s PC
+MOVQ	BX, (g_sched+gobuf_pc)(AX)
+LEAQ	fn+0(FP), BX	// caller&#39;s SP
+MOVQ	BX, (g_sched+gobuf_sp)(AX)
+MOVQ	AX, (g_sched+gobuf_g)(AX)
+MOVQ	BP, (g_sched+gobuf_bp)(AX)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;g_sched&lt;/code&gt; 是 &lt;a href=&#34;https://github.com/brb/go-static/blob/master/go_asm.h#L876&#34;&gt;sched&lt;/a&gt; 在 g 中的偏移量， &lt;code&gt;gobuf_pc&lt;/code&gt; 是 &lt;a href=&#34;https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L293&#34;&gt;sp&lt;/a&gt; 在 sched 中的 gobuf 的偏移量，依此类推。它们定义在 go_asm.h 文件中。 执行完后，当前 goroutine 的状态将会存放到对应的 g.sched 中。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#ifdef GOARCH_amd64
+#define	get_tls(r)	MOVQ TLS, r
+#define	g(r)	0(r)(TLS*1)
+#endif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;get_tls(r)&lt;/code&gt; 是一个宏，定义在 go_tls.h 文件中，它的作用是把当前的 goroutine 的 &lt;em&gt;g&lt;/em&gt; 的指针的地址存到指定的寄存器中（有点绕 - -）。 比如: &lt;code&gt;get_tls(CX)&lt;/code&gt;， CX 中的将会存有当前 g 的地址。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;g(r)&lt;/code&gt; 用于 dereference the pointer of g pointer (实在想不出好的翻译), 比如: &lt;code&gt;g(CX)&lt;/code&gt;, 最终会得到 &lt;code&gt;0(r)(TLS*1)&lt;/code&gt;，解了一层引用。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-x86asm&#34;&gt;MOVQ	m_g0(BX), SI
+MOVQ	SI, g(CX)	// g = m-&amp;gt;g0
+MOVQ	(g_sched+gobuf_sp)(SI), SP	// sp = m-&amp;gt;g0-&amp;gt;sched.sp
+PUSHQ	AX
+MOVQ	DI, DX
+MOVQ	0(DI), DI
+CALL	DI
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面这段代码先把 m.g0 变成 g， 再进行栈的切换，然后把先前 的 g 做为参数推入栈，最后调用 fn。 就这样，mcall 完成了 goroutine 栈的切换并将先前的 g 传入了 fn。&lt;/p&gt;
+
+&lt;p&gt;值得一提的是，几乎的所有汇编文件中都 include 的 go_asm.h， 这个头文件在 golang 的源码中并不存在，它是在编译时&lt;a href=&#34;https://groups.google.com/d/msg/golang-nuts/nRMMvHxsyYQ/n4kLtIHwCAAJ&#34;&gt;自动生成&lt;/a&gt;。 Github 上有一个生成好的 go_asm.h，是 Linux Amd64 的， 有兴趣的同学可以去看一下，&lt;a href=&#34;https://github.com/brb/go-static/blob/master/go_asm.h#L876&#34;&gt;链接在此&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;下面是 g.sched 的具体内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type gobuf struct {
+	// The offsets of sp, pc, and g are known to (hard-coded in) libmach.
+	sp   uintptr
+	pc   uintptr
+	g    guintptr
+	ctxt unsafe.Pointer // this has to be a pointer so that gc scans it
+	ret  uintreg
+	lr   uintptr
+	bp   uintptr // for GOEXPERIMENT=framepointer
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里或许会有点疑问，mcall 保存这么点东西真的足够代表 goroutine 的状态吗？唉，还别说，足够了。 Goroutine 和系统线程不同，一个程序的 Goroutine 全部运行在同一个用户空间，这就意味着没有必要 trap 到 rang0，切换 PageTable(cr3) 或使 TLB 失效。 不过还有一个问题：寄存器的状态呢？确实寄存器的状态是 context 切换的关键点之一。但是不要忘了，这里是调用函数，在调用函数之前一般会把有用的寄存器存到栈中。还是不放心的话，我们来看看真实世界中的 Gosched， 我写了一个简单的例子，并用 go tool compile 获取了它的汇编代码。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import &amp;quot;runtime&amp;quot;
+
+func g1() {
+	i := 0
+	for {
+		i++
+		runtime.Gosched()
+	}
+}
+
+func g2() {
+	i, j := 0, 0
+	for {
+		i++
+		runtime.Gosched()
+		j += i
+	}
+}
+
+func main() {
+	go g1()
+	go g2()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在命令台中输入:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ go build sample.go
+$ go tool objdump sample &amp;gt; sample.asm # 汇编代码
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这是 g1 的汇编：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-x86asm&#34;&gt;sample.go:8	0x401015	4889c3			MOVQ AX, BX    // for loop
+sample.go:8	0x401018	48ffc3			INCQ BX        // i++
+sample.go:8	0x40101b	48891c24		MOVQ BX, 0(SP) // push i
+sample.go:9	0x40101f	e89c2b0200		CALL runtime.Gosched(SB)
+sample.go:9	0x401024	488b0424		MOVQ 0(SP), AX // pop i
+sample.go:8	0x401028	ebeb			JMP 0x401015   // again
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们看见在这段代码中 BX 是那个 &lt;strong&gt;i&lt;/strong&gt;，在这里需要保存的只有 BX，而在 Gosched 之前和之后都有 BX 的栈处理。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-x86asm&#34;&gt;sample.go:16	0x40105d	4889cb			MOVQ CX, BX
+sample.go:16	0x401060	48ffc3			INCQ BX
+sample.go:16	0x401063	48895c2408		MOVQ BX, 0x8(SP)
+sample.go:17	0x401068	e8532b0200		CALL runtime.Gosched(SB)
+sample.go:17	0x40106d	488b4c2408		MOVQ 0x8(SP), CX
+sample.go:18	0x401072	488b1c24		MOVQ 0(SP), BX
+sample.go:18	0x401076	4801cb			ADDQ CX, BX
+sample.go:18	0x401079	48891c24		MOVQ BX, 0(SP)
+sample.go:16	0x40107d	ebde			JMP 0x40105d
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;同上， g2 在 Gosched 之前，会保存关键的寄存器。&lt;/p&gt;
+
+&lt;p&gt;就像 &lt;a href=&#34;http://doc.cat-v.org/plan_9/4th_edition/papers/asm&#34;&gt;A Manual for the Plan 9 assembler&lt;/a&gt; 所说：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A subroutine is responsible for saving its own registers, and therefore is free to use any registers without saving them (‘‘caller saves’’)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;gogo:11e673671117c063adee6332c59abd2b&#34;&gt;gogo&lt;/h3&gt;
+
+&lt;p&gt;mcall 中保存的信息会在后来的 gogo 中恢复到 g 中，下面的代码摘自 asm_amd64.s。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// void gogo(Gobuf*)
+// restore state from Gobuf; longjmp
+TEXT runtime·gogo(SB), NOSPLIT, $0-8
+	MOVQ	buf+0(FP), BX		// gobuf
+	MOVQ	gobuf_g(BX), DX
+	MOVQ	0(DX), CX		// make sure g != nil
+	get_tls(CX)
+	MOVQ	DX, g(CX)
+	MOVQ	gobuf_sp(BX), SP	// restore SP
+	MOVQ	gobuf_ret(BX), AX
+	MOVQ	gobuf_ctxt(BX), DX
+	MOVQ	gobuf_bp(BX), BP
+	MOVQ	$0, gobuf_sp(BX)	// clear to help garbage collector
+	MOVQ	$0, gobuf_ret(BX)
+	MOVQ	$0, gobuf_ctxt(BX)
+	MOVQ	$0, gobuf_bp(BX)
+	MOVQ	gobuf_pc(BX), BX
+	JMP	BX
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;对于 g1, 在 &lt;code&gt;JMP BX&lt;/code&gt; 之后， PC 回到了 &lt;code&gt;0x401024&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3 id=&#34;过程:11e673671117c063adee6332c59abd2b&#34;&gt;过程&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;             g
+             $
+             $          g0
+ Gosched --&amp;gt; $ -------&amp;gt; $
+                mcall   $
+                        $
+           schedule --&amp;gt; $
+                        $         g&#39;
+            execute --&amp;gt; $ ------&amp;gt; $
+                           gogo   $
+                                  $
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Gosched 的大致过程就像如上面所示， $ 代表 thread of execution，第一条为 g， 第二条是 g0，第三条是调度时被选中执行的 g&amp;rsquo;。&lt;/p&gt;
+
+&lt;h3 id=&#34;schedule:11e673671117c063adee6332c59abd2b&#34;&gt;schedule&lt;/h3&gt;
+
+&lt;p&gt;完整的 schedule 有许多情况要处理，写得有点复杂，简明起见，我只摘录了关键代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func schedule() {
+	_g_ := getg()
+	if _g_.m.p.ptr().schedtick%61 == 0 &amp;amp;&amp;amp; sched.runqsize &amp;gt; 0 {
+		lock(&amp;amp;sched.lock)
+		gp = globrunqget(_g_.m.p.ptr(), 1)
+		unlock(&amp;amp;sched.lock)
+		if gp != nil {
+			resetspinning()
+		}
+	}
+	if gp == nil {
+		gp, inheritTime = runqget(_g_.m.p.ptr())
+		if gp != nil &amp;amp;&amp;amp; _g_.m.spinning {
+			throw(&amp;quot;schedule: spinning with local work&amp;quot;)
+		}
+	}
+	if gp == nil {
+		gp, inheritTime = findrunnable() // blocks until work is available
+		resetspinning()
+	}
+	execute(gp, inheritTime)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;第一个 if 每隔一段时间会首先运行 globrunqueue 中的 g，这是保证了公平，否则的话只要一个 q localrunqueue 中有两个可运行 g，那么这个 m 就会一直被这两个 g 占据着。&lt;/p&gt;
+
+&lt;p&gt;第二个 if 从 q 本地取一个 g 运行。&lt;/p&gt;
+
+&lt;p&gt;第三个 if 从 globrunqueue 或者其他 p 中取 g，这使得在本地没有可以运行的 g 或没从 globrunqueue 取或 globrunqueue 也没有时，也有 g 可以运行。&lt;/p&gt;
+
+&lt;p&gt;同时这也验证了上面的那幅图片。&lt;/p&gt;
+
+&lt;h2 id=&#34;链接:11e673671117c063adee6332c59abd2b&#34;&gt;链接&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://groups.google.com/forum/#!topic/golang-nuts/SSpxrCrfvyo&#34;&gt;Understanding of runtime goroutine struct G &amp;amp; M&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikibooks.org/wiki/X86_Assembly/GAS_Syntax&#34;&gt;X86 Assembly/GAS Syntax&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://golang.org/doc/asm&#34;&gt;A Quick Guide to Go&amp;rsquo;s Assembler&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://doc.cat-v.org/plan_9/4th_edition/papers/asm&#34;&gt;A Manual for the Plan 9 assembler&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://groups.google.com/d/msg/golang-nuts/nRMMvHxsyYQ/n4kLtIHwCAAJ&#34;&gt;Accessing go internals from asm, how to generate go_asm.h?&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/brb/go-static/blob/master/go_asm.h#L876&#34;&gt;go-static/go_asm.h at master · brb/go-static&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L293&#34;&gt;Analysis of the Go runtime scheduler&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw&#34;&gt;The Go scheduler&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://morsmachine.dk/go-scheduler&#34;&gt;go/runtime2.go at master · golang/go&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw&#34;&gt;Scalable Go Scheduler Design Doc&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- links --&gt;
+</description>
+    </item>
     
     <item>
       <title>博客搬家了</title>
@@ -2469,28 +2839,6 @@ pi = ai
 
 &lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
 END.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>第一份实习</title>
-      <link>http://neilsh.me/2015/08/29/my-frist-internship/</link>
-      <pubDate>Sat, 29 Aug 2015 20:54:10 +0800</pubDate>
-      
-      <guid>http://neilsh.me/2015/08/29/my-frist-internship/</guid>
-      <description>&lt;p&gt;两个月一晃而过，暑假结束了，第一份实习也结束了。&lt;/p&gt;
-
-&lt;p&gt;这段时间，我在 EasyLinking 实习，得到了 FULL TIME 的安卓开发工作经历，真真切切地认识到&lt;strong&gt;文档和注释&lt;/strong&gt;重要性，同时还结识了一帮前辈：重视人才的纪总，平和的游总，自学成才的 iOS 大牛老王，后台开发大牛老邹和小胡，开发资历第一丁老师，全栈的北大高材生超哥，等等。&lt;/p&gt;
-
-&lt;p&gt;实习中给我印象最深的还是团队协作。不得不说，这个技术团队成员之间协助效率非常高，一个问题发现之后，马上就能得到反馈，我想这应该得利于扁平化的管理模式。&lt;/p&gt;
-
-&lt;p&gt;既然我实习的是安卓开发，那就说一下关于安卓的事吧。广播是一个安卓应用的重要组成部分，之前没有开发过业务逻辑复杂的应用，对本地广播的理解也就停留在 &lt;a href=&#34;https://developer.android.com/reference/android/support/v4/content/LocalBroadcastManager.html&#34;&gt;文档&lt;/a&gt; 上面，经过这次实习，我已经 understand from practice ，它很强大，也很危险，不愧被称为安卓中的 &lt;code&gt;goto&lt;/code&gt;(泪目，掉过坑)。对安卓的触屏事件也有了&lt;a href=&#34;http://neilsh.me/2015/08/13/dispatch_and_handle_motionevent_in_android/&#34;&gt;进一步的认识&lt;/a&gt;。我还成功地劝服了安卓开发组，把 IDE 从 Eclipse 迁移到 AndroidStudio。:-)&lt;/p&gt;
-
-&lt;p&gt;在工作之余，我实现了一个小型的操作系统 &lt;a href=&#34;https://bitbucket.org/overvenus/jos/&#34;&gt;JOS&lt;/a&gt;。由于白天没有空，JOS 的代码大部分是在晚上写的，每天都写到凌晨，导致 Work-life balance 很糟糕，脸上冒出了一些痘痘。&lt;/p&gt;
-
-&lt;p&gt;总的来说，这是一个有意义的暑假。&lt;/p&gt;
-
-&lt;p&gt;END.&lt;/p&gt;
 </description>
     </item>
     

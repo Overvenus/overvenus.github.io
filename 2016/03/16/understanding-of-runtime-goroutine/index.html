@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="understanding of runtime goroutine and scheduler.">
+<meta name="keywords" content="go, golang, goroutine, g, m, p, Gosched, mcall, gogo, plan 9 asm, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="understanding of runtime goroutine and scheduler."/>
+<meta property="og:title" content="理解 Goroutine &amp; Gosched &middot; Neil ">
+<meta property="og:site_name" content="Neil"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://neilsh.me/2016/03/16/understanding-of-runtime-goroutine/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-03-16"/>
+<meta property="article:modified_time" content="2016-03-16"/>
+
+
+<meta property="article:tag" content="go">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="goroutine">
+<meta property="article:tag" content="g">
+<meta property="article:tag" content="m">
+<meta property="article:tag" content="p">
+<meta property="article:tag" content="Gosched">
+<meta property="article:tag" content="mcall">
+<meta property="article:tag" content="gogo">
+<meta property="article:tag" content="plan 9 asm">
+
+
+
+<meta name="msapplication-TileColor" content="#151515">
+<meta name="msapplication-TileImage" content="/assets/favicon.png">
+
+        <link rel="icon" href="/assets/favicon.png">
+        <!--[if IE]>
+        <link rel="shortcut icon" href="/assets/favicon.ico">
+        <![endif]-->
+        <link rel="apple-touch-icon" href="/assets/favicon.png">
+        
+        <link rel="stylesheet" href="/css/slender-font.css">
+        
+        <link rel="stylesheet" href="/css/slender-base.css">
+        <link rel="stylesheet" href="/css/slender-color-schemes.css">
+        <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
+        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
+        <title>
+            
+                理解 Goroutine &amp; Gosched &middot; Neil
+            
+        </title>
+    </head>
+    <body class="color-scheme-white">
+        <div class="container">
+            <header>
+                
+                <nav><ul>
+                    
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home fa-fw"></i> <br>
+                                Home
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/about/">
+                                <i class="fa fa-user fa-fw"></i> <br>
+                                About
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/archive/">
+                                <i class="fa fa-archive fa-fw"></i> <br>
+                                Archive
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a href="/tags/">
+                                <i class="fa fa-tags fa-fw"></i> <br>
+                                Tags
+                            </a>
+                        </li>
+                    
+                </ul></nav>
+                
+                
+                    <h1 class="title">理解 Goroutine &amp; Gosched</h1>
+                    <aside>
+                        <p>on <strong>Wed, Mar 16, 2016</strong></p>
+                    </aside>
+                
+            </header>
+
+
+<div id="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#goroutine:11e673671117c063adee6332c59abd2b">Goroutine</a>
+<ul>
+<li><a href="#g-m:11e673671117c063adee6332c59abd2b">g &amp; m</a></li>
+<li><a href="#p:11e673671117c063adee6332c59abd2b">p</a></li>
+</ul></li>
+<li><a href="#gosched:11e673671117c063adee6332c59abd2b">Gosched</a>
+<ul>
+<li><a href="#mcall:11e673671117c063adee6332c59abd2b">mcall</a>
+<ul>
+<li><a href="#g-to-g0:11e673671117c063adee6332c59abd2b">g to g0</a></li>
+</ul></li>
+<li><a href="#gogo:11e673671117c063adee6332c59abd2b">gogo</a></li>
+<li><a href="#过程:11e673671117c063adee6332c59abd2b">过程</a></li>
+<li><a href="#schedule:11e673671117c063adee6332c59abd2b">schedule</a></li>
+</ul></li>
+<li><a href="#链接:11e673671117c063adee6332c59abd2b">链接</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+
+<article class="article-content">
+    
+
+<h2 id="goroutine:11e673671117c063adee6332c59abd2b">Goroutine</h2>
+
+<p>大家都知道一个编译好的 Go 程序一般都在 2MB 以上，那是因为 Go 编译器把 Go 的运行环境(runtime)也编译进去了。 一个完整的 Go 程序结构可以表示为下图:</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1f225uewt4aj20dq0af74i.jpg" alt="图1" />
+出自 <a href="http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-11_DeshpandeSponslerWeiss_GO.pdf">7</a></p>
+
+<p>在 <a href="http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-11_DeshpandeSponslerWeiss_GO.pdf">Analysis of the Go runtime scheduler</a> 中作者们写道：</p>
+
+<p>我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 rang3）。</p>
+
+<h3 id="g-m:11e673671117c063adee6332c59abd2b">g &amp; m</h3>
+
+<p>Goroutine 与系统线程的对应关系是 <strong>N:M</strong>，多个goroutine对应多个系统线程，一般来说 gouroutine 的数量远多于系统线程。Goroutine 的运行依托于系统线程，一个线程在这一时刻执行的这个 goroutine，在另一时刻由于 runtime 的调度执行的可能又是另外一个 goroutine。 从系统的角度看，一个 Go 程序就是一个进程，这个进程中都多个线程，系统不知道也不需要知道那些线程中发生 goroutine 的调度。</p>
+
+<p>在 Golang-nuts 上有一篇贴子 <a href="https://groups.google.com/forum/#!topic/golang-nuts/SSpxrCrfvyo">Understanding of runtime goroutine struct G &amp; M</a>. 在这篇贴子里大家讨论了 runtime 中的 <code>g</code> 和 <code>m</code> 结构体，这两个结构体于与 goroutine 的实现相关，简单的来说：</p>
+
+<blockquote>
+<p>一个 <strong>g</strong> 代表一个 <strong>goroutine</strong>，一个 <strong>m</strong> 代表一个<strong>系统线程</strong>。</p>
+
+<p>g 运行在 m 中， m 中有多个 g 等待执行。 当运行着的 g 堵塞时，该 m 中剩下的 g 会自动转移到没有被堵塞的 m 中， 这样其余的 goroutine 就不会被堵塞了。当然这一切对程序员是不可见的。</p>
+</blockquote>
+
+<h3 id="p:11e673671117c063adee6332c59abd2b">p</h3>
+
+<p>在 golang-nuts 中并没有提及另外一个重要的结构体 p， 在 <a href="http://morsmachine.dk/go-scheduler">morsmachine</a> 的一篇博文中，他说 p 代表了处理器。
+他还说一个 g 要被运行必须要有 p，整个运行结构如下图所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1f24rq6bgjjj20b40avglr.jpg" alt="" />
+出自 <a href="http://morsmachine.dk/go-scheduler">8</a></p>
+
+<p>每个 p 都有一个本地的 g 队列。 m + p + g 才是一个运行着的 goroutine.</p>
+
+<h2 id="gosched:11e673671117c063adee6332c59abd2b">Gosched</h2>
+
+<p><code>runtime.Gosched</code> 用于让出被执行的权利，使得其他等待中的 goroutine 有机会得以执行，但这并不会终止 Gosched 的 caller。</p>
+
+<p>明了 Gosched 后，我们再看看它是怎么实现的。下面的 <code>mcall(gosched_m)</code> 有点蹊跷， mcall 怎么只有一个函数签名，它的函数体在哪里？ <code>gosched_m</code> 需要一个参数 <code>*g</code>, 但又它在哪里呢？</p>
+
+<pre><code class="language-go">func Gosched() {
+	mcall(gosched_m)
+}
+
+func mcall(fn func(*g))
+
+// Gosched continuation on g0.
+func gosched_m(gp *g) {
+	if trace.enabled {
+		traceGoSched()
+	}
+	goschedImpl(gp)
+}
+</code></pre>
+
+<h3 id="mcall:11e673671117c063adee6332c59abd2b">mcall</h3>
+
+<p>原来 mcall 是用汇编写的， 每个平台的 mcall 实现方式都不一样。它会提供 fn 当前 goroutine 的 *g。下面我先用伪代码表示 mcall：</p>
+
+<pre><code class="language-go">// mcall switches from the g to the g0 stack and invokes fn(g),
+// where g is the goroutine that made the call.
+// mcall saves g's current PC/SP in g-&gt;sched so that it can be restored later.
+// It is up to fn to arrange for that later execution, typically by recording
+// g in a data structure, causing something to call ready(g) later.
+// mcall returns to the original goroutine g later, when g has been rescheduled.
+// fn must not return at all; typically it ends by calling schedule, to let the m
+// run other goroutines.
+//
+// func mcall(fn func(*g))
+// Switch to m-&gt;g0's stack, call fn(g).
+// Fn must never return.  It should gogo(&amp;g-&gt;sched)
+// to keep running g.
+func mcall(fn) {
+	g = current_g
+	switch stack from current_g to current_m.g0
+	call fn(g)
+}
+</code></pre>
+
+<p>下面是 mcall 的真实代码，摘取自 asm_amd64.s 文件。</p>
+
+<pre><code class="language-go">TEXT runtime·mcall(SB), NOSPLIT, $0-8
+	MOVQ	fn+0(FP), DI
+	
+	get_tls(CX)
+	MOVQ	g(CX), AX	// save state in g-&gt;sched
+	MOVQ	0(SP), BX	// caller's PC
+	MOVQ	BX, (g_sched+gobuf_pc)(AX)
+	LEAQ	fn+0(FP), BX	// caller's SP
+	MOVQ	BX, (g_sched+gobuf_sp)(AX)
+	MOVQ	AX, (g_sched+gobuf_g)(AX)
+	MOVQ	BP, (g_sched+gobuf_bp)(AX)
+
+	// switch to m-&gt;g0 &amp; its stack, call fn
+	MOVQ	g(CX), BX
+	MOVQ	g_m(BX), BX
+	MOVQ	m_g0(BX), SI
+	CMPQ	SI, AX	// if g == m-&gt;g0 call badmcall
+	JNE	3(PC)
+	MOVQ	$runtime·badmcall(SB), AX
+	JMP	AX
+	MOVQ	SI, g(CX)	// g = m-&gt;g0
+	MOVQ	(g_sched+gobuf_sp)(SI), SP	// sp = m-&gt;g0-&gt;sched.sp
+	PUSHQ	AX
+	MOVQ	DI, DX
+	MOVQ	0(DI), DI
+	CALL	DI
+	POPQ	AX
+	MOVQ	$runtime·badmcall2(SB), AX
+	JMP	AX
+	RET
+</code></pre>
+
+<p><code>MOVQ</code> 有点像 <a href="https://en.wikibooks.org/wiki/X86_Assembly/GAS_Syntax">GAS</a> 汇编的风格，但为什么后面的跟着的不是 <code>r</code> 系列的64位寄存器呢？ 还有 <code>FP</code> 是什么东西？
+虽然对于汇编我算不上熟练，但看懂，会用的程度我还是有的，这难道不是 GAS？ 赶紧 google 一下。结果还真的不是，<a href="https://golang.org/doc/asm">golang</a> 用的是 <a href="http://doc.cat-v.org/plan_9/4th_edition/papers/asm">Plan 9</a> 的风格。</p>
+
+<p>Plan 9 汇编风格和 GAS，Intel 风格最大的不同点是它有<strong>伪寄存器</strong>，比如下面四个：</p>
+
+<ul>
+<li>FP: Frame pointer: arguments and locals.</li>
+<li>PC: Program counter: jumps and branches.</li>
+<li>SB: Static base pointer: global symbols.</li>
+<li>SP: Stack pointer: top of stack.</li>
+</ul>
+
+<p>它们用于栈的操作，具体代表什么寄存器由编译链决定，并与 CPU 的架构有关。 FP 用于取函数的参数， <code>0(FP)</code>， <code>8(FP)</code>分别代表第一和第二个参数(64位系统)，</p>
+
+<p><code>TEXT runtime·mcall(SB), NOSPLIT, $0-8</code> 表示这里的可执行代码为 runtime.mcall， <code>NOSPLIT</code> 是个 flag ， <code>$0-8</code> 0代表这个函数的 stackframe 的大小，8 代表这个函数参数们的大小，中间的 <code>-</code> 只用于分开两者，并没有其他特殊作用。</p>
+
+<p><code>MOVQ   fn+0(FP), DI</code> 把 mcall 的参数 fn 的指针存放到 DI 中， DI 成了一个指向 fn 的指针的指针。 估计后面会有 <code>CALL 0(DI)</code>。</p>
+
+<h4 id="g-to-g0:11e673671117c063adee6332c59abd2b">g to g0</h4>
+
+<blockquote>
+<p>大体上 mcall 先执行栈的切换，再把当前的 g 作为参数调用 fn。</p>
+</blockquote>
+
+<p>保存当前 goroutine 的状态保存到对应的 g 中:</p>
+
+<pre><code class="language-x86asm">MOVQ	g(CX), BX
+MOVQ	g_m(BX), BX
+MOVQ	0(SP), BX	// caller's PC
+MOVQ	BX, (g_sched+gobuf_pc)(AX)
+LEAQ	fn+0(FP), BX	// caller's SP
+MOVQ	BX, (g_sched+gobuf_sp)(AX)
+MOVQ	AX, (g_sched+gobuf_g)(AX)
+MOVQ	BP, (g_sched+gobuf_bp)(AX)
+</code></pre>
+
+<p><code>g_sched</code> 是 <a href="https://github.com/brb/go-static/blob/master/go_asm.h#L876">sched</a> 在 g 中的偏移量， <code>gobuf_pc</code> 是 <a href="https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L293">sp</a> 在 sched 中的 gobuf 的偏移量，依此类推。它们定义在 go_asm.h 文件中。 执行完后，当前 goroutine 的状态将会存放到对应的 g.sched 中。</p>
+
+<pre><code class="language-c">#ifdef GOARCH_amd64
+#define	get_tls(r)	MOVQ TLS, r
+#define	g(r)	0(r)(TLS*1)
+#endif
+</code></pre>
+
+<p><code>get_tls(r)</code> 是一个宏，定义在 go_tls.h 文件中，它的作用是把当前的 goroutine 的 <em>g</em> 的指针的地址存到指定的寄存器中（有点绕 - -）。 比如: <code>get_tls(CX)</code>， CX 中的将会存有当前 g 的地址。</p>
+
+<p><code>g(r)</code> 用于 dereference the pointer of g pointer (实在想不出好的翻译), 比如: <code>g(CX)</code>, 最终会得到 <code>0(r)(TLS*1)</code>，解了一层引用。</p>
+
+<pre><code class="language-x86asm">MOVQ	m_g0(BX), SI
+MOVQ	SI, g(CX)	// g = m-&gt;g0
+MOVQ	(g_sched+gobuf_sp)(SI), SP	// sp = m-&gt;g0-&gt;sched.sp
+PUSHQ	AX
+MOVQ	DI, DX
+MOVQ	0(DI), DI
+CALL	DI
+</code></pre>
+
+<p>上面这段代码先把 m.g0 变成 g， 再进行栈的切换，然后把先前 的 g 做为参数推入栈，最后调用 fn。 就这样，mcall 完成了 goroutine 栈的切换并将先前的 g 传入了 fn。</p>
+
+<p>值得一提的是，几乎的所有汇编文件中都 include 的 go_asm.h， 这个头文件在 golang 的源码中并不存在，它是在编译时<a href="https://groups.google.com/d/msg/golang-nuts/nRMMvHxsyYQ/n4kLtIHwCAAJ">自动生成</a>。 Github 上有一个生成好的 go_asm.h，是 Linux Amd64 的， 有兴趣的同学可以去看一下，<a href="https://github.com/brb/go-static/blob/master/go_asm.h#L876">链接在此</a>。</p>
+
+<p>下面是 g.sched 的具体内容：</p>
+
+<pre><code class="language-go">type gobuf struct {
+	// The offsets of sp, pc, and g are known to (hard-coded in) libmach.
+	sp   uintptr
+	pc   uintptr
+	g    guintptr
+	ctxt unsafe.Pointer // this has to be a pointer so that gc scans it
+	ret  uintreg
+	lr   uintptr
+	bp   uintptr // for GOEXPERIMENT=framepointer
+}
+</code></pre>
+
+<p>这里或许会有点疑问，mcall 保存这么点东西真的足够代表 goroutine 的状态吗？唉，还别说，足够了。 Goroutine 和系统线程不同，一个程序的 Goroutine 全部运行在同一个用户空间，这就意味着没有必要 trap 到 rang0，切换 PageTable(cr3) 或使 TLB 失效。 不过还有一个问题：寄存器的状态呢？确实寄存器的状态是 context 切换的关键点之一。但是不要忘了，这里是调用函数，在调用函数之前一般会把有用的寄存器存到栈中。还是不放心的话，我们来看看真实世界中的 Gosched， 我写了一个简单的例子，并用 go tool compile 获取了它的汇编代码。</p>
+
+<pre><code class="language-go">package main
+
+import &quot;runtime&quot;
+
+func g1() {
+	i := 0
+	for {
+		i++
+		runtime.Gosched()
+	}
+}
+
+func g2() {
+	i, j := 0, 0
+	for {
+		i++
+		runtime.Gosched()
+		j += i
+	}
+}
+
+func main() {
+	go g1()
+	go g2()
+}
+</code></pre>
+
+<p>在命令台中输入:</p>
+
+<pre><code class="language-sh">$ go build sample.go
+$ go tool objdump sample &gt; sample.asm # 汇编代码
+</code></pre>
+
+<p>这是 g1 的汇编：</p>
+
+<pre><code class="language-x86asm">sample.go:8	0x401015	4889c3			MOVQ AX, BX    // for loop
+sample.go:8	0x401018	48ffc3			INCQ BX        // i++
+sample.go:8	0x40101b	48891c24		MOVQ BX, 0(SP) // push i
+sample.go:9	0x40101f	e89c2b0200		CALL runtime.Gosched(SB)
+sample.go:9	0x401024	488b0424		MOVQ 0(SP), AX // pop i
+sample.go:8	0x401028	ebeb			JMP 0x401015   // again
+</code></pre>
+
+<p>我们看见在这段代码中 BX 是那个 <strong>i</strong>，在这里需要保存的只有 BX，而在 Gosched 之前和之后都有 BX 的栈处理。</p>
+
+<pre><code class="language-x86asm">sample.go:16	0x40105d	4889cb			MOVQ CX, BX
+sample.go:16	0x401060	48ffc3			INCQ BX
+sample.go:16	0x401063	48895c2408		MOVQ BX, 0x8(SP)
+sample.go:17	0x401068	e8532b0200		CALL runtime.Gosched(SB)
+sample.go:17	0x40106d	488b4c2408		MOVQ 0x8(SP), CX
+sample.go:18	0x401072	488b1c24		MOVQ 0(SP), BX
+sample.go:18	0x401076	4801cb			ADDQ CX, BX
+sample.go:18	0x401079	48891c24		MOVQ BX, 0(SP)
+sample.go:16	0x40107d	ebde			JMP 0x40105d
+</code></pre>
+
+<p>同上， g2 在 Gosched 之前，会保存关键的寄存器。</p>
+
+<p>就像 <a href="http://doc.cat-v.org/plan_9/4th_edition/papers/asm">A Manual for the Plan 9 assembler</a> 所说：</p>
+
+<blockquote>
+<p>A subroutine is responsible for saving its own registers, and therefore is free to use any registers without saving them (‘‘caller saves’’)</p>
+</blockquote>
+
+<h3 id="gogo:11e673671117c063adee6332c59abd2b">gogo</h3>
+
+<p>mcall 中保存的信息会在后来的 gogo 中恢复到 g 中，下面的代码摘自 asm_amd64.s。</p>
+
+<pre><code class="language-go">// void gogo(Gobuf*)
+// restore state from Gobuf; longjmp
+TEXT runtime·gogo(SB), NOSPLIT, $0-8
+	MOVQ	buf+0(FP), BX		// gobuf
+	MOVQ	gobuf_g(BX), DX
+	MOVQ	0(DX), CX		// make sure g != nil
+	get_tls(CX)
+	MOVQ	DX, g(CX)
+	MOVQ	gobuf_sp(BX), SP	// restore SP
+	MOVQ	gobuf_ret(BX), AX
+	MOVQ	gobuf_ctxt(BX), DX
+	MOVQ	gobuf_bp(BX), BP
+	MOVQ	$0, gobuf_sp(BX)	// clear to help garbage collector
+	MOVQ	$0, gobuf_ret(BX)
+	MOVQ	$0, gobuf_ctxt(BX)
+	MOVQ	$0, gobuf_bp(BX)
+	MOVQ	gobuf_pc(BX), BX
+	JMP	BX
+</code></pre>
+
+<p>对于 g1, 在 <code>JMP BX</code> 之后， PC 回到了 <code>0x401024</code>。</p>
+
+<h3 id="过程:11e673671117c063adee6332c59abd2b">过程</h3>
+
+<pre><code>             g
+             $
+             $          g0
+ Gosched --&gt; $ -------&gt; $
+                mcall   $
+                        $
+           schedule --&gt; $
+                        $         g'
+            execute --&gt; $ ------&gt; $
+                           gogo   $
+                                  $
+</code></pre>
+
+<p>Gosched 的大致过程就像如上面所示， $ 代表 thread of execution，第一条为 g， 第二条是 g0，第三条是调度时被选中执行的 g&rsquo;。</p>
+
+<h3 id="schedule:11e673671117c063adee6332c59abd2b">schedule</h3>
+
+<p>完整的 schedule 有许多情况要处理，写得有点复杂，简明起见，我只摘录了关键代码：</p>
+
+<pre><code class="language-go">func schedule() {
+	_g_ := getg()
+	if _g_.m.p.ptr().schedtick%61 == 0 &amp;&amp; sched.runqsize &gt; 0 {
+		lock(&amp;sched.lock)
+		gp = globrunqget(_g_.m.p.ptr(), 1)
+		unlock(&amp;sched.lock)
+		if gp != nil {
+			resetspinning()
+		}
+	}
+	if gp == nil {
+		gp, inheritTime = runqget(_g_.m.p.ptr())
+		if gp != nil &amp;&amp; _g_.m.spinning {
+			throw(&quot;schedule: spinning with local work&quot;)
+		}
+	}
+	if gp == nil {
+		gp, inheritTime = findrunnable() // blocks until work is available
+		resetspinning()
+	}
+	execute(gp, inheritTime)
+}
+</code></pre>
+
+<p>第一个 if 每隔一段时间会首先运行 globrunqueue 中的 g，这是保证了公平，否则的话只要一个 q localrunqueue 中有两个可运行 g，那么这个 m 就会一直被这两个 g 占据着。</p>
+
+<p>第二个 if 从 q 本地取一个 g 运行。</p>
+
+<p>第三个 if 从 globrunqueue 或者其他 p 中取 g，这使得在本地没有可以运行的 g 或没从 globrunqueue 取或 globrunqueue 也没有时，也有 g 可以运行。</p>
+
+<p>同时这也验证了上面的那幅图片。</p>
+
+<h2 id="链接:11e673671117c063adee6332c59abd2b">链接</h2>
+
+<blockquote>
+<ol>
+<li><p><a href="https://groups.google.com/forum/#!topic/golang-nuts/SSpxrCrfvyo">Understanding of runtime goroutine struct G &amp; M</a></p></li>
+
+<li><p><a href="https://en.wikibooks.org/wiki/X86_Assembly/GAS_Syntax">X86 Assembly/GAS Syntax</a></p></li>
+
+<li><p><a href="https://golang.org/doc/asm">A Quick Guide to Go&rsquo;s Assembler</a></p></li>
+
+<li><p><a href="http://doc.cat-v.org/plan_9/4th_edition/papers/asm">A Manual for the Plan 9 assembler</a></p></li>
+
+<li><p><a href="https://groups.google.com/d/msg/golang-nuts/nRMMvHxsyYQ/n4kLtIHwCAAJ">Accessing go internals from asm, how to generate go_asm.h?</a></p></li>
+
+<li><p><a href="https://github.com/brb/go-static/blob/master/go_asm.h#L876">go-static/go_asm.h at master · brb/go-static</a></p></li>
+
+<li><p><a href="https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L293">Analysis of the Go runtime scheduler</a></p></li>
+
+<li><p><a href="https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw">The Go scheduler</a></p></li>
+
+<li><p><a href="http://morsmachine.dk/go-scheduler">go/runtime2.go at master · golang/go</a></p></li>
+
+<li><p><a href="https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw">Scalable Go Scheduler Design Doc</a></p></li>
+</ol>
+</blockquote>
+
+<!-- links -->
+
+</article>
+<div class="article-tags">
+    
+    <ul id="tags">
+  
+    <li><a href="tags/go">#Go</a></li>
+  
+</ul>
+
+</div>
+
+
+<div class="comment-content">
+
+    
+        
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'overvenus';
+    var disqus_identifier = 'http:\/\/neilsh.me\/2016\/03\/16\/understanding-of-runtime-goroutine\/';
+    var disqus_title = '理解 Goroutine \x26 Gosched';
+    var disqus_url = 'http:\/\/neilsh.me\/2016\/03\/16\/understanding-of-runtime-goroutine\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+
+</div>
+
+        </div>
+        <footer>
+            <div>
+    <p>
+        <i class="fa fa-copyright fa-fw"></i>
+         2015 - 2016 Neil Shen
+        <br><i class="fa fa-creative-commons fa-fw"></i> BY-NC-SA
+    </p>
+</div>
+
+        </footer>
+        <script src="/js/highlight-9.1.0.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        
+
+    
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-69367210-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+    
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9546ee4e5eb51908bb6d5c50d98b6048";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+    </body>
+</html>

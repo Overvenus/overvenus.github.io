@@ -96,6 +96,72 @@
     
     
     <article>
+        <h1 class="article-title"><a href="http://neilsh.me/2016/03/16/understanding-of-runtime-goroutine/">理解 Goroutine &amp; Gosched</a></h1>
+        <p class="article-info">
+            on <strong>Wed, Mar 16, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>7 min reading time</strong>
+        </p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="goroutine:11e673671117c063adee6332c59abd2b">Goroutine</h2>
+
+<p>大家都知道一个编译好的 Go 程序一般都在 2MB 以上，那是因为 Go 编译器把 Go 的运行环境(runtime)也编译进去了。 一个完整的 Go 程序结构可以表示为下图:</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1f225uewt4aj20dq0af74i.jpg" alt="图1" />
+出自 [7]</p>
+
+<p>在 [Analysis of the Go runtime scheduler][7] 中作者们写道：</p>
+
+<p>我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 rang3）。</p>
+
+<h3 id="g-m:11e673671117c063adee6332c59abd2b">g &amp; m</h3>
+
+<p>Goroutine 与系统线程的对应关系是 <strong>N:M</strong>，多个goroutine对应多个系统线程，一般来说 gouroutine 的数量远多于系统线程。Goroutine 的运行依托于系统线程，一个线程在这一时刻执行的这个 goroutine，在另一时刻由于 runtime 的调度执行的可能又是另外一个 goroutine。 从系统的角度看，一个 Go 程序就是一个进程，这个进程中都多个线程，系统不知道也不需要知道那些线程中发生 goroutine 的调度。</p>
+
+<p>在 Golang-nuts 上有一篇贴子 [Understanding of runtime goroutine struct G &amp; M][1]. 在这篇贴子里大家讨论了 runtime 中的 <code>g</code> 和 <code>m</code> 结构体，这两个结构体于与 goroutine 的实现相关，简单的来说：</p>
+
+<blockquote>
+<p>一个 <strong>g</strong> 代表一个 <strong>goroutine</strong>，一个 <strong>m</strong> 代表一个<strong>系统线程</strong>。</p>
+
+<p>g 运行在 m 中， m 中有多个 g 等待执行。 当运行着的 g 堵塞时，该 m 中剩下的 g 会自动转移到没有被堵塞的 m 中， 这样其余的 goroutine 就不会被堵塞了。当然这一切对程序员是不可见的。</p>
+</blockquote>
+
+<h3 id="p:11e673671117c063adee6332c59abd2b">p</h3>
+
+<p>在 golang-nuts 中并没有提及另外一个重要的结构体 p， 在 [morsmachine][8] 的一篇博文中，他说 p 代表了处理器。
+他还说一个 g 要被运行必须要有 p，整个运行结构如下图所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/7f793092gw1f24rq6bgjjj20b40avglr.jpg" alt="" />
+出自 [8]</p>
+
+<p>每个 p 都有一个本地的 g 队列。 m + p + g 才是一个运行着的 goroutine.</p>
+
+<h2 id="gosched:11e673671117c063adee6332c59abd2b">Gosched</h2>
+
+<p><code>runtime.Gosched</code> 用于让出被执行的权利，使得其他等待中的 goroutine 有机会得以执行，但这并不会终止 Gosched 的 caller。</p>
+
+<p>明了 Gosched 后，我们再看看它是怎么实现的。下面的 <code>mcall(gosched_m)</code> 有点蹊跷， mcall 怎么只有一个函数签名，它的函数体在哪里？ <code>gosched_m</code> 需要一个参数 <code>*g</code>, 但又它在哪里呢？</p>
+
+<pre><code class="language-go">func Gosched() {
+	mcall(gosched_m)
+}
+
+func mcall(fn func(*g))
+
+// Gosched continuation on g0.
+func gosched_m(gp *g) {
+	if trace.enabled {
+		traceGoSched()
+	}
+	goschedImpl(gp)
+}
+</code></pre>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2016/03/16/understanding-of-runtime-goroutine/">Read more &rarr;</a></p>
+    </article>
+    <div class="article-eof"></div>
+    
+    <article>
         <h1 class="article-title"><a href="http://neilsh.me/2016/02/23/migrating-to-hugo/">博客搬家了</a></h1>
         <p class="article-info">
             on <strong>Tue, Feb 23, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>2 min reading time</strong>
@@ -227,33 +293,6 @@
     </article>
     <div class="article-eof"></div>
     
-    <article>
-        <h1 class="article-title"><a href="http://neilsh.me/2015/12/31/summary-2015/">2015年总结</a></h1>
-        <p class="article-info">
-            on <strong>Thu, Dec 31, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>5 min reading time</strong>
-        </p>
-        <div class="article-summary">
-            <p class="article-summary"><h2 id="公开课:f7f78efa2947b615033306c6fc2dd7d2">公开课</h2>
-
-<p>2015 年，我自学了 6.006，6.033，6.828 和 6.824，选择这几门课主要是补计算机的基础知识。
-等等 6.824 不是 Graduate 课程吗？管他呢，学了再说。(・ε・) 虽说现在还没有学完，但个人感觉这门课并不比前面的 6.828 难。最近临近期末，得暂时放一放，考试周结束后接着学。
-论文看了不少，大部分是这几门课中要求的，小部分是自己找来的，大都关于操作系统和分布式系统。</p>
-
-<h2 id="项目:f7f78efa2947b615033306c6fc2dd7d2">项目</h2>
-
-<p>JOS: 类 UNIX 的操作系统内核，6.828 配套的实验项目，我在这个项目中<a href="/2015/08/30/few_words_about_6_828/">学到了很多</a>。
-其他的几个小项目倒更像是玩具，不在这显摆了。</p>
-
-<h2 id="阅读:f7f78efa2947b615033306c6fc2dd7d2">阅读</h2>
-
-<p>在 2015 一年里，书看得不是很多。我很难想象别人是怎么看完那长长的书单的。</p>
-</p>
-             <p> <strong>... ...</strong> </p> 
-        </div>
-        <p class="article-read-more"><a href="http://neilsh.me/2015/12/31/summary-2015/">Read more &rarr;</a></p>
-    </article>
-    <div class="article-eof"></div>
-    
     
     
     <ul class="pagination">
@@ -337,6 +376,6 @@
 
 
 <!--
-    Slender-Next v1.3
+    Slender-Next v1.3.1
     Theme by Neil Shen <overvenus[AT]gmail.com>  https://github.com/overvenus
 -->
