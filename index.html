@@ -41,7 +41,7 @@
         <link rel="stylesheet" href="/css/slender-base.css">
         <link rel="stylesheet" href="/css/slender-color-schemes.css">
         <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/highlight.min.css">
         <title>
             
                 Neil
@@ -96,6 +96,66 @@
     
     
     <article>
+        <h1 class="article-title"><a href="http://neilsh.me/2016/04/23/rust-ownership-system/">Rust Ownership System</a></h1>
+        <p class="article-info">
+            on <strong>Sat, Apr 23, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>1 min reading time</strong>
+        </p>
+        <div class="article-summary">
+            <p class="article-summary"><p>四个链接初识 Ownership：</p>
+
+<ol>
+<li><strong>[Ownership][1] <br></strong></li>
+<li><strong>[References and Borrowing][2] <br></strong></li>
+<li><strong>[Lifetimes][3] <br></strong></li>
+<li><strong>[Rust语言入门、关键技术与实战经验][5] <br></strong></li>
+</ol>
+
+<p>一个链接知道 Mutability：</p>
+
+<ol>
+<li><strong>[Mutability][7]</strong></li>
+</ol>
+
+<blockquote>
+<p>You may have one or the other of these two kinds of borrows, but not both at
+the same time:</p>
+
+<ul>
+<li>one or more references (&amp;T) to a resource,</li>
+<li>exactly one mutable reference (&amp;mut T).</li>
+</ul>
+</blockquote>
+
+<p>三个链接理解 Ownership：</p>
+
+<ol>
+<li><p><strong>[Rust Means Never Having to Close a Socket][6] <br></strong></p></li>
+
+<li><p><strong>[Wrapper Types in Rust: Choosing Your Guarantees][8] <br></strong></p></li>
+
+<li><p><strong>[Fearless Concurrency with Rust][4]</strong></p></li>
+</ol>
+
+<blockquote>
+<p>In Rust, having &amp;mut access to the relevant locations at the same time
+<strong>guarantees atomicity of updates to them</strong>, since no other thread could
+possibly have concurrent read access.</p>
+
+<p>Rust instead uses ownership and borrowing to provide its two key value propositions:</p>
+
+<ul>
+<li>Memory safety without garbage collection.</li>
+<li>Concurrency without data races.</li>
+</ul>
+</blockquote>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2016/04/23/rust-ownership-system/">Read more &rarr;</a></p>
+    </article>
+    <div class="article-eof"></div>
+    
+    <article>
         <h1 class="article-title"><a href="http://neilsh.me/2016/03/16/understanding-of-runtime-goroutine/">理解 Goroutine &amp; Gosched</a></h1>
         <p class="article-info">
             on <strong>Wed, Mar 16, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>7 min reading time</strong>
@@ -110,7 +170,7 @@
 
 <p>在 [Analysis of the Go runtime scheduler][7] 中作者们写道：</p>
 
-<p>我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 rang3）。</p>
+<p>我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 ring3）。</p>
 
 <p>Goroutine 与系统线程的对应关系是 <strong>N:M</strong>，多个goroutine对应多个系统线程，一般来说 gouroutine 的数量远多于系统线程。Goroutine 的运行依托于系统线程，一个线程在这一时刻执行的这个 goroutine，在另一时刻由于 runtime 的调度执行的可能又是另外一个 goroutine。 从系统的角度看，一个 Go 程序就是一个进程，这个进程中有多个线程，但是系统不知道也不需要知道那些线程中其实已经发生了 goroutine 调度。</p>
 
@@ -270,29 +330,6 @@ func gosched_m(gp *g) {
     </article>
     <div class="article-eof"></div>
     
-    <article>
-        <h1 class="article-title"><a href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/">TButton 命令行快捷按钮</a></h1>
-        <p class="article-info">
-            on <strong>Wed, Jan 20, 2016</strong> by <strong>Neil Shen</strong> &middot; <strong>2 min reading time</strong>
-        </p>
-        <div class="article-summary">
-            <p class="article-summary"><p>众所周知 Linux 的命令行十分强大，一些图形化操作很麻烦的事情，在命令行里敲击下几下键盘就能搞定。
-比如说，在虚拟机里跑 windows，用 word 来写一些报告，但是资料收集是在 Ubuntu 里做的，在收集资料的时候又不想让虚拟机空耗着 CPU。这时我们可以在命令行里输入：</p>
-
-<pre><code class="language-sh">killall -s STOP vmware-vmx
-</code></pre>
-
-<p>过不了多久，之前还呼啸的风扇现在已经没声音了。要恢复被暂停的虚拟机也非常简单，只要输入：</p>
-
-<pre><code class="language-sh">killall -s CONT vmware-vmx
-</code></pre>
-</p>
-             <p> <strong>... ...</strong> </p> 
-        </div>
-        <p class="article-read-more"><a href="http://neilsh.me/2016/01/20/tbutton-mini-commands-launcher/">Read more &rarr;</a></p>
-    </article>
-    <div class="article-eof"></div>
-    
     
     
     <ul class="pagination">
@@ -341,7 +378,7 @@ func gosched_m(gp *g) {
 </div>
 
         </footer>
-        <script src="/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 
@@ -376,6 +413,6 @@ func gosched_m(gp *g) {
 
 
 <!--
-    Slender-Next v1.3.1
+    Slender-Next v1.3.2
     Theme by Neil Shen <overvenus[AT]gmail.com>  https://github.com/overvenus
 -->

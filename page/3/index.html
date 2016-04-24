@@ -22,8 +22,8 @@
 <meta property="og:image:height" content="" />
 <meta property="og:url" content="http://neilsh.me/">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2015-10-23"/>
-<meta property="article:modified_time" content="2015-10-23"/>
+<meta property="article:published_time" content="2015-11-09"/>
+<meta property="article:modified_time" content="2015-11-09"/>
 
 
 
@@ -41,7 +41,7 @@
         <link rel="stylesheet" href="/css/slender-base.css">
         <link rel="stylesheet" href="/css/slender-color-schemes.css">
         <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/highlight.min.css">
         <title>
             
                 Neil
@@ -94,6 +94,50 @@
 
 <section id="article-listing">
     
+    
+    <article>
+        <h1 class="article-title"><a href="http://neilsh.me/2015/11/09/make-slice-map-channel/">make slice map channel</a></h1>
+        <p class="article-info">
+            on <strong>Mon, Nov 09, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>8 min reading time</strong>
+        </p>
+        <div class="article-summary">
+            <p class="article-summary"><h2 id="where-is-the-make-implemention:f54eeb4205b24658133f3791bb00140a">Where is the make implemention?</h2>
+
+<p>package <strong>runtime</strong>
+By the way, <em>new</em>, <em>map</em>, <em>slice</em>, <em>channel</em>, <em>goroutine</em> and <em>garbage collector</em>[[1]] are also implemented in this package.</p>
+
+<h2 id="slices:f54eeb4205b24658133f3791bb00140a">Slices</h2>
+
+<p>Source file: go/src/runtime/slice.go</p>
+
+<h3 id="data-structure:f54eeb4205b24658133f3791bb00140a">Data structure</h3>
+
+<pre><code class="language-go">type slice struct {
+    array unsafe.Pointer
+    len   int
+    cap   int
+}
+</code></pre>
+
+<p>Underlying data structure of <strong>slice</strong> is trival. Go is statically typed, and why this litte struct can be the template of any type of slices? Well, look at the comments of <code>unsafe.Pointer</code></p>
+
+<pre><code>// Pointer represents a pointer to an arbitrary type.  There are four special operations
+// available for type Pointer that are not available for other types.
+//  1) A pointer value of any type can be converted to a Pointer.
+//  2) A Pointer can be converted to a pointer value of any type.  &lt;-- here!
+//  3) A uintptr can be converted to a Pointer.
+//  4) A Pointer can be converted to a uintptr.
+// Pointer therefore allows a program to defeat the type system and read and write
+// arbitrary memory. It should be used with extreme care.
+</code></pre>
+
+<p>So, <strong>Pointer</strong> in Go is <strong>*void</strong> in C. <em>Pointer</em> anesthetizes the type system and read and write arbitrary memory in Go. <em>*void</em> can be converted to any type without warning in C.</p>
+</p>
+             <p> <strong>... ...</strong> </p> 
+        </div>
+        <p class="article-read-more"><a href="http://neilsh.me/2015/11/09/make-slice-map-channel/">Read more &rarr;</a></p>
+    </article>
+    <div class="article-eof"></div>
     
     <article>
         <h1 class="article-title"><a href="http://neilsh.me/2015/10/23/protocol-and-fsm/">Protocol and FSM</a></h1>
@@ -227,20 +271,6 @@ TODO:
     </article>
     <div class="article-eof"></div>
     
-    <article>
-        <h1 class="article-title"><a href="http://neilsh.me/2015/08/30/about-6828/">Few words about 6.828</a></h1>
-        <p class="article-info">
-            on <strong>Sun, Aug 30, 2015</strong> by <strong>Neil Shen</strong> &middot; <strong>4 min reading time</strong>
-        </p>
-        <div class="article-summary">
-            <p class="article-summary"><p>Recently I&rsquo;ve been working on JOS, which is part of <a href="http://pdos.csail.mit.edu/6.828/2014/index.html">6.828: Operating System Engineering</a>. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.</p>
-</p>
-             <p> <strong>... ...</strong> </p> 
-        </div>
-        <p class="article-read-more"><a href="http://neilsh.me/2015/08/30/about-6828/">Read more &rarr;</a></p>
-    </article>
-    <div class="article-eof"></div>
-    
     
     
     <ul class="pagination">
@@ -289,7 +319,7 @@ TODO:
 </div>
 
         </footer>
-        <script src="/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 
@@ -324,6 +354,6 @@ TODO:
 
 
 <!--
-    Slender-Next v1.3.1
+    Slender-Next v1.3.2
     Theme by Neil Shen <overvenus[AT]gmail.com>  https://github.com/overvenus
 -->

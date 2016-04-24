@@ -6,8 +6,113 @@
     <description>Recent content on Neil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 16 Mar 2016 21:49:02 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 23 Apr 2016 14:05:48 +0800</lastBuildDate>
     <atom:link href="http://neilsh.me/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Rust Ownership System</title>
+      <link>http://neilsh.me/2016/04/23/rust-ownership-system/</link>
+      <pubDate>Sat, 23 Apr 2016 14:05:48 +0800</pubDate>
+      
+      <guid>http://neilsh.me/2016/04/23/rust-ownership-system/</guid>
+      <description>&lt;p&gt;四个链接初识 Ownership：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/ownership.html&#34;&gt;Ownership&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/references-and-borrowing.html&#34;&gt;References and Borrowing&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/lifetimes.html&#34;&gt;Lifetimes&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&amp;amp;mid=405037902&amp;amp;idx=1&amp;amp;sn=97d9af490eefc5d6158cb6b6a70f67e5&amp;amp;scene=1&amp;amp;srcid=0325sFxl3sQLeEoup1mgOi5R&amp;amp;pass_ticket=lNt3cyVtXxGGrBlb6ixfaOs2lwZ0w9PvjpB344E6IAQRVWzsA%2Fr7h%2FKhMirnqcBG#rd&#34;&gt;Rust语言入门、关键技术与实战经验&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;一个链接知道 Mutability：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/mutability.html&#34;&gt;Mutability&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;You may have one or the other of these two kinds of borrows, but not both at
+the same time:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;one or more references (&amp;amp;T) to a resource,&lt;/li&gt;
+&lt;li&gt;exactly one mutable reference (&amp;amp;mut T).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;三个链接理解 Ownership：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://blog.skylight.io/rust-means-never-having-to-close-a-socket/&#34;&gt;Rust Means Never Having to Close a Socket&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/&#34;&gt;Wrapper Types in Rust: Choosing Your Guarantees&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://blog.rust-lang.org/2015/04/10/Fearless-Concurrency.html&#34;&gt;Fearless Concurrency with Rust&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;In Rust, having &amp;amp;mut access to the relevant locations at the same time
+&lt;strong&gt;guarantees atomicity of updates to them&lt;/strong&gt;, since no other thread could
+possibly have concurrent read access.&lt;/p&gt;
+
+&lt;p&gt;Rust instead uses ownership and borrowing to provide its two key value propositions:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Memory safety without garbage collection.&lt;/li&gt;
+&lt;li&gt;Concurrency without data races.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;几个例子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-rust&#34;&gt;#[derive(Debug)]
+struct Person {
+    name: String, // actual data is allocated in heap
+}
+
+fn do_1(p: &amp;amp;Person) {
+    println!(&amp;quot;do 1: {:?}&amp;quot;, p);
+}
+
+fn main() {
+    let john = Person { name: &amp;quot;John Smith&amp;quot;.to_string() };
+    // john lives in main&#39;s stack, main owns john.
+    println!(&amp;quot;1: {:?}&amp;quot;, john);
+    do_1(&amp;amp;john); // do_1 borrows john.
+    // john comes back.
+    println!(&amp;quot;2: {:?}&amp;quot;, john);
+    // john gone.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Note: &lt;code&gt;print!&lt;/code&gt;, &lt;code&gt;println!&lt;/code&gt;, &lt;code&gt;write!&lt;/code&gt;, &lt;code&gt;writeln!&lt;/code&gt; and &lt;code&gt;format!&lt;/code&gt; take references
+silently, So they do not comsume ownership. E.g. &lt;code&gt;println!({:?}, john)&lt;/code&gt; is
+equivalent to &lt;code&gt;println!({:?}, &amp;amp;john)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;See: &lt;a href=&#34;http://stackoverflow.com/a/30451360/3920448&#34;&gt;Does println! borrow or own the variable?&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-rust&#34;&gt;#[derive(Debug)]
+struct Person {
+    name: String, // actual data is allocated in heap
+}
+
+fn do_2(p: Person) {
+    println!(&amp;quot;do 2: {:?}&amp;quot;, p);
+}
+
+fn main() {
+    let john = Person { name: &amp;quot;John Smith&amp;quot;.to_string() };
+    // john lives in main&#39;s stack, main owns john.
+    println!(&amp;quot;main: {:?}&amp;quot;, john);
+    do_2(john); // do_2 owns john.
+    // john never comes back， but still john lives in main&#39;s stack.
+    println!(&amp;quot;main: {:?}&amp;quot;, john); // compile error.
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>理解 Goroutine &amp; Gosched</title>
@@ -26,7 +131,7 @@
 
 &lt;p&gt;在 &lt;a href=&#34;http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-11_DeshpandeSponslerWeiss_GO.pdf&#34;&gt;Analysis of the Go runtime scheduler&lt;/a&gt; 中作者们写道：&lt;/p&gt;
 
-&lt;p&gt;我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 rang3）。&lt;/p&gt;
+&lt;p&gt;我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 ring3）。&lt;/p&gt;
 
 &lt;p&gt;Goroutine 与系统线程的对应关系是 &lt;strong&gt;N:M&lt;/strong&gt;，多个goroutine对应多个系统线程，一般来说 gouroutine 的数量远多于系统线程。Goroutine 的运行依托于系统线程，一个线程在这一时刻执行的这个 goroutine，在另一时刻由于 runtime 的调度执行的可能又是另外一个 goroutine。 从系统的角度看，一个 Go 程序就是一个进程，这个进程中有多个线程，但是系统不知道也不需要知道那些线程中其实已经发生了 goroutine 调度。&lt;/p&gt;
 
@@ -2640,202 +2745,6 @@ UnboundLocalError: local variable &#39;custom_css_empty&#39; referenced before a
 &lt;a href=&#34;https://jupyter.readthedocs.org/en/latest/install.html&#34;&gt;https://jupyter.readthedocs.org/en/latest/install.html&lt;/a&gt;
 &lt;a href=&#34;https://yangsu.github.io/pull-request-tutorial/&#34;&gt;Pull Request Tutorial - A Visual Guide to Pull Requests&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
-END.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Few words about 6.828</title>
-      <link>http://neilsh.me/2015/08/30/about-6828/</link>
-      <pubDate>Sun, 30 Aug 2015 15:39:38 +0800</pubDate>
-      
-      <guid>http://neilsh.me/2015/08/30/about-6828/</guid>
-      <description>
-
-&lt;p&gt;Recently I&amp;rsquo;ve been working on JOS, which is part of &lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;6.828: Operating System Engineering&lt;/a&gt;. 6.828 is a great course about OS, it brings principle to practice, you will implement a simple OS in this course. It also talks about the most fancy research of OS. I recommend every CS sutdent to take this course.&lt;/p&gt;
-
-&lt;h2 id=&#34;6-828简介:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;6.828简介&lt;/h2&gt;
-
-&lt;p&gt;好了，装逼完毕。我认真说说最近上的这门课，6.828是 MIT 开放课程中的一部分，它开放了所有关于该课程的资料，包括上课视频。我个人认为这是一门极好的关于操作系统课程，经典书籍上的知识在这将不再枯燥，它是一门操作系统课程，同时也广泛地涉及了CS中的其他内容，包括但不限于网络，安全，分布式计算等等。&lt;/p&gt;
-
-&lt;h2 id=&#34;知新:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;知新&lt;/h2&gt;
-
-&lt;h3 id=&#34;寻找资料的正确姿势:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;寻找资料的正确姿势&lt;/h3&gt;
-
-&lt;p&gt;课程实验中有许多地方并没有说得很仔细，只有大概的意图，实现的细节需要你自己去查阅资料。比如说汇编里面的 &lt;code&gt;call&lt;/code&gt; &lt;code&gt;ret&lt;/code&gt; 对 &lt;code&gt;ESP&lt;/code&gt;&lt;code&gt;EBP&lt;/code&gt;&lt;code&gt;EIP&lt;/code&gt;三个寄存器的影响，它指出了这两个指令于函数调用上、传递参数有关，然后它让你写一个栈回溯函数。
-Google &lt;code&gt;ret call&lt;/code&gt; 的第一个结果：&lt;a href=&#34;http://www.c-jump.com/CIS77/ASM/Procedures/P77_0010_call_ret.htm&#34;&gt;CALL and RET Instructions&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;CALL pushes the return address onto the stack and transfers control to a procedure.
-RET pops the return address off the stack and returns control to that location.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;嗯，很好，把 &lt;code&gt;call&lt;/code&gt; 和 &lt;code&gt;ret&lt;/code&gt; 所干的事说了一下，但是太模糊了，比如说 return address 指向哪里，怎样来 transfers control ， pops the return address 到哪里？这些都没有说清楚。对于初学者来说，这个结果只能做参考，并不能直接拿来用。
-后来经过一番查找后找到了图文并茂的资料。&lt;a href=&#34;http://unixwiz.net/techtips/win32-callconv-asm.html&#34;&gt;Intel x86 Function-call Conventions - Assembly View&lt;/a&gt; 其中 Calling a __cdecl function 那一节讲得很清楚:
-&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1evo1wpue9bg20770cm3yd.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;16(%ebp) - third function parameter
-12(%ebp) - second function parameter
-8(%ebp)  - first function parameter&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;一图胜千言，函数调用，参数传递，&lt;code&gt;ESP&lt;/code&gt;&lt;code&gt;EBP&lt;/code&gt;&lt;code&gt;EIP&lt;/code&gt;都给说明白了。对比一下前面引用的资料，完全符合。现在我们可以理解，为什么栈要从高向低生长，C 语言中参数为什么从右向左压入栈，函数内的本地变量占用的内存为什么不需要手动管理，这一切都是紧密相关的。&lt;/p&gt;
-
-&lt;h3 id=&#34;c-的黑魔法:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;C 的黑魔法&lt;/h3&gt;
-
-&lt;p&gt;C 语言作为入门课在大一上学期时就学了，教材是谭浩强的，他的书在网上被喷的狗血淋头，我也觉得这不是本好教材，借了本 B&amp;amp;D 的 《The C Programming Language》，囫囵吞枣地看了一遍，指针、结构体、联合体、枚举等概念倒背如流，期末的时候拿了高分，自以为 C 学得还不错。现在想来，那时还是太年轻，操作系统里漫天的指针，结构体、联合体互相的嵌套更是少不了，各种神奇的写法见都没见过。下面来几个简单的例子：&lt;/p&gt;
-
-&lt;h4 id=&#34;给结构体初始化时给指定成员赋值:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;给结构体初始化时给指定成员赋值：&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;struct foo {
-    int i;
-    unsigned u;
-    char *str;
-};
-
-int bar(void) {
-    char *s = &amp;quot;Hello!&amp;quot;;
-    struct foo f = {
-        .str = s;
-    };
-    return 0; 
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;跨源文件调用匿名结构体变量:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;跨源文件调用匿名结构体变量：&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// 定义在 a.c 中
-struct {
-    int i;
-    unsigned us[99];
-} foo;
-
-// 在 b.c 中
-extern struct {
-    int i;
-    unsigned us[99];
-} foo;
-
-int bar(void) {
-    printf(&amp;quot;%d\n&amp;quot;, foo.i);
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;关键字-volatile:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;关键字 volatile&lt;/h4&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;the volatile keyword indicates that a value may change between different accesses, even if it does not appear to be modified. This keyword prevents an optimizing compiler from optimizing away subsequent reads or writes and thus incorrectly reusing a stale value or omitting writes.    &amp;ndash; &lt;a href=&#34;https://en.wikipedia.org/wiki/Volatile_(computer_programming)&#34;&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;引用指出 volatile 是为了防止编译“优化”对该变量的一系列读写操作。上面抛出一大段结论，还是挺令人疑惑的。什么叫 may change between different accesses， 什么叫 optimizing away subsequent reads or writes？这一切用“底层“的汇编来解释反而容易。
-&lt;a href=&#34;http://neilsh.me/assets/code/v_int.c&#34;&gt;带有 volatile&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// volatile_int.c
-volatile int foo;
-
-// 总计4次对 foo 的操作
-void main(void) {
-    foo = 0xff;
-    printf(&amp;quot;%d\n&amp;quot;, foo);
-    foo = 0xff;
-    printf(&amp;quot;%d\n&amp;quot;, foo);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;# 编译
-$ gcc -O1 volatile_int.c -o volatile_int
-# 查看汇编
-$ objdump -S volatile_int &amp;gt; v.asm
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-asm&#34;&gt;000000000040055d &amp;lt;main&amp;gt;:
-  40055d:	48 83 ec 08          	sub    $0x8,%rsp
-  400561:	c7 05 d9 0a 20 00 ff 	movl   $0xff,0x200ad9(%rip)        # 601044 &amp;lt;foo&amp;gt;
-  400568:	00 00 00 
-  40056b:	8b 15 d3 0a 20 00    	mov    0x200ad3(%rip),%edx        # 601044 &amp;lt;foo&amp;gt;
-  400571:	be 34 06 40 00       	mov    $0x400634,%esi
-  400576:	bf 01 00 00 00       	mov    $0x1,%edi
-  40057b:	b8 00 00 00 00       	mov    $0x0,%eax
-  400580:	e8 db fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
-  400585:	c7 05 b5 0a 20 00 ff 	movl   $0xff,0x200ab5(%rip)        # 601044 &amp;lt;foo&amp;gt;
-  40058c:	00 00 00 
-  40058f:	8b 15 af 0a 20 00    	mov    0x200aaf(%rip),%edx        # 601044 &amp;lt;foo&amp;gt;
-  400595:	be 34 06 40 00       	mov    $0x400634,%esi
-  40059a:	bf 01 00 00 00       	mov    $0x1,%edi
-  40059f:	b8 00 00 00 00       	mov    $0x0,%eax
-  4005a4:	e8 b7 fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
-  4005a9:	48 83 c4 08          	add    $0x8,%rsp
-  4005ad:	c3                   	retq   
-  4005ae:	66 90                	xchg   %ax,%ax
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://neilsh.me/assets/code/nv_int.c&#34;&gt;不带 volatile&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-asm&#34;&gt;000000000040055d &amp;lt;main&amp;gt;:
-  40055d:	48 83 ec 08          	sub    $0x8,%rsp
-  400561:	c7 05 d9 0a 20 00 ff 	movl   $0xff,0x200ad9(%rip)        # 601044 &amp;lt;foo&amp;gt;
-  400568:	00 00 00 
-  40056b:	ba ff 00 00 00       	mov    $0xff,%edx
-  400570:	be 34 06 40 00       	mov    $0x400634,%esi
-  400575:	bf 01 00 00 00       	mov    $0x1,%edi
-  40057a:	b8 00 00 00 00       	mov    $0x0,%eax
-  40057f:	e8 dc fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
-  400584:	c7 05 b6 0a 20 00 ff 	movl   $0xff,0x200ab6(%rip)        # 601044 &amp;lt;foo&amp;gt;
-  40058b:	00 00 00 
-  40058e:	ba ff 00 00 00       	mov    $0xff,%edx
-  400593:	be 34 06 40 00       	mov    $0x400634,%esi
-  400598:	bf 01 00 00 00       	mov    $0x1,%edi
-  40059d:	b8 00 00 00 00       	mov    $0x0,%eax
-  4005a2:	e8 b9 fe ff ff       	callq  400460 &amp;lt;__printf_chk@plt&amp;gt;
-  4005a7:	48 83 c4 08          	add    $0x8,%rsp
-  4005ab:	c3                   	retq   
-  4005ac:	0f 1f 40 00          	nopl   0x0(%rax)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;对比可见，带有 volatile 的对 foo 有四次操作，而不带的只有 2 次，从这个例子可以看出一些端倪， volatile 确保了 C 源码中每次对 foo 的操作都是直接对 foo 内存地址的操作。&lt;/p&gt;
-
-&lt;h4 id=&#34;指针与数组:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;指针与数组&lt;/h4&gt;
-
-&lt;p&gt;用伪码来简述一下两者的关系。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;char *pc = 0；
-int *pi = 0;
-int ai[5] = {0, 1, 2, 3, 4};
-
-(pc += 1) == 1 is true;
-
-if (sizeof(int) == 4)
-    then pi + 1 == 4 is true; ((int *)pc) + 1 == 5 is true;
-
-*ai == 0 is true
-
-pi = ai
-    then *pi == 0, pi[1] == 1, pi[4] == 4 are true;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;自从学了6.828后，指针再也不是洪水猛兽，自以为余已达收发自如的境界。&lt;/p&gt;
-
-&lt;h3 id=&#34;杂项:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;杂项&lt;/h3&gt;
-
-&lt;p&gt;对各种计算机术语有了新的认识：process、thread、stub、trap、caller、callee、coroutine等等。
-各种命令：man、git、make、gcc、objdump等等。特别是man，我还是第一次知道，man还能当编程手册，查看函数的用法。
-理论与实践之间的差异，工程上的权衡于妥协。&lt;/p&gt;
-
-&lt;h2 id=&#34;一些资源:1f5d1f87c04791fc85f6df330cc0063e&#34;&gt;一些资源&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://pdos.csail.mit.edu/6.828/2014/index.html&#34;&gt;官方网站&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/playlist?list=PLfciLKR3SgqNJKKIKUliWoNBBH1VHL3AP&#34;&gt;课程视频&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://bitbucket.org/overvenus/jos/&#34;&gt;我的 JOS (已完成lab1～6)&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;最后，再次感谢 MIT 的教师职员们，并以一张 JOS 靓照结尾。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/large/7f793092gw1evohw0nih7j20k00bw75r.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;个人笔记，难免有误，如有发现，还望指出。
 END.&lt;/p&gt;

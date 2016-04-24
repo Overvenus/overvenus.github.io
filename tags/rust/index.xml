@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rust on Neil</title>
+    <link>http://neilsh.me/tags/rust/</link>
+    <description>Recent content in Rust on Neil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Sat, 23 Apr 2016 14:05:48 +0800</lastBuildDate>
+    <atom:link href="http://neilsh.me/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Rust Ownership System</title>
+      <link>http://neilsh.me/2016/04/23/rust-ownership-system/</link>
+      <pubDate>Sat, 23 Apr 2016 14:05:48 +0800</pubDate>
+      
+      <guid>http://neilsh.me/2016/04/23/rust-ownership-system/</guid>
+      <description>&lt;p&gt;四个链接初识 Ownership：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/ownership.html&#34;&gt;Ownership&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/references-and-borrowing.html&#34;&gt;References and Borrowing&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/lifetimes.html&#34;&gt;Lifetimes&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&amp;amp;mid=405037902&amp;amp;idx=1&amp;amp;sn=97d9af490eefc5d6158cb6b6a70f67e5&amp;amp;scene=1&amp;amp;srcid=0325sFxl3sQLeEoup1mgOi5R&amp;amp;pass_ticket=lNt3cyVtXxGGrBlb6ixfaOs2lwZ0w9PvjpB344E6IAQRVWzsA%2Fr7h%2FKhMirnqcBG#rd&#34;&gt;Rust语言入门、关键技术与实战经验&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;一个链接知道 Mutability：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://doc.rust-lang.org/book/mutability.html&#34;&gt;Mutability&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;You may have one or the other of these two kinds of borrows, but not both at
+the same time:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;one or more references (&amp;amp;T) to a resource,&lt;/li&gt;
+&lt;li&gt;exactly one mutable reference (&amp;amp;mut T).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;三个链接理解 Ownership：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://blog.skylight.io/rust-means-never-having-to-close-a-socket/&#34;&gt;Rust Means Never Having to Close a Socket&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/&#34;&gt;Wrapper Types in Rust: Choosing Your Guarantees&lt;/a&gt; &lt;br&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://blog.rust-lang.org/2015/04/10/Fearless-Concurrency.html&#34;&gt;Fearless Concurrency with Rust&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;In Rust, having &amp;amp;mut access to the relevant locations at the same time
+&lt;strong&gt;guarantees atomicity of updates to them&lt;/strong&gt;, since no other thread could
+possibly have concurrent read access.&lt;/p&gt;
+
+&lt;p&gt;Rust instead uses ownership and borrowing to provide its two key value propositions:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Memory safety without garbage collection.&lt;/li&gt;
+&lt;li&gt;Concurrency without data races.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;几个例子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-rust&#34;&gt;#[derive(Debug)]
+struct Person {
+    name: String, // actual data is allocated in heap
+}
+
+fn do_1(p: &amp;amp;Person) {
+    println!(&amp;quot;do 1: {:?}&amp;quot;, p);
+}
+
+fn main() {
+    let john = Person { name: &amp;quot;John Smith&amp;quot;.to_string() };
+    // john lives in main&#39;s stack, main owns john.
+    println!(&amp;quot;1: {:?}&amp;quot;, john);
+    do_1(&amp;amp;john); // do_1 borrows john.
+    // john comes back.
+    println!(&amp;quot;2: {:?}&amp;quot;, john);
+    // john gone.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Note: &lt;code&gt;print!&lt;/code&gt;, &lt;code&gt;println!&lt;/code&gt;, &lt;code&gt;write!&lt;/code&gt;, &lt;code&gt;writeln!&lt;/code&gt; and &lt;code&gt;format!&lt;/code&gt; take references
+silently, So they do not comsume ownership. E.g. &lt;code&gt;println!({:?}, john)&lt;/code&gt; is
+equivalent to &lt;code&gt;println!({:?}, &amp;amp;john)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;See: &lt;a href=&#34;http://stackoverflow.com/a/30451360/3920448&#34;&gt;Does println! borrow or own the variable?&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-rust&#34;&gt;#[derive(Debug)]
+struct Person {
+    name: String, // actual data is allocated in heap
+}
+
+fn do_2(p: Person) {
+    println!(&amp;quot;do 2: {:?}&amp;quot;, p);
+}
+
+fn main() {
+    let john = Person { name: &amp;quot;John Smith&amp;quot;.to_string() };
+    // john lives in main&#39;s stack, main owns john.
+    println!(&amp;quot;main: {:?}&amp;quot;, john);
+    do_2(john); // do_2 owns john.
+    // john never comes back， but still john lives in main&#39;s stack.
+    println!(&amp;quot;main: {:?}&amp;quot;, john); // compile error.
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

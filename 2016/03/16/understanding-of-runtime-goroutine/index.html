@@ -53,7 +53,7 @@
         <link rel="stylesheet" href="/css/slender-base.css">
         <link rel="stylesheet" href="/css/slender-color-schemes.css">
         <link rel="stylesheet" href="/css/font-awesome-4.5.0.min.css">
-        <link rel="stylesheet" href="/css/highlight-9.1.0-default.min.css">
+        <link rel="stylesheet" href="/css/highlight.min.css">
         <title>
             
                 理解 Goroutine &amp; Gosched &middot; Neil
@@ -143,7 +143,7 @@
 
 <p>在 <a href="http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-11_DeshpandeSponslerWeiss_GO.pdf">Analysis of the Go runtime scheduler</a> 中作者们写道：</p>
 
-<p>我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 rang3）。</p>
+<p>我们写的 Go 程序运行在 runtime 之上，当我们要调用 system call 时，runtime 会帮我们与系统打交道。Runtime 有一个 scheduler，它与系统的 scheduler 类似，但不同点是它调度不是系统线程而是 goroutine，而且它是运行在用户空间中（用 intel 的术语来说就是 ring3）。</p>
 
 <p>Goroutine 与系统线程的对应关系是 <strong>N:M</strong>，多个goroutine对应多个系统线程，一般来说 gouroutine 的数量远多于系统线程。Goroutine 的运行依托于系统线程，一个线程在这一时刻执行的这个 goroutine，在另一时刻由于 runtime 的调度执行的可能又是另外一个 goroutine。 从系统的角度看，一个 Go 程序就是一个进程，这个进程中有多个线程，但是系统不知道也不需要知道那些线程中其实已经发生了 goroutine 调度。</p>
 
@@ -499,7 +499,7 @@ TEXT runtime·gogo(SB), NOSPLIT, $0-8
     
     <ul id="tags">
   
-    <li><a href="tags/go">#Go</a></li>
+    <li><a href="/tags/go">#Go</a></li>
   
 </ul>
 
@@ -542,7 +542,7 @@ TEXT runtime·gogo(SB), NOSPLIT, $0-8
 </div>
 
         </footer>
-        <script src="/js/highlight-9.1.0.min.js"></script>
+        <script src="/js/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
         
 
